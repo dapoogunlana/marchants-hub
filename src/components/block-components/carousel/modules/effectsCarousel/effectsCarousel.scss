@@ -1,0 +1,72 @@
+.swiper {
+  width: 100%;
+  height: 100%;
+
+  // style for next button
+  .swiper-button-next {
+    width: 40px;
+    height: 40px;
+    box-shadow: 0 0 3px rgba(0, 0, 0, 0.4);
+    border-radius: 50%;
+    bottom: 25%;
+    top: auto;
+
+    &:after {
+      font-size: 1.3rem;
+      transform: translate(0px, 2px);
+      color: rgba(0, 0, 0, 0.7);
+    }
+
+    // style for disabled button
+    &.swiper-button-disabled {
+    }
+  }
+
+  // style for prev button
+  .swiper-button-prev {
+    width: 40px;
+    height: 40px;
+    box-shadow: 0 0 3px rgba(0, 0, 0, 0.4);
+    border-radius: 50%;
+    bottom: 25%;
+    top: auto;
+
+    &:after {
+      font-size: 1.3rem;
+      transform: translate(0px, 2px);
+      color: rgba(0, 0, 0, 0.7);
+    }
+
+    // style for disabled button
+    &.swiper-button-disabled {
+    }
+  }
+
+  // style for pagination container
+  .swiper-pagination {
+    width: fit-content;
+    padding: 10px 30px;
+    border-radius: 10px;
+    background-color: rgba(0, 0, 0, 0.4);
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+  }
+
+  //   style for pagination btn
+  .swiper-pagination-bullet {
+    background-color: black;
+    opacity: 0.5;
+    width: 20px;
+    height: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 5px;
+
+    // stype for active pagination btn
+    &.swiper-pagination-bullet-active {
+      background-color: rgb(49, 148, 214);
+    }
+  }
+}

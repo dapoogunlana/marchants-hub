@@ -1,0 +1,43 @@
+@import "/src/assets/styles/variables.scss";
+
+
+.db-board{
+    background-color: $primary-blue;
+    padding: 0.5em 1.2em 1.2em;
+    border-radius: 10px;
+    .db-card{
+        padding: 0.6em;
+        border-radius: 10px;
+        border: 1px solid $white;
+    }
+    .blue-card{
+        color: $white;
+    }
+    .white-card{
+        background-color: $white;
+    }
+}
+.more-info{
+    border-radius: 3px;
+    background-color: $white;
+    padding: 1em;
+    .feature{
+        border-radius: 10px;
+        border: 1px solid $black-faint4;
+        padding: 10px 10px;
+        img{
+            border-radius: 4px;
+            box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.15);
+        }
+    }
+}
+
+.order-list{
+    .card-container {
+        background-color: white;
+        padding: 5px 30px;
+        margin-top: 20px;
+        border-radius: 5px;
+        border: 1px solid #EAECEE;
+    }
+}

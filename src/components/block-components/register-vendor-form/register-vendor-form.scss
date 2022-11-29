@@ -1,0 +1,108 @@
+@import '/src/assets/styles/variables.scss';
+
+.register-box{
+    background-color: $white;
+    padding: 15px;
+    border-radius: 15px;
+    // box-shadow: 10px 10px 2px 0 $black-faint3;
+    // border: 1px solid $primary-green;
+    max-width: 450px;
+    margin: auto;
+    .reg-card{
+        label{
+            // color: $white;
+            font-size: 0.75em;
+            font-weight: 500;
+            margin-bottom: 0;
+            margin-top: 1em;
+            transform: translate(10px, 10px);
+            padding: 1px 10px;
+            background-color: $white;
+        }
+        input, select{
+            // color: $white;
+            border-radius: 3px;
+            padding: 5px 15px;
+            border: 1px solid $input-border;
+            // background-color: $primary-green-faint4;
+            // box-shadow: 5px 5px 2px 0 $black-faint4;
+            width: 100%;
+            transition: 0.3s ease-in-out;
+            &:focus {
+              outline: none;
+              border: 1.5px solid $primary-green;
+            }
+            &::placeholder{
+                font-weight: 300;
+                opacity: 0.5;
+            }
+        }
+        select{
+            padding: 6.5px 15px;
+        }
+        .im-error{
+            border-color: $red;
+        }
+        .password-shower{
+            opacity: 0.6;
+            float: right;
+            margin-top: -33px;
+            margin-right: 10px;
+            position: relative;
+            i{
+                cursor: pointer;
+            }
+            @include mediaM(750px) {
+                margin-top: -28px;
+            }
+        }
+    }
+    .upload-box{
+        label{
+            // color: $white;
+            font-size: 0.75em;
+            font-weight: 500;
+            margin-bottom: 0;
+            margin-top: 1em;
+            // transform: translate(10px, 10px);
+            padding: 1px 10px;
+            background-color: $white;
+        }
+        input{
+            font-size: 0.7em;
+            // color: $white;
+            border-radius: 3px;
+            // padding: 5px 15px;
+            // border: 1px solid $input-border;
+            background-color: #C4E7E7;
+            // box-shadow: 5px 5px 2px 0 $black-faint4;
+            width: 100%;
+            transition: 0.3s ease-in-out;
+            &:focus {
+              outline: none;
+              border: 1.5px solid $primary-green;
+            }
+            &::file-selector-button {
+                font-weight: bold;
+                // color: dodgerblue;
+                padding: 0.5em;
+                border: none;
+                border-right: 1px solid grey;
+                background-color: #C4E7E7;
+                // border-radius: 3px;
+            }
+        }
+    }
+    button{
+        width: 100%;
+    }
+}
+.error-popup{
+    animation: expand 1s ease-in-out 1;
+    color: $red;
+}
+
+@keyframes expand {
+    0% { max-height: 0; overflow: hidden; }
+    100% { max-height: 100px; overflow: hidden; }
+}

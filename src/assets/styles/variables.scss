@@ -1,0 +1,64 @@
+
+
+$light-green: #59ffa7;
+$light-green-hover: #00BE00;
+$light-green-active: #00a700;
+
+$primary-green: #37b3a4;
+$primary-green-hover: #1f6159;
+$primary-green-active: #002924;
+
+$primary-blue: #3c60d5;
+
+$primary-green-faint1: rgba(55, 179, 164, 0.7);
+$primary-green-faint2: rgba(55, 179, 164, 0.45);
+$primary-green-faint3: rgba(55, 179, 164, 0.25);
+$primary-green-faint4: rgba(55, 179, 164, 0.12);
+$primary-green-faint5: rgba(55, 179, 164, 0.07);
+
+$custom-yellow: #F6C745;
+
+$white: #ffffff;
+$white-faint1: rgba(255, 255, 255, 0.7);
+$white-faint2: rgba(255, 255, 255, 0.45);
+$white-faint3: rgba(255, 255, 255, 0.2);
+$white-faint4: rgba(255, 255, 255, 0.1);
+$white-faint5: rgba(255, 255, 255, 0.05);
+
+$off-white: #f1f3f6;
+$off-black: #041926;
+
+$black: #000000;
+$black-faint1: rgba(0, 0, 0, 0.7);
+$black-faint2: rgba(0, 0, 0, 0.45);
+$black-faint3: rgba(0, 0, 0, 0.2);
+$black-faint4: rgba(0, 0, 0, 0.1);
+$black-faint5: rgba(0, 0, 0, 0.05);
+
+$grey-lightest: #eff0f2;
+$grey-light: #cccccc;
+$grey-mid: #818181;
+$grey-dark: #4f5873;
+
+$input-border : #C8D4F8;
+
+$faint-font: rgba(34, 33, 91, 0.6);
+
+$red: #ff0101;
+$red-hover: #a10000;
+$red-active: #530000;
+
+$transparent: rgba(0, 0, 0, 0);
+
+// Mixins
+
+@mixin mediaM($value) {
+  @media all and (max-width: $value) {
+    @content;
+  }
+}
+@mixin mediaW($value) {
+  @media all and (min-width: $value) {
+    @content;
+  }
+} ;

@@ -1,0 +1,79 @@
+@import '/src/assets/styles/variables.scss';
+
+.bar{
+    .profile{
+        background-color: $primary-blue;
+        padding: 1.1em 0.8em;
+        .store-image{
+            width: 60%;
+            max-width: 140px;
+            margin: auto;
+            img{
+                width: 100%;
+            }
+        }
+    }
+    .user-info{
+        background-color: $white-faint4;
+        padding: 10px;
+        border-radius: 6px;
+    }
+    .route-sect{
+        padding: 2em 0.8em;
+    }
+    .section-label{
+        color: $black;
+        text-transform: uppercase;
+        font-size: 0.7em;
+        font-weight: 600;
+        min-height: 4px;
+        margin-bottom: 0;
+        margin-top: 1.2em;
+    }
+    a{
+        display: block;
+    }
+    .bar-link{
+        border-radius: 5px;
+        // border: 1.5px dashed $transparent;
+        padding: 6px 10px;
+        width: 100%;
+        background-color: $white-faint4;
+        opacity: 0.6;
+        transition: 0.25s ease;
+        color: $black;
+        margin-top: 0.1em;
+        // text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        span{
+            font-size: 0.8em;
+        }
+        &:hover{
+            // border: 1.5px dashed $white-faint1;
+            // background-color: $white-faint4;
+            // color: $white;
+            background-color: #fbead7;
+        }
+    }
+    .selected{
+        background-color: #ffe5c7;
+        opacity: 1;
+        // border: 1.5px solid $white-faint2;
+        // color: $primary-green-active;
+        font-weight: 500;
+        // pointer-events: none;
+    }
+    .brand-tag{
+        position: absolute;
+        width: 100%;
+        bottom: 0;
+        left: 0;
+        color: $black-faint1;
+        text-align: center;
+        p{
+            font-size: 0.7em;
+        }
+    }
+}

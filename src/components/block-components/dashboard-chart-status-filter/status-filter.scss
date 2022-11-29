@@ -1,0 +1,19 @@
+@import "/src/assets/styles/variables.scss";
+
+.status-filter{
+    .btn {
+        font-weight: 600;
+    }
+    .btn:hover {
+        color: #398844;
+    }
+    .btn:active {
+        color:#398844
+    }
+}
+
+.status-active {
+    color: $primary-green;
+    font-weight: 800 !important;
+    background-color: $primary-green-faint4;
+}

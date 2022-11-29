@@ -1,0 +1,33 @@
+@import '/src/assets/styles/variables.scss';
+
+.admin-header{
+    position: fixed;
+    width: 100%;
+    z-index: 10;
+    right: 0;
+    background-color: $white;
+    .sidebar-icon{
+        font-size: 1.5em;
+        color: $primary-green-hover;
+        @include mediaW(992px) {
+            display: none;
+        }
+    }
+    .logout-button{
+        border-radius: 5px;
+        border: none;
+        padding: 5px 10px;
+        background-color: $grey-lightest;
+        transition: 0.25s ease;
+        &:hover{
+            background-color: $primary-green-hover;
+            color: $white;
+        }
+        &:active{
+            transform: scale(1.1);
+        }
+        &:focus{
+            outline: none;
+        }
+    }
+}

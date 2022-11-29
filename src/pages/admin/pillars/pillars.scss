@@ -1,0 +1,33 @@
+@import "/src/assets/styles/variables.scss";
+
+.pillars{
+    .card-container {
+        background-color: white;
+        padding: 5px 30px;
+        margin-top: 45px;
+        border-radius: 5px;
+        border: 1px solid #EAECEE;
+    }
+    .button-container {
+        float: right;
+    }
+    .filter-button, .download-button {
+        border-radius: 5px;      
+        border: 1px lightgrey;
+        font-size: 14px;
+        padding: 4px 16px;
+        background-color: $white;
+        transition: 0.25s ease;
+        &:hover{
+            background-color: $white-faint1;
+            color: $black;
+        }
+        &:active{
+            transform: scale(1.1);
+        }
+        &:focus{
+            outline: none;
+        }
+    }
+    padding: 40px;
+}

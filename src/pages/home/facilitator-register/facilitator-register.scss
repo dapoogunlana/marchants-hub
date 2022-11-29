@@ -1,0 +1,142 @@
+@import "/src/assets/styles/variables.scss";
+
+.facilitator-register{
+    width: 100%;
+    min-height: 100vh;
+    background-image: url(./../../../assets/images/ArcP_bg.jpg);
+    background-size: cover;
+    background-position: center;
+    h1{
+        font-weight: 600;
+        margin-bottom: 3vh;
+        @include mediaW(1100px){
+            font-size: 3.5em;
+        }
+        @include mediaM(741px){
+            font-size: 1.9em;
+        }
+    }
+    .sub-info{
+        width: 90%;
+        max-width: 600px;
+        margin: auto;
+    }
+    .cp-logo{
+        width: 100px;
+        @include mediaM(741px){
+            width: 75px;
+        }
+    }
+}
+.center-content2{
+    margin: calc(3vw + 9vh) auto 2vh;
+    // text-align: center;
+    button{
+        padding: 7px 15px;
+        border-radius: 4px;
+        margin: 10px;
+        min-width: 120px;
+        transition: 0.3s ease;
+        // &:hover{
+        //     border-color: #1e8f51;
+        //     background-color: #1e8f51;
+        //     color: #ffffff;
+        // }
+        &:active{
+            transform: translateY(3px);
+        }
+        &:focus{
+            outline: none;
+        }
+    }
+    .signup-btn{
+        background-color: #6bd098;
+        color: #ffffff;
+        border: 1px solid #6bd098;
+    }
+    .login-btn{
+        background-color: rgba(255, 255, 255, 0.1);
+        border: 1px solid #707070;
+    }
+    .scroll-down{
+        margin: calc(2vw + 10px) auto 0;
+        cursor: pointer;
+        p{
+            font-weight: 500;
+        }
+        .scroll-image-holder{
+            width: 9px;
+            margin: auto;
+        }
+    }
+    .facilitator-register-box{
+        background-color: $white;
+        padding: 15px;
+        border-radius: 15px;
+        box-shadow: 10px 10px 2px 0 $black-faint3;
+        max-width: 750px;
+        margin: auto;
+        border: 1px solid $primary-green;
+        .reg-card{
+            label{
+                // color: $white;
+                font-size: 0.75em;
+                font-weight: 500;
+                margin-bottom: 0;
+                margin-top: 1em;
+            }
+            input, select{
+                color: $black;
+                border-radius: 8px;
+                padding: 5px 15px;
+                border: 1.5px dashed $black-faint3;
+                box-shadow: 5px 5px 2px 0 $black-faint4;
+                width: 100%;
+                transition: 0.3s ease-in-out;
+                &:focus {
+                    outline: none;
+                    border: 1.5px solid $light-green;
+                }
+                &:disabled{
+                    background-color: #d8d9db;
+                    opacity: 0.7;
+                }
+            }
+            input[type=checkbox]{
+                margin-right: 10px;
+                margin-left: 5px;
+                width: 10px;
+                transform: scale(2);
+                box-shadow: none;
+            }
+            select{
+                padding: 8px 15px;
+            }
+            .im-error{
+                border-color: $red;
+            }
+            .password-shower{
+                float: right;
+                margin-top: -33px;
+                margin-right: 10px;
+                position: relative;
+                i{
+                    cursor: pointer;
+                }
+            }
+        }
+        .error-popup{
+            animation: expand 1s ease-in-out 1;
+            color: $red;
+        }
+        
+        @keyframes expand {
+            0% { max-height: 0; overflow: hidden; }
+            100% { max-height: 100px; overflow: hidden; }
+        }
+    }
+}
+
+.smaller-box{
+    max-width: 450px !important;
+}

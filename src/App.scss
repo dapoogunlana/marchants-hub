@@ -1,0 +1,40 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Raleway:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@300;400;500;600;700;900&display=swap');
+@import "./assets/styles/variables.scss";
+
+*{
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  // font-family: 'Montserrat';
+  font-family: 'Lato', sans-serif;
+  font-size: 1.06rem;
+  @include mediaM(750px){
+      font-size: 0.95rem;
+  }
+}
+a {
+  color: inherit;
+  text-decoration: none;
+  &:hover{
+    text-decoration: none;
+    color: inherit;
+  }
+}
+h1,
+h2,
+h3,
+h4,
+h6{
+  font-weight: 600;
+}
+
+#root {
+  width: 100%;
+  overflow-x: hidden;
+}
+
+.fig{
+  font-family: 'Lato';
+}

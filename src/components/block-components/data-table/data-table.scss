@@ -1,0 +1,14 @@
+@import '../../../assets/styles/variables.scss';
+
+th, td {
+    font-size: 14px;
+}
+
+.table-container {
+    overflow-x: auto !important;
+    @include mediaW(991px) {
+        max-width: calc(87vw - 250px);
+    }.table thead th {
+        border: none;
+    }
+}

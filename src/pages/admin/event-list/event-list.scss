@@ -1,0 +1,11 @@
+@import "/src/assets/styles/variables.scss";
+
+.event-list{
+    .card-container {
+        background-color: white;
+        padding: 5px 30px;
+        margin-top: 20px;
+        border-radius: 5px;
+        border: 1px solid #EAECEE;
+    }
+}
