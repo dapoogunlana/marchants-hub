@@ -14,7 +14,7 @@ import { useDispatch } from 'react-redux';
 import { login } from '../../../services/actions/session-actions';
 import UserNavigationComponent from '../../../services/utils/navigation-component';
 import { regexConstants } from '../../../services/constants/validation-regex';
-import { prepareDispatcherRegisterForm } from '../../../services/utils/registration-service';
+import { prepareDispatcherRegisterForm } from '../../../services/utils/form-preparation-service';
 // import { login } from '../../../services/actions/session-actions';
 // import { regexConstants } from '../../../services/constants/validation-regex';
 

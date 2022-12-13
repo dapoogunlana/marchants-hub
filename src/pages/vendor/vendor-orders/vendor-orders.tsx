@@ -35,7 +35,7 @@ function VendorOrders(props: any) {
       accessor: 'customerAddress',
     },
     {
-      Header: 'Actions',
+      Header: '',
       accessor: 'id',
       Cell: (data: any) => ( AddButtonToCell(data))
     },

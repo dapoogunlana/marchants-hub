@@ -1,15 +1,11 @@
-import React, { useEffect, useMemo, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import DataTables from '../../../components/block-components/data-table/data-table';
 import './vendor-dashboard.scss';
 import { calculateAge, formatDate, stringifyFilter } from '../../../services/utils/data-manipulation-utilits';
-import FacilitatorListFilter from '../../../components/block-components/facilitator-list-filter/facilitator-list-filter';
 import DropdownStyledButton from '../../../components/base-components/styled-dropdown-button/dropdown-button';
-import { useNavigate } from 'react-router-dom';
-import { acceptFacilitator, rejectFacilitator, getFacilitators, updateFilters } from '../../../services/utils/facilitator-list-service';
+import { Link, useNavigate } from 'react-router-dom';
+import { getFacilitators, updateFilters } from '../../../services/utils/facilitator-list-service';
 import { routeConstants } from '../../../services/constants/route-constants';
-import { tabQueryConstants } from '../../../services/constants/general-constants';
-import EvaluateFacilitatorModal from '../../../components/block-components/modals/evaluate-facilitator-modal/evaluate-facilitator-modal';
-import AcceptFacilitatorModal from '../../../components/block-components/modals/accept-facilitator-modal/accept-facilitator-modal';
 import { 
   ComingSoon,
   TotalSalesIcon,
@@ -17,20 +13,17 @@ import {
   ListedProductsIcon,
   FeaturesCheaperIcon,
  } from '../../../assets/images';
+import { sendRequest } from '../../../services/utils/request';
+import { useSelector } from 'react-redux';
+import { IsessionData, Istate } from '../../../services/constants/interfaces/state-schemas';
 
 function VendorDashboard(props: any) {
-  const [facilitatorList, setFacilitatorList] = useState<any>([]);
-  const [updateFacilitatorToEvaluated, setUpdateFacilitatorToEvaluated] = useState(false);
-  const [updateFacilitatorToAccepted, setUpdateFacilitatorToAccepted] = useState(false);
-  const [facilitatorId, setFacilitatorId] = useState();
+  const sessionData: IsessionData = useSelector((state: Istate) => state.session.user);
+  console.log({sessionData})
   const [orderList, setOrderList] = useState<any[]>([]);
   let id: any;
   const query = props.query;
   const navigate = useNavigate();
-  const handleFilter = (filter: any) => {
-    updateFilters(filter);
-    getFacilitatorsList();
-  }
 
   const tableColumns = [
     {
@@ -95,60 +88,24 @@ function VendorDashboard(props: any) {
       }
     })
   };
-  // <DropdownStyledButton data={buttonProp} />
 
-  const getFacilitatorsList = () => {
-    const trimedVendors: any[] = [];
-    getFacilitators(query, (facilitators: any) => {
-      let pillars: any = []
-      facilitators.map((facilitator: any, index: number) => {  
-        facilitator.name = `${facilitator.first_name} ${facilitator.last_name}`;
-        facilitator.age = facilitator.dob ? calculateAge(facilitator?.dob) : '-';
-        facilitator.evaluation_score = facilitator.evaluation_score ? facilitator.evaluation_score : '-';
-        facilitator.date_registered = facilitator.created_at ? formatDate(facilitator.created_at) : '-';
-        facilitator?.facilitator_pillar.map((pillar: any) => {
-          const pillarName = pillar?.pillar?.name
-          if (pillarName && !pillars.includes(pillarName)) {
-            pillars.push(pillarName)
-          }
-        })
-        facilitator.pillars = facilitator.facilitator_pillar ?  pillars : '-';
-        if(index < 3) {
-          trimedVendors.push(facilitator);
-        }
-      })
-      setFacilitatorList(trimedVendors)
-    })
-  }
-
-  const openEvaluateModal = (id: any) => {
-    setFacilitatorId(id)
-    setUpdateFacilitatorToEvaluated(true);
-  }
-
-  const closeEvaluateModal = (feedback?: any) => {
-    setUpdateFacilitatorToEvaluated(false);
-    if (feedback === 'refresh') {
-      getFacilitatorsList();
-    }
-  }
-
-  const openAcceptModal = (id: any) => {
-    setFacilitatorId(id)
-    setUpdateFacilitatorToAccepted(true);
-  }
-
-  const closeAcceptModal = (feedback?: any) => {
-    console.log({feedback});
-    setUpdateFacilitatorToAccepted(false);
-    if (feedback === 'refresh') {
-      getFacilitatorsList();
-    }
+  const getOrders = () => {
+    sendRequest({
+        url: `get/sub-order?store=${sessionData._id}&status=pending&limit=4`,
+        method: 'POST',
+        body: {}
+    }, (res: any) => {
+        // navigate(routeConstants.login);
+        console.log({res})
+    }, (err: any) => {
+    });
   }
 
  useEffect(() => {
     // getFacilitatorsList();
     window.scrollTo(0, 0);
+    getOrders();
+
     setOrderList([
       {
         id: 1,
@@ -221,7 +178,7 @@ function VendorDashboard(props: any) {
             </div>
             <div>
               <div className='pt-3'>
-                <button className='btn btn-secondary rad-25 dashboard-button2'>Pending Orders</button>
+                <button className='btn btn-secondary rad-25 dashboard-button2 pl-2'><span className='pending-count mr-2'>4</span> Pending Orders</button>
               </div>
               <div className='order-list px-3'>
                 {/* <FacilitatorListFilter  submitFilters={(filter: any) => handleFilter(filter)} /> */}
@@ -229,12 +186,12 @@ function VendorDashboard(props: any) {
                   <div className='card-container col-md-12'>
                     <DataTables data={orderList} columns={tableColumns}/>
                     <div className='text-center pb-4'>
-                      <button className='btn btn-success dashboard-button'>See More</button>
+                      <Link to={`/${routeConstants.vendor}/${routeConstants.orders}`}>
+                        <button className='btn btn-success dashboard-button'>See More</button>
+                      </Link>
                     </div>
                   </div>
                 </div>
-                {updateFacilitatorToEvaluated && <EvaluateFacilitatorModal id={facilitatorId} closeModal={closeEvaluateModal} />}
-                {updateFacilitatorToAccepted && <AcceptFacilitatorModal id={facilitatorId} closeModal={closeAcceptModal} />}
               </div>
             </div>
           </div>

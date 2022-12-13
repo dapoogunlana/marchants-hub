@@ -576,6 +576,9 @@
 .white {
   background-color: $white;
 }
+.light-grey {
+  background-color: $grey-light;
+}
 .c-white {
   color: $white;
 }
@@ -712,6 +715,10 @@
 .info-grid {
   display: grid;
   grid-template-columns: 48% 4% 48%;
+}
+.info-grid-3{
+  display: grid;
+  grid-template-columns: 31.333% 3% 31.333% 3% 31.333%;
 }
 
 .ease02{
@@ -913,6 +920,66 @@ input[type=number] {
       padding: 8px 15px;
   }
 }
+
+.styled-form2{
+  label{
+      // color: $white;
+      font-size: 0.75em;
+      font-weight: 500;
+      margin-bottom: 0;
+      margin-top: 1em;
+      width: 100%;
+  }
+  input, select{
+      color: $black;
+      border-radius: 8px;
+      padding: 5px 15px;
+      border: 1px solid #C8D4F8;
+      width: 100%;
+      transition: 0.3s ease-in-out;
+      background-color: #F5F5F5;
+      &:focus {
+          outline: none;
+          border: 1px solid $primary-green;
+          box-shadow: 5px 5px 2px 0 $black-faint5;
+      }
+      &:disabled{
+          background-color: #d8d9db;
+          opacity: 0.7;
+      }
+      &::file-selector-button {
+          font-weight: bold;
+          // color: dodgerblue;
+          padding: 0 0 10px;
+          border: none;
+          // border-right: 1px solid grey;
+          background-color: none;
+          // border-radius: 3px;
+          display: block;
+      }
+  }
+  input[type=checkbox]{
+      margin-right: 10px;
+      margin-left: 5px;
+      width: 10px;
+      transform: scale(2);
+      box-shadow: none;
+  }
+  select{
+      padding: 8px 15px;
+  }
+}
+.error-popup{
+    animation: expand 1s ease-in-out 1;
+    color: $red;
+}
+
+@keyframes expand {
+    0% { max-height: 0; overflow: hidden; }
+    100% { max-height: 100px; overflow: hidden; }
+}
+
+
 .dashboard-button{
   background-color: #C5E7E7;
   color: #2A5252;

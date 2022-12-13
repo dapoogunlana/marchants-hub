@@ -17,3 +17,14 @@ export const prepareDispatcherRegisterForm = (values: any, idCardFie: any) => {
 
     return formdata;
 }
+
+export const prepareNewProductForm = (values: any) => {
+    const formdata = new FormData();
+    formdata.append('images', values.file1 || values.file2 || values.file3);
+    formdata.append('name', values.productName);
+    formdata.append('description', values.description);
+    formdata.append('amount', values.amount);
+    formdata.append('availableQuantity', values.numberInStock);
+
+    return formdata;
+}

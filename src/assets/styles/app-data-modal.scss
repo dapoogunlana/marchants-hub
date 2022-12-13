@@ -61,10 +61,16 @@
             border: none;
         }
     }
+    .no-pad{
+        padding: 0 !important;
+    }
     .wide{
         max-width: 1000px;
     }
     .small{
         max-width: 450px;
+    }
+    .mid{
+        max-width: 650px;
     }
   }
