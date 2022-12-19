@@ -20,11 +20,21 @@ export const prepareDispatcherRegisterForm = (values: any, idCardFie: any) => {
 
 export const prepareNewProductForm = (values: any) => {
     const formdata = new FormData();
-    formdata.append('images', values.file1 || values.file2 || values.file3);
-    formdata.append('name', values.productName);
+    const images = [];
+    if (values.file1) {
+        images.push(values.file1);
+    }
+    if (values.file2) {
+        images.push(values.file2);
+    }
+    if (values.file3) {
+        images.push(values.file3);
+    }
+    images.map((image) => formdata.append('images', image));
+    formdata.append('name', values.name);
     formdata.append('description', values.description);
     formdata.append('amount', values.amount);
-    formdata.append('availableQuantity', values.numberInStock);
+    formdata.append('availableQuantity', values.availableQuantity);
 
     return formdata;
 }

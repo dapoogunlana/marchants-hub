@@ -1,7 +1,11 @@
 import React, { useEffect, useState } from 'react';
+import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import NewProductModal from '../../../components/block-components/modals/new-product-modal/new-product-modal';
+import { Iproduts } from '../../../services/constants/interfaces/product-and-orders-schema';
+import { IsessionData, Istate } from '../../../services/constants/interfaces/state-schemas';
 import { storeItemList } from '../../../services/constants/product-dummy-constants';
+import { stringifyFilter } from '../../../services/utils/data-manipulation-utilits';
 import { sendRequest } from '../../../services/utils/request';
 import { swal } from '../../../services/utils/swal-utils';
 import './vendor-products.scss';
@@ -12,7 +16,10 @@ function VendorProducts() {
   const [viewNewProduct, setViewNewProduct] = useState(false);
   const [viewEditProduct, setViewEditProduct] = useState(false);
   const [viewRestockProduct, setViewRestockProduct] = useState(false);
-  const [productId, setProductId] = useState();
+  const [products, setProducts] = useState<Iproduts[]>([]);
+  const [activeProduct, setActiveProduct] = useState();
+  
+  const sessionData :IsessionData = useSelector((state: Istate) => state.session);
 
   const submit = () => {
     submitFilters(filter);
@@ -40,7 +47,7 @@ function VendorProducts() {
   }
 
   const openEditProductModal = (id: any) => {
-    setProductId(id)
+    setActiveProduct(id)
     setViewEditProduct(true);
   }
 
@@ -53,7 +60,7 @@ function VendorProducts() {
   }
 
   const openRestockProductModal = (id: any) => {
-    setProductId(id)
+    setActiveProduct(id)
     setViewRestockProduct(true);
   }
 
@@ -66,13 +73,18 @@ function VendorProducts() {
   }
 
   const getProducts = () => {
+    const params = {
+      store: sessionData._id,
+      limit: 10000,
+    }
     sendRequest({
-        url: `get`,
+        url: `get/products` + stringifyFilter(params),
         method: 'POST',
         body: {}
     }, (res: any) => {
         // navigate(routeConstants.login);
         console.log({res})
+        setProducts(res.data)
     }, (err: any) => {
     });
   }
@@ -86,14 +98,12 @@ function VendorProducts() {
     }).then((result: any) => {
         if (result.isConfirmed) {
             sendRequest({
-                url: 'products/' + item.id,
+                url: 'products/' + item._id,
                 method:'DELETE',
             }, (res: any) => {
-                if(res.responseCode === 1) {
-                    toast.success(res.responseText);
-                    return;
-                }
-                toast.error(res.responseText);
+                toast.success(res.message);
+                getProducts();
+                return;
             }, (err: any) => {
                 toast.error(err.error?.emailError || err.message || 'Unable to complete');
             });
@@ -104,11 +114,11 @@ function VendorProducts() {
   useEffect(() => {
     window.scrollTo(0, 0);
     getProducts();
-  });
+  }, []);
   
   return (
     <>
-      <div className='vendor-products pt-5'>
+      <div className='vendor-products py-5'>
         <div className='top-menu spread-info'>
           <div className=''>
             <div className="row">
@@ -129,26 +139,26 @@ function VendorProducts() {
           </button>
         </div>
         <div className='row'>
-          {storeItemList.map((item, index) => (
-            <div className='col-lg-3 col-md-4 col-sm-6' data-aos="fade-up" data-aos-delay={(index * 100)}>
-              <div className='store-card' key={index}>
-                <div className='imh'>
-                  <img src={item.image} alt="" />
+          {products.map((item, index) => (
+            <div className='col-lg-3 col-md-4 col-sm-6' key={index} data-aos="fade-up" data-aos-delay={(index * 100)}>
+              <div className='store-card'>
+                <div className='image-holder' style={{backgroundImage: `url(${item.images[0]?.photoUrl})`}}>
+                  {/* <img src={item.images[0]?.photoUrl} alt="" /> */}
                 </div>
-                <h6 className='text-center'>{item.name}</h6>
+                <h6 className='text-center min-41'>{item.name}</h6>
                 <div className='spread-info'>
-                  <h6 className='mb-0'>{item.price}</h6>
-                  <p className='mb-0 reduced-x'>{item.amount} in stock</p>
+                  <h6 className='mb-0'>{item.amount}</h6>
+                  <p className='mb-0 reduced-x'>{item.availableQuantity} in stock</p>
                 </div>
                 <div className='info-grid pt-2'>
-                  <button className='solid-button reduced' onClick={() => openEditProductModal(item.id)}>Edit</button>
+                  <button className='solid-button reduced' onClick={() => openEditProductModal(item)}>Edit</button>
                   <span></span>
                   <button className='hollow-button reduced' onClick={() => deleteProduct(item)}>Delete</button>
                 </div>
-                {item.amount === 0 && <div className='out-of-scock-banner center-info-col' data-aos="fade-in" data-aos-delay={(index * 100) + 600}>
-                  <button className='btn btn-success rad-3-im px-3' onClick={() => openRestockProductModal(item.id)}>Restock</button>
+                {item.availableQuantity === 0 && <div className='out-of-scock-banner center-info-col' data-aos="fade-in" data-aos-delay={(index * 100) + 600}>
+                  <button className='btn btn-success rad-3-im px-3' onClick={() => openRestockProductModal(item)}>Restock</button>
                   <span className='py-3'></span>
-                  <button className='hollow-button reduced rad-3-im px-3'><span className='py-1 px-2'>Delete</span></button>
+                  <button className='hollow-button reduced rad-3-im px-3' onClick={() => deleteProduct(item)}><span className='py-1 px-2'>Delete</span></button>
                 </div>}
               </div>
             </div>
@@ -156,8 +166,8 @@ function VendorProducts() {
         </div>
       </div>
       {viewNewProduct && <NewProductModal closeModal={closeNewProductModal} />}
-      {viewEditProduct && <NewProductModal title={'Edit'} id={productId} closeModal={closeEditProductModal} />}
-      {viewRestockProduct && <NewProductModal title={'Restock'} id={productId} closeModal={closeRestockProductModal} />}
+      {viewEditProduct && <NewProductModal title={'Edit'} product={activeProduct} closeModal={closeEditProductModal} />}
+      {viewRestockProduct && <NewProductModal title={'Restock'} product={activeProduct} closeModal={closeRestockProductModal} />}
     </>
   );
 }

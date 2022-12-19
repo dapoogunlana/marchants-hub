@@ -64,7 +64,7 @@ export const generateVendorRoutes = (): IroutObjectData[] => {
     routes.push({
         label: 'Sales channel',
         routes: [
-            { name: 'Online store', link: rc.onlineStore, icon: 'shop' },
+            { name: 'Online store', standalone: true, link: rc.onlineStore, icon: 'shop' },
         ]
     });
     routes.push({

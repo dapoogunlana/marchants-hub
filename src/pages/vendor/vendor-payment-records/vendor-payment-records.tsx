@@ -183,7 +183,7 @@ function VendorPaymentRecords(props: any) {
     <>
       <div className='p-4'>
         <div className='row pt-5'>
-          <div className='col-lg-8 px-4 mt-4'>
+          <div className='col-lg-9 px-4 mt-4'>
             <div className='db-board'>
               <div className='row'>
                 <div className='col-sm-4'>
@@ -221,7 +221,7 @@ function VendorPaymentRecords(props: any) {
             <div>
             </div>
           </div>
-          <div className='col-lg-4 text right px-4 mt-4 pt-5'>
+          <div className='col-lg-3 text right px-4 mt-4 pt-5'>
             <button className='solid-button'>Initiate withdrawals</button>
           </div>
           <div className='col-md-12'>

@@ -11,6 +11,8 @@ const RegisterDispatchPage = lazy(() => import("../pages/home/register-dispatche
 const ForgotPasswordPage = lazy(() => import("../pages/home/forgot-password/forgot-password"));
 const ResetPasswordPage = lazy(() => import("../pages/home/reset-password/reset-password"));
 const ConfirmEmailPage = lazy(() => import("../pages/home/confirm-email/confirm-email"));
+const OnlineStorePage = lazy(() => import("../pages/vendor/vendor-online-store/vendor-online-store"));
+const OnlineStoreItemPage = lazy(() => import("../pages/vendor/vendor-online-store-item/vendor-online-store-item"));
 
 function HomeRoute() {
   return (
@@ -24,6 +26,8 @@ function HomeRoute() {
             <Route path={routeConstants.forgotPassword} element={<ForgotPasswordPage/>}></Route>
             <Route path={routeConstants.resetPassword} element={<ResetPasswordPage/>}></Route>
             <Route path={routeConstants.confirmEmail} element={<ConfirmEmailPage/>}></Route>
+            <Route path={routeConstants.onlineStore} element={<OnlineStorePage/>}></Route>
+            <Route path={routeConstants.onlineStore + '/:id'} element={<OnlineStoreItemPage/>}></Route>
             <Route path={routeConstants.all} element={<Navigate to={routeConstants.home}/>}></Route>
           </Route>
       </Routes>

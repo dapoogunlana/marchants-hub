@@ -1,0 +1,38 @@
+@import "/src/assets/styles/variables.scss";
+
+
+
+.store-header{
+  background-color: $white;
+  border-bottom: 1px solid $grey-light;
+  padding: 0.8em 5vw;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  .cart{
+    position: relative;
+    width: 30px;
+    padding-top: 10px;
+
+    .cart-count{
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      font-size: 0.7em;
+      color: $white;
+      background-color: #37B3A4;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: absolute;
+      right: 0;
+      top: 0;
+      transform: translate(50%, -5%);
+      @include mediaM (750px){
+        width: 17px;
+        height: 17px;
+        transform: translate(0%, 5%);
+      }
+    }
+  }
+}

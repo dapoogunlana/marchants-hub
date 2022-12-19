@@ -1,31 +1,45 @@
 @import "/src/assets/styles/variables.scss";
 
-.vendor-products{
-    width: 90%;
-    margin: auto;
-    // max-width: 100px;
-    .top-menu{
-        background-color: white;
-        padding: 10px 15px;
-        margin-top: 20px;
-        border-radius: 5px;
-        border: 1px solid #EAECEE;
+.single-store-item{
+    .hollow-button{
+        background-color: $white;
+        border: 1px solid $black;
+        border-radius: 0;
+        color: $black;
+        padding: 5px 9px;
+        font-size: 0.8em;
+        transition: 0.3s ease;
+        &:hover{
+            background-color: $black;
+            color: $white;
+        }
+        &:focus{
+            outline: none;
+        }
     }
     .store-card{
         position: relative;
         background-color: white;
-        padding: 10px;
+        padding: 20px;
         margin-top: 20px;
-        border-radius: 5px;
+        border-radius: 10px;
         border: 1px solid #EAECEE;
-        .image-holder{
-            padding-bottom: 120%;
-            background-size: contain;
-            background-position: center;
-            background-repeat: no-repeat;
-        }
+        max-width: 550px;
+        margin: 1em auto;
+        // .image-holder{
+        //     padding-bottom: 120%;
+        //     background-size: contain;
+        //     background-position: center;
+        //     background-repeat: no-repeat;
+        // }
         .min-41{
             min-height: 41px;
+        }
+        input, textarea{
+            width: 100%;
+            min-width: 50px;
+            padding: 4px 15px;
+            border: 1px solid $grey-light
         }
         .solid-button{
             background-color: $black;
@@ -54,15 +68,6 @@
             &:focus{
                 outline: none;
             }
-        }
-        .out-of-scock-banner{
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background-color: $black-faint1;
-            left: 0;
-            top: 0;
-            border-radius: 5px;
         }
     }
 }

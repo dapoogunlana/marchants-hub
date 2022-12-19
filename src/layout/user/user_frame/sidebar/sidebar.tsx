@@ -56,7 +56,7 @@ function Sidebar(props: any) {
               {
                 route.routes.map((item, routeIndex) => (
                   <React.Fragment key={routeIndex}>
-                    <NavLink to={`${sortRoute(userRole)}${item.link}`} className={({isActive}) => isActive ? 'bar-link selected' : 'bar-link'} onClick={props.clickLink}>
+                    <NavLink to={item.standalone ? `/${item.link}` : `${sortRoute(userRole)}${item.link}`} className={({isActive}) => isActive ? 'bar-link selected' : 'bar-link'} onClick={props.clickLink}>
                       <i className={'reduced fas fa-' + (item.icon || 'table-list')}></i><span className='reduced pl-2'>{item.name}</span>
                     </NavLink>
                   </React.Fragment>

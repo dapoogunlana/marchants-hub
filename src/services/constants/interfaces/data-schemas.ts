@@ -11,6 +11,7 @@ export interface IroutObjectData {
         name: string,
         link: string,
         icon?: string,
+        standalone?: boolean,
     }[],
 }
 

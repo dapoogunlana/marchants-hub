@@ -21,7 +21,7 @@
      dashboard: 'overview',
      orders: 'orders',
      products: 'products',
-     onlineStore: 'online-store',
+     onlineStore: 'store',
      payments : 'payments',
 
 
