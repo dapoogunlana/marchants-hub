@@ -9,7 +9,7 @@ import { prepareNewProductForm } from "../../../../services/utils/form-preparati
 const NewProductModal = (props: any) => {
   const [response, setResponse] = useState<any>();
   const [pillars, setPillars] = useState([]);
-  const id = props.id;
+  const id = props.product._id;
   const closeModal = (feedback: any) => {
     closeAppModal(()=> props.closeModal(feedback));
   };
@@ -17,8 +17,8 @@ const NewProductModal = (props: any) => {
   const validate = (values: FormikValues) => {   
       const errors: any = {};
   
-      if (!values.productName) {
-          errors.productName = 'Product name is required';
+      if (!values.name) {
+          errors.name = 'Product name is required';
       }
       if (!values.description) {
           errors.description = 'Description is required';
@@ -28,34 +28,54 @@ const NewProductModal = (props: any) => {
       } else if (values.amount <= 0) {
         errors.amount = 'Invalin amount';
       }
-      if (!values.numberInStock) {
-          errors.numberInStock = 'Number is required';
-      } else if (values.numberInStock <= 0) {
-        errors.numberInStock = 'Invalin number';
+      if (!values.availableQuantity) {
+          errors.availableQuantity = 'Number is required';
+      } else if (values.availableQuantity <= 0) {
+        errors.availableQuantity = 'Invalin number';
       }
-      if (!values.image1 && !values.image2 && !values.image3) {
+      if (!props.title && !values.image1 && !values.image2 && !values.image3) {
         errors.image1 = 'One image is required';
         errors.image2 = 'One image is required';
         errors.image3 = 'One image is required';
       }
-      console.log({values, values2: values.image2
-      })
+      if(values.file1){
+        const format = values.file1.name?.substring(values.file1.name.lastIndexOf('.') + 1);
+        if(format !== 'jpg' && format !== 'jpeg' && format !== 'png' && format !== 'gif' && format !== 'pdf'){
+          errors.image1 = 'Invalid format';
+        }else if(values.file1.size > 2097152){
+          errors.image1 = 'Image must not be more than 2MB';
+        }
+      }
+      if(values.file2){
+        const format = values.file2.name?.substring(values.file2.name.lastIndexOf('.') + 1);
+        if(format !== 'jpg' && format !== 'jpeg' && format !== 'png' && format !== 'gif' && format !== 'pdf'){
+          errors.image2 = 'Invalid format';
+        }else if(values.file2.size > 2097152){
+          errors.image2 = 'Image must not be more than 2MB';
+        }
+      }
+      if(values.file3){
+        const format = values.file3.name?.substring(values.file3.name.lastIndexOf('.') + 1);
+        if(format !== 'jpg' && format !== 'jpeg' && format !== 'png' && format !== 'gif' && format !== 'pdf'){
+          errors.image3 = 'Invalid format';
+        }else if(values.file3.size > 2097152){
+          errors.image3 = 'Image must not be more than 2MB';
+        }
+      }
+
       return errors;
-  
   }
 
   const saveProduct = (values: any, controls: any) => {
     // return closeModal('refresh');
     sendRequest({
-      url: 'products',
-      method:'POST',
+      url: props.title ? 'products/' + id : 'products',
+      method:props.title ? 'PATCH' : 'POST',
       body: prepareNewProductForm(values),
     }, (res: any) => {
-        if (res.responseCode === 1) {
-          toast.success(res.payload);
-          controls.setSubmitting(false);
-          closeModal('refresh');
-      }
+      toast.success(res.message);
+      controls.setSubmitting(false);
+      closeModal('refresh');
     }, (err: any) => {
         controls.setSubmitting(false);
         setResponse(<p className='c-red mb-0 pt-2'>{err.error?.emailError || err.message || 'Unable to complete'}</p>);
@@ -65,6 +85,7 @@ const NewProductModal = (props: any) => {
 
   useEffect(() => {
     openModal();
+    console.log({props});
   }, []);
 
   return (
@@ -76,13 +97,21 @@ const NewProductModal = (props: any) => {
           {/* Any content goes in here */}
           <div>
              <Formik initialValues={{
-                productName: props.form?.productName || '',
-                description: props.form?.description || '',
-                amount: props.form?.amount || '',
-                numberInStock: props.form?.numberInStock || '',
-                image1: props.form?.image1 || '',
-                image2: props.form?.image2 || '',
-                image3: props.form?.image3 || '',
+                name: props.product?.name || '',
+                description: props.product?.description || '',
+                amount: props.product?.amount || 0,
+                availableQuantity: props.product?.availableQuantity || 0,
+                // image1: props.product?.images[0]?.photoId || '',
+                // image2: props.product?.images[1]?.photoId || '',
+                // image3: props.product?.images[2]?.photoId || '',
+
+                // name: '',
+                // description: '',
+                // amount: 0,
+                // availableQuantity: 0,
+                image1: '',
+                image2: '',
+                image3: '',
             }}
             validate={(value) => validate(value)}
             onSubmit={(values, controls) => saveProduct(values, controls)}
@@ -90,10 +119,10 @@ const NewProductModal = (props: any) => {
             >
                 {
                     (Props: FormikProps<{
-                      productName: string,
+                      name: string,
                       description: string,
                       amount: number,
-                      numberInStock: number,
+                      availableQuantity: number,
                       image1: string,
                       image2: string,
                       image3: string,
@@ -118,17 +147,17 @@ const NewProductModal = (props: any) => {
                                       
                                       <Field
                                             type="text"
-                                            placeholder='productName'
-                                            id='productName'
-                                            value={values.productName}
+                                            placeholder='name'
+                                            id='name'
+                                            value={values.name}
                                             onBlur={handleBlur}
-                                            onFocus={() => errors.productName = ''}
+                                            onFocus={() => errors.name = ''}
                                             onChange={handleChange}
-                                            className={(errors.productName && touched.productName) ? 'im-error' : ''}
+                                            className={(errors.name && touched.name) ? 'im-error' : ''}
                                         />
                                       {
-                                          errors.productName && touched.productName &&
-                                          <p className='reduced error-popup pt-1 mb-0'>{errors.productName}</p>
+                                          errors.name && touched.name &&
+                                          <p className='reduced error-popup pt-1 mb-0'>{errors.name}</p>
                                       }
                                   </div>
                                     <div className='styled-form2'>
@@ -175,20 +204,21 @@ const NewProductModal = (props: any) => {
                                       <Field
                                             type="number"
                                             placeholder='Enter number in stock'
-                                            id='numberInStock'
-                                            value={values.numberInStock}
+                                            id='availableQuantity'
+                                            value={values.availableQuantity}
                                             onBlur={handleBlur}
-                                            onFocus={() => errors.numberInStock = ''}
+                                            onFocus={() => errors.availableQuantity = ''}
                                             onChange={handleChange}
-                                            className={(errors.numberInStock && touched.numberInStock) ? 'im-error' : ''}
+                                            className={(errors.availableQuantity && touched.availableQuantity) ? 'im-error' : ''}
                                         />
                                       {
-                                          errors.numberInStock && touched.numberInStock &&
-                                          <p className='reduced error-popup pt-1 mb-0'>{errors.numberInStock}</p>
+                                          errors.availableQuantity && touched.availableQuantity &&
+                                          <p className='reduced error-popup pt-1 mb-0'>{errors.availableQuantity}</p>
                                       }
                                     </div>
                                   </div>
-                                  <div className="info-grid-3">
+                                  <p className="reduced c-red mb-0 pt-3">Upload at least one product image</p>
+                                  <div className="info-grid-3-web">
                                     <div className='styled-form2'>
                                       <label>Image 1</label>
                                       

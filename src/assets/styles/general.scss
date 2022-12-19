@@ -573,11 +573,17 @@
 .c-dark-green {
   color: $primary-green-active;
 }
+.c-red {
+  color: $red;
+}
 .white {
   background-color: $white;
 }
 .light-grey {
   background-color: $grey-light;
+}
+.c-dark-grey {
+  color: $grey-dark;
 }
 .c-white {
   color: $white;
@@ -719,6 +725,13 @@
 .info-grid-3{
   display: grid;
   grid-template-columns: 31.333% 3% 31.333% 3% 31.333%;
+}
+.info-grid-3-web{
+  display: grid;
+  grid-template-columns: 31.333% 3% 31.333% 3% 31.333%;
+  @include mediaM(850px) {
+    display: block;
+  }
 }
 
 .ease02{
