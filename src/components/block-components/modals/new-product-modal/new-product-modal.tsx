@@ -9,7 +9,7 @@ import { prepareNewProductForm } from "../../../../services/utils/form-preparati
 const NewProductModal = (props: any) => {
   const [response, setResponse] = useState<any>();
   const [pillars, setPillars] = useState([]);
-  const id = props.product._id;
+  const id = props.product?._id;
   const closeModal = (feedback: any) => {
     closeAppModal(()=> props.closeModal(feedback));
   };
