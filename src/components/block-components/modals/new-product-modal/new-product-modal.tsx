@@ -217,7 +217,7 @@ const NewProductModal = (props: any) => {
                                       }
                                     </div>
                                   </div>
-                                  <p className="reduced c-red mb-0 pt-3">Upload at least one product image</p>
+                                  {!props.title && <p className="reduced c-red mb-0 pt-3">Upload at least one product image</p>}
                                   <div className="info-grid-3-web">
                                     <div className='styled-form2'>
                                       <label>Image 1</label>

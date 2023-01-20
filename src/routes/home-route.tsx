@@ -26,8 +26,8 @@ function HomeRoute() {
             <Route path={routeConstants.forgotPassword} element={<ForgotPasswordPage/>}></Route>
             <Route path={routeConstants.resetPassword} element={<ResetPasswordPage/>}></Route>
             <Route path={routeConstants.confirmEmail} element={<ConfirmEmailPage/>}></Route>
-            <Route path={routeConstants.onlineStore} element={<OnlineStorePage/>}></Route>
-            <Route path={routeConstants.onlineStore + '/:id'} element={<OnlineStoreItemPage/>}></Route>
+            <Route path={routeConstants.onlineStore + '/:slug'} element={<OnlineStorePage/>}></Route>
+            <Route path={routeConstants.onlineStore + '/:slug/:id'} element={<OnlineStoreItemPage/>}></Route>
             <Route path={routeConstants.all} element={<Navigate to={routeConstants.home}/>}></Route>
           </Route>
       </Routes>

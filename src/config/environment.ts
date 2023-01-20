@@ -3,3 +3,7 @@ export const apiLinks = {
     // url: 'https://agile-lowlands-26978.herokuapp.com/api/v1/',
     url: 'https://enigmatic-tor-66894.herokuapp.com/api/v1/',
 }
+
+export const apiKeys = {
+    paystackPublicKey: "pk_test_c8feab96d4acff1d5453bbf63260c2fe2d9a2c13",
+}

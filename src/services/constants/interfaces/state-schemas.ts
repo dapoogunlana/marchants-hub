@@ -21,6 +21,7 @@ export interface IsessionData {
     photoId : string,
     photoUrl : string,
     role : string,
+    slug : string,
     state : string,
     updatedAt : string,
     verificationCode : any,

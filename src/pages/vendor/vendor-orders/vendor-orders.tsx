@@ -1,13 +1,20 @@
 import React, { useEffect, useState } from 'react';
-import { toast } from 'react-toastify';
-import DropdownStyledButton from '../../../components/base-components/styled-dropdown-button/dropdown-button';
 import DataTables from '../../../components/block-components/data-table/data-table';
 import './vendor-orders.scss';
+import { calculateAge, formatDate, formatNumber, stringifyFilter } from '../../../services/utils/data-manipulation-utilits';
+import DropdownStyledButton from '../../../components/base-components/styled-dropdown-button/dropdown-button';
+import { Link, useNavigate } from 'react-router-dom';
+import { routeConstants } from '../../../services/constants/route-constants';
+import { sendRequest } from '../../../services/utils/request';
+import { useSelector } from 'react-redux';
+import { IsessionData, Istate } from '../../../services/constants/interfaces/state-schemas';
+import { tabQueryConstants } from '../../../services/constants/general-constants';
 
 function VendorOrders(props: any) {
-
-  let id: any;
+  const sessionData: IsessionData = useSelector((state: Istate) => state.session.user);
   const [orderList, setOrderList] = useState<any[]>([]);
+  let id: any;
+  const query = props.query;
 
   const tableColumns = [
     {
@@ -16,11 +23,11 @@ function VendorOrders(props: any) {
     },
     {
       Header: 'Amount',
-      accessor: 'amount',
+      accessor: 'totalCost',
     },
     {
       Header: 'Date',
-      accessor: 'date',
+      accessor: 'dateCreated',
     },
     {
       Header: 'CustomerName',
@@ -34,8 +41,10 @@ function VendorOrders(props: any) {
       Header: 'Customer Address',
       accessor: 'customerAddress',
     },
+
+    
     {
-      Header: '',
+      Header: ' ',
       accessor: 'id',
       Cell: (data: any) => ( AddButtonToCell(data))
     },
@@ -55,99 +64,70 @@ function VendorOrders(props: any) {
 
    const actionButtonProp = (id:any) => {      
      const actions: any = {};
-    //  switch(query) {
-    //    case tabQueryConstants.applied.query:
-    //      actions['Update to Evaluated'] = () => openEvaluateModal(id);
-    //      break;
-    //    case tabQueryConstants.evaluated.query:
-    //      actions.Accept = () => openAcceptModal(id);
-    //      actions.Reject = () => rejectFacilitator(id, getFacilitatorsList);
-    //      break;
-    //    case tabQueryConstants.confirmed.query:
-    //     //  actions.Confirm = () => console.log('Confirm');
-    //      break;
-    //    case tabQueryConstants.active.query:
-    //     //  actions.Active = () => console.log('Active');
-    //      break;
-    //  }
-    actions['Request for dispatcher'] = () => toast.info('Under Development');
-    actions['Mark as fulfilled'] = () => toast.info('Under Development');
+     switch(query) {
+      //  case tabQueryConstants.applied.query:
+      //    actions['Update to Evaluated'] = () => openEvaluateModal(id);
+      //    break;
+      //  case tabQueryConstants.evaluated.query:
+      //    actions.Accept = () => openAcceptModal(id);
+      //    actions.Reject = () => rejectFacilitator(id, getFacilitatorsList);
+      //    break;
+      //  case tabQueryConstants.confirmed.query:
+      //   //  actions.Confirm = () => console.log('Confirm');
+      //    break;
+      //  case tabQueryConstants.active.query:
+      //   //  actions.Active = () => console.log('Active');
+      //    break;
+     }
     return ({
       name: '',
       variant: 'success',
       action: {
-        View: () => console.log(`/viewing`),
         // View: () => navigate(`/${routeConstants.systemAdmin}/${routeConstants.facilitatorList}/${id}`),
+        View: () => console.log(`/viewing`),
         ...actions
       }
     })
   };
 
-  useEffect(() => {
+  const getOrders = () => {
+    const params = {
+      storeSlug: sessionData.slug,
+      status: query,
+      limit: 4,
+    }
+    sendRequest({
+        url: 'get/order' + stringifyFilter(params),
+        method: 'POST',
+        body: {}
+    }, (res: any) => {
+        const orders = res.data.map((item: any) => {
+          item.totalCost = formatNumber(item.totalCost);
+          item.dateCreated = formatDate(item.createdAt);
+          return item
+        })
+        setOrderList(orders);
+    }, (err: any) => {
+    });
+  }
+
+ useEffect(() => {
     window.scrollTo(0, 0);
-    setOrderList([
-      {
-        id: 1,
-        product: 'Gucci Bag',
-        amount: '120,000',
-        date: '21-10-2022',
-        customerName: 'Enahoro Azeta',
-        customerPhoneNumber: '08026993310',
-        customerAddress: 'Bariga Lagos',
-      },
-      {
-        id: 2,
-        product: 'Gucci Bag',
-        amount: '120,000',
-        date: '21-10-2022',
-        customerName: 'Enahoro Azeta',
-        customerPhoneNumber: '08026993310',
-        customerAddress: 'Bariga Lagos',
-      },
-      {
-        id: 3,
-        product: 'Gucci Bag',
-        amount: '120,000',
-        date: '21-10-2022',
-        customerName: 'Enahoro Azeta',
-        customerPhoneNumber: '08026993310',
-        customerAddress: 'Bariga Lagos',
-      },
-      {
-        id: 4,
-        product: 'Gucci Bag',
-        amount: '120,000',
-        date: '21-10-2022',
-        customerName: 'Enahoro Azeta',
-        customerPhoneNumber: '08026993310',
-        customerAddress: 'Bariga Lagos',
-      },
-      {
-        id: 5,
-        product: 'Gucci Bag',
-        amount: '120,000',
-        date: '21-10-2022',
-        customerName: 'Enahoro Azeta',
-        customerPhoneNumber: '08026993310',
-        customerAddress: 'Bariga Lagos',
-      },
-    ])
-  });
+    getOrders();
+  }, [props]);
   
   return (
     <>
-      <div className='vendor-orders pt-3'>
+      <div className='py-4'>
+        <div className='vendor-orders px-3'>
         <div className='date-filter spread-info-front'>
           <input type="date" />
           <p className='mb-0 pl-2 ml-1'>Filter by date</p>
         </div>
-        <div className='order-list px-3'>
-          {/* <FacilitatorListFilter  submitFilters={(filter: any) => handleFilter(filter)} /> */}
           <div className='row'>
             <div className='card-container col-md-12'>
               <DataTables data={orderList} columns={tableColumns}/>
-              <div className='text-center pb-4'>
-              </div>
+              {orderList.length === 0 && <h5 className='text-center py-4'>No Data Yet</h5>}
             </div>
           </div>
         </div>

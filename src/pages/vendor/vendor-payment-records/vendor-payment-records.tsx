@@ -8,18 +8,33 @@ import {
   ListedProductsIcon,
   FeaturesCheaperIcon,
  } from '../../../assets/images';
+import Tabs from 'react-bootstrap/Tabs';
+import Tab from 'react-bootstrap/Tab';
 import { useNavigate } from 'react-router';
 import DropdownStyledButton from '../../../components/base-components/styled-dropdown-button/dropdown-button';
+import { paymentRecordList } from '../../../services/constants/order-and-payment-dummy-constants';
+import InitiatePaymentModal from '../../../components/block-components/modals/initiate-payment-modal/initiate-payment-modal';
+import { sendRequest } from '../../../services/utils/request';
+import { toast } from 'react-toastify';
 
 function VendorPaymentRecords(props: any) {
-  const [facilitatorList, setFacilitatorList] = useState<any>([]);
-  const [updateFacilitatorToEvaluated, setUpdateFacilitatorToEvaluated] = useState(false);
-  const [updateFacilitatorToAccepted, setUpdateFacilitatorToAccepted] = useState(false);
-  const [facilitatorId, setFacilitatorId] = useState();
+  const [initiating, setinItiating] = useState<boolean>(false);
+  const [viewInitiateWithdrawal, setViewInitiateWithdrawal] = useState(false);
   const [orderList, setOrderList] = useState<any[]>([]);
   let id: any;
   const query = props.query;
-  const navigate = useNavigate();
+  const [activeKey, setActiveKey] = useState('Payment Records');
+
+  const changKey = (key: any) => {
+    setActiveKey(key);
+  }
+
+  const closeInitiateWithdrawalModal = (feedback?: any) => {
+    setViewInitiateWithdrawal(false);
+    if (feedback === 'refresh') {
+      getRecords();
+    }
+  }
 
   const tableColumns = [
     {
@@ -92,91 +107,36 @@ function VendorPaymentRecords(props: any) {
     })
   };
 
+  const getRecords = () => {
+    const list = paymentRecordList.map((item: any, index: number) => {
+      item.status = item.status === 'Paid' ? <button className='btn btn-success dashboard-button rad-25 px-4'>Paid</button> :
+      <button className='btn btn-success dashboard-button rad-25 px-4'>Paid</button>
+      return item;
+    })
+    setOrderList(list)
+  }
+  const initiateWithdrawal = () => {
+    setinItiating(true);
+    sendRequest({
+      url: 'initiate-withdrawal',
+      method: 'POST',
+      body: {},
+    }, (res: any) => {
+      toast.success(res.message);
+      setinItiating(false);
+      setViewInitiateWithdrawal(true);
+    }, (err: any) => {
+      setinItiating(false);
+      toast.error(err.error?.emailError || err.message || 'Unable to complete');
+
+      // Temporary
+      setViewInitiateWithdrawal(true);
+    });
+  }
+
  useEffect(() => {
-    // getFacilitatorsList();
     window.scrollTo(0, 0);
-    setOrderList([
-      {
-        id: 1,
-        product: 'Gucci Bag',
-        amount: '120,000',
-        date: '21-10-2022',
-        customerName: 'Enahoro Azeta',
-        transactionId: '12345543',
-        orderId: 'No 5 Owolabi street, off Ikorodu road, shomolu',
-        status: <button className='btn btn-success dashboard-button rad-25 px-4'>Paid</button>
-      },
-      {
-        id: 1,
-        product: 'Gucci Bag',
-        amount: '120,000',
-        date: '21-10-2022',
-        customerName: 'Enahoro Azeta',
-        transactionId: '12345543',
-        orderId: 'No 5 Owolabi street, off Ikorodu road, shomolu',
-        status: <button className='btn btn-success dashboard-button rad-25 px-4'>Paid</button>
-      },
-      {
-        id: 1,
-        product: 'Gucci Bag',
-        amount: '120,000',
-        date: '21-10-2022',
-        customerName: 'Enahoro Azeta',
-        transactionId: '12345543',
-        orderId: 'No 5 Owolabi street, off Ikorodu road, shomolu',
-        status: <button className='btn btn-success dashboard-button rad-25 px-4'>Paid</button>
-      },
-      {
-        id: 1,
-        product: 'Gucci Bag',
-        amount: '120,000',
-        date: '21-10-2022',
-        customerName: 'Enahoro Azeta',
-        transactionId: '12345543',
-        orderId: 'No 5 Owolabi street, off Ikorodu road, shomolu',
-        status: <button className='btn btn-success dashboard-button rad-25 px-4'>Paid</button>
-      },
-      {
-        id: 1,
-        product: 'Gucci Bag',
-        amount: '120,000',
-        date: '21-10-2022',
-        customerName: 'Enahoro Azeta',
-        transactionId: '12345543',
-        orderId: 'No 5 Owolabi street, off Ikorodu road, shomolu',
-        status: <button className='btn btn-success dashboard-button rad-25 px-4'>Paid</button>
-      },
-      {
-        id: 1,
-        product: 'Gucci Bag',
-        amount: '120,000',
-        date: '21-10-2022',
-        customerName: 'Enahoro Azeta',
-        transactionId: '12345543',
-        orderId: 'No 5 Owolabi street, off Ikorodu road, shomolu',
-        status: <button className='btn btn-success dashboard-button rad-25 px-4'>Paid</button>
-      },
-      {
-        id: 1,
-        product: 'Gucci Bag',
-        amount: '120,000',
-        date: '21-10-2022',
-        customerName: 'Enahoro Azeta',
-        transactionId: '12345543',
-        orderId: 'No 5 Owolabi street, off Ikorodu road, shomolu',
-        status: <button className='btn btn-success dashboard-button rad-25 px-4'>Paid</button>
-      },
-      {
-        id: 1,
-        product: 'Gucci Bag',
-        amount: '120,000',
-        date: '21-10-2022',
-        customerName: 'Enahoro Azeta',
-        transactionId: '12345543',
-        orderId: 'No 5 Owolabi street, off Ikorodu road, shomolu',
-        status: <button className='btn btn-success dashboard-button rad-25 px-4'>Paid</button>
-      },
-    ])
+    getRecords();
   }, [props]);
   
   return (
@@ -221,18 +181,31 @@ function VendorPaymentRecords(props: any) {
             <div>
             </div>
           </div>
-          <div className='col-lg-3 text right px-4 mt-4 pt-5'>
-            <button className='solid-button'>Initiate withdrawals</button>
+          <div className='col-lg-3 spread-info-back2 px-4 pt-4'>
+            <button className='solid-button' disabled={initiating} onClick={initiateWithdrawal}>{initiating ? 'Processing...' : 'Initiate withdrawals'}</button>
           </div>
           <div className='col-md-12'>
            <div className='order-list'>
             <div className='card-container col-md-12'>
-                <DataTables data={orderList} columns={tableColumns}/>
+              <Tabs defaultActiveKey={'Payment Records'} onSelect={changKey} >
+                <Tab eventKey={'Payment Records'} title={'Payment Records'}>
+                  {
+                    (activeKey === 'Payment Records') && <DataTables data={orderList} columns={tableColumns}/>
+                  }
+                </Tab>
+                <Tab eventKey={'Withdrawal Records'} title={'Withdrawal Records'}>
+                  {
+                    (activeKey === 'Withdrawal Records') && <DataTables data={orderList} columns={tableColumns}/>
+                  }
+                </Tab>
+              </Tabs>
+                
               </div>
            </div>
           </div>
         </div>
       </div>
+      {viewInitiateWithdrawal && <InitiatePaymentModal closeModal={closeInitiateWithdrawalModal} />}
     </>
   );
 }

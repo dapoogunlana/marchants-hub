@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useParams } from 'react-router';
 import { useNavigate } from 'react-router';
 import { toast } from 'react-toastify';
+import PaginatedItems from '../../../components/base-components/pagination-component/pagination-component';
 import StoreFooter from '../../../components/block-components/store-footer/store-footer';
 import StoreHeader from '../../../components/block-components/store-header/store-header';
 import { setActiveProduct } from '../../../services/actions/product-actions';
@@ -12,16 +14,20 @@ import { stringifyFilter } from '../../../services/utils/data-manipulation-utili
 import { sendRequest } from '../../../services/utils/request';
 import './vendor-online-store.scss';
 
-function VendorOnlineStore() {
+function VendorOnlineStore(props: any) {
   
   const [products, setProducts] = useState<Iproduts[]>([]);
+  const [productsLoaded, setProductsLoaded] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const sessionData :IsessionData = useSelector((state: Istate) => state.session);
+  const slug = useParams().slug || '';
+  // const slug = props.slug || '';
 
 
   const getProducts = () => {
     const params = {
+      storeSlug: slug,
       store: sessionData._id,
       limit: 10000,
     }
@@ -32,18 +38,23 @@ function VendorOnlineStore() {
     }, (res: any) => {
         // navigate(routeConstants.login);
         console.log({res})
-        setProducts(res.data)
+        setProducts(res.data);
+        setProductsLoaded(true);
     }, (err: any) => {
     });
   }
 
   const viewProduct = (product: any) => {
     dispatch(setActiveProduct(product));
-    navigate(`/${routeConstants.onlineStore}/${product._id}`);
+    navigate(`/${routeConstants.onlineStore}/${slug}/${product._id}`);
   }
 
   const addProductToCart = (product: any) => {
     toast.info('Under Development');
+  }
+
+  const changePage = (pageDetails: any) => {
+    console.log(pageDetails);
   }
 
   useEffect(() => {
@@ -71,29 +82,41 @@ function VendorOnlineStore() {
           </div>
         </div>
       </div>
-      <div className='main-store-sect py-5'>
-        <div className='w90 max1200 row'>
-          {products.map((item, index) => (
-            <div className='col-lg-4 col-md-6' key={index} data-aos="fade-up" data-aos-delay={(index * 100)}>
-              <div className='store-card'>
-                <div className='image-holder' style={{backgroundImage: `url(${item.images[0]?.photoUrl})`}}>
-                  {/* <img src={item.images[0]?.photoUrl} alt="" /> */}
-                </div>
-                <h6 className='text-center min-41'>{item.name}</h6>
-                <div className='spread-info'>
-                  <h6 className='mb-0 increased-x'>{item.amount}</h6>
-                  <p className='mb-0 increased-soft'>{item.availableQuantity} in stock</p>
-                </div>
-                <div className='info-grid pt-2'>
-                  <button className='solid-button reduced-soft' onClick={() => viewProduct(item)}>View</button>
-                  <span></span>
-                  <button className='hollow-button reduced-soft' onClick={() => addProductToCart(item)}>Add to Cart</button>
+      {
+        productsLoaded ?
+        <div className='main-store-sect py-5'>
+          <div className='w90 max1200 row'>
+            {products.map((item, index) => (
+              <div className='col-lg-4 col-md-6' key={index} data-aos="fade-up" data-aos-delay={(index * 100)}>
+                <div className='store-card'>
+                  <div className='image-holder' style={{backgroundImage: `url(${item.images[0]?.photoUrl})`}}>
+                    {/* <img src={item.images[0]?.photoUrl} alt="" /> */}
+                  </div>
+                  <h6 className='text-center min-41'>{item.name}</h6>
+                  <div className='spread-info'>
+                    <h6 className='mb-0 increased-x'>{item.amount}</h6>
+                    <p className='mb-0 increased-soft'>{item.availableQuantity} in stock</p>
+                  </div>
+                  <div className='info-grid pt-2'>
+                    <button className='solid-button reduced-soft' onClick={() => viewProduct(item)}>View</button>
+                    <span></span>
+                    <button className='hollow-button reduced-soft' onClick={() => addProductToCart(item)}>Add to Cart</button>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            ))}
+            {products.length > 0 && <div className='py-4 w96'>
+              <PaginatedItems itemsPerPage={1} changePage={changePage} />
+            </div>}
+          </div>
+          {products.length === 0 && <h4 className='text-center py-5'>This store has no products presently</h4>}
+        </div> :
+        <div className='main-store-sect py-5'>
+          <div className='w90 max1200'>
+            <h4 className='text-center py-5'>Loading . . .</h4>
+          </div>
         </div>
-      </div>
+      }
       <StoreFooter/>
     </>
   );

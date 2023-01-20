@@ -1,5 +1,6 @@
 import { IroutObjectData } from "../constants/interfaces/data-schemas";
 import { routeConstants as rc } from "../constants/route-constants";
+import { store } from "../store/store";
 
 export const generateAdminRoutes = (): IroutObjectData[] => {
 
@@ -43,6 +44,8 @@ export const generateVendorRoutes = (): IroutObjectData[] => {
 
     const routes: IroutObjectData[] = [];
 
+    const slug = store.getState().session?.user?.slug || '';
+
     routes.push({
         label: '',
         routes: [
@@ -64,7 +67,7 @@ export const generateVendorRoutes = (): IroutObjectData[] => {
     routes.push({
         label: 'Sales channel',
         routes: [
-            { name: 'Online store', standalone: true, link: rc.onlineStore, icon: 'shop' },
+            { name: 'Online store', standalone: true, link: `${rc.onlineStore}/${slug}`, icon: 'shop' },
         ]
     });
     routes.push({

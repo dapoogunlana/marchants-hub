@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import DataTables from '../../../components/block-components/data-table/data-table';
 import './vendor-dashboard.scss';
-import { calculateAge, formatDate, stringifyFilter } from '../../../services/utils/data-manipulation-utilits';
+import { calculateAge, formatDate, formatNumber, stringifyFilter } from '../../../services/utils/data-manipulation-utilits';
 import DropdownStyledButton from '../../../components/base-components/styled-dropdown-button/dropdown-button';
 import { Link, useNavigate } from 'react-router-dom';
 import { getFacilitators, updateFilters } from '../../../services/utils/facilitator-list-service';
@@ -16,10 +16,10 @@ import {
 import { sendRequest } from '../../../services/utils/request';
 import { useSelector } from 'react-redux';
 import { IsessionData, Istate } from '../../../services/constants/interfaces/state-schemas';
+import { tabQueryConstants } from '../../../services/constants/general-constants';
 
 function VendorDashboard(props: any) {
   const sessionData: IsessionData = useSelector((state: Istate) => state.session.user);
-  console.log({sessionData})
   const [orderList, setOrderList] = useState<any[]>([]);
   let id: any;
   const query = props.query;
@@ -32,11 +32,11 @@ function VendorDashboard(props: any) {
     },
     {
       Header: 'Amount',
-      accessor: 'amount',
+      accessor: 'totalCost',
     },
     {
       Header: 'Date',
-      accessor: 'date',
+      accessor: 'dateCreated',
     },
     {
       Header: 'Customer',
@@ -90,51 +90,29 @@ function VendorDashboard(props: any) {
   };
 
   const getOrders = () => {
+    const params = {
+      storeSlug: sessionData.slug,
+      status: tabQueryConstants.pending.query,
+      limit: 4,
+    }
     sendRequest({
-        url: `get/sub-order?store=${sessionData._id}&status=pending&limit=4`,
+        url: 'get/order' + stringifyFilter(params),
         method: 'POST',
         body: {}
     }, (res: any) => {
-        // navigate(routeConstants.login);
-        console.log({res})
+        const orders = res.data.map((item: any) => {
+          item.totalCost = formatNumber(item.totalCost);
+          item.dateCreated = formatDate(item.createdAt);
+          return item
+        })
+        setOrderList(orders);
     }, (err: any) => {
     });
   }
 
  useEffect(() => {
-    // getFacilitatorsList();
     window.scrollTo(0, 0);
     getOrders();
-
-    setOrderList([
-      {
-        id: 1,
-        product: 'Gucci Bag',
-        amount: '120,000',
-        date: '21-10-2022',
-        customerName: 'Enahoro Azeta',
-        customerPhoneNumber: '08026993310',
-        customerAddress: 'Bariga Lagos',
-      },
-      {
-        id: 2,
-        product: 'Gucci Bag',
-        amount: '120,000',
-        date: '21-10-2022',
-        customerName: 'Enahoro Azeta',
-        customerPhoneNumber: '08026993310',
-        customerAddress: 'Bariga Lagos',
-      },
-      {
-        id: 3,
-        product: 'Gucci Bag',
-        amount: '120,000',
-        date: '21-10-2022',
-        customerName: 'Enahoro Azeta',
-        customerPhoneNumber: '08026993310',
-        customerAddress: 'Bariga Lagos',
-      },
-    ])
   }, [props]);
   
   return (

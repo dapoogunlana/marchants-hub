@@ -14,7 +14,7 @@ function Sidebar(props: any) {
 
   const sessionData = useSelector((state: Istate) => state.session);
   const [routes, setRoutes] = useState<IroutObjectData[]>([]);
-  console.log({sessionData});
+  // console.log({sessionData});
   const userRole = sessionData.user?.role;
 
   useEffect(() => {
@@ -22,10 +22,10 @@ function Sidebar(props: any) {
       logout();
     }
     switch(userRole) {
-      case rc.userLevels.vendor:
-        // setRoutes(generateAdminRoutes());
-        setRoutes(generateVendorRoutes());
-        break;
+      // case rc.userLevels.vendor:
+      //   // setRoutes(generateAdminRoutes());
+      //   setRoutes(generateVendorRoutes());
+      //   break;
       case rc.userLevels.vendor:
         setRoutes(generateVendorRoutes());
         break;
@@ -56,7 +56,7 @@ function Sidebar(props: any) {
               {
                 route.routes.map((item, routeIndex) => (
                   <React.Fragment key={routeIndex}>
-                    <NavLink to={item.standalone ? `/${item.link}` : `${sortRoute(userRole)}${item.link}`} className={({isActive}) => isActive ? 'bar-link selected' : 'bar-link'} onClick={props.clickLink}>
+                    <NavLink target={item.standalone ? '_blank' : '_self'} to={item.standalone ? `/${item.link}` : `${sortRoute(userRole)}${item.link}`} className={({isActive}) => isActive ? 'bar-link selected' : 'bar-link'} onClick={props.clickLink}>
                       <i className={'reduced fas fa-' + (item.icon || 'table-list')}></i><span className='reduced pl-2'>{item.name}</span>
                     </NavLink>
                   </React.Fragment>
