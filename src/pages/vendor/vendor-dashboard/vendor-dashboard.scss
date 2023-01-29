@@ -16,6 +16,9 @@
     .white-card{
         background-color: $white;
     }
+    @include mediaW(1100px){
+        padding: 1em 3.5em 1.8em;
+    }
 }
 .more-info{
     border-radius: 3px;

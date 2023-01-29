@@ -120,16 +120,16 @@ function VendorProducts() {
     <>
       <div className='vendor-products py-5'>
         <div className='top-menu spread-info'>
-          <div className=''>
+          <div className='input-space'>
             <div className="row">
               <div className='col-8 py-1'>
                 <div className='input-style'>
-                  <input type="text" placeholder="Search names" value={filter.name} onChange={(e) => updateForm('name', e)} />
+                  <input type="text" placeholder="Search by product name" value={filter.name} onChange={(e) => updateForm('name', e)} />
                 </div>
               </div>
               {/* <div className='col-1'></div> */}
-              <div className='col-3 py-1'>
-                <button className="hollow-button py-1 " onClick={submit}>Go</button>
+              <div className='col-3 py-1 pl-0'>
+                <button className="search-hollow-button" onClick={submit}>Go</button>
               </div>
             </div>
           </div>

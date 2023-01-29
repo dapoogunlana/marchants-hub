@@ -6,7 +6,7 @@
         background-color: white;
         padding: 5px;
         @include mediaW(619px){
-            margin-top: -50px;
+            margin-top: -62px;
             margin-left: calc(100% - 180px);
         }
         margin-bottom: 20px;
@@ -39,17 +39,21 @@
     }
     .nav-link {
         display: block;
-        padding: 5px 15px;
+        padding: 5px 25px;
         border-radius: 20px;
         font-size: 14px;
+        color: $black-faint1;
         background-color: transparent;
         outline: none !important;
         border: none;
+        @include mediaM(750px){
+            padding: 5px 15px;
+        }
     }
     .nav-link.active {
         color: #495057;
         background-color: #C4E7E7 !important;
-        font-weight: 700;
+        // font-weight: 700;
         background-color: transparent;
         outline: none !important;
         border: none;
