@@ -129,7 +129,7 @@ function VendorDashboard(props: any) {
                       <img src={TotalSalesIcon} width={40} alt="" />
                     </div>
                     <p className='mb-0 reduced-x font-weight-bold'>Total Sales</p>
-                    <h5 className='font-weight-bold mb-0'>N100,233,500</h5>
+                    <h5 className='font-weight-bold mb-0'>₦30,233,500</h5>
                   </div>
                 </div>
                 <div className='col-sm-4'>

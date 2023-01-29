@@ -5,6 +5,7 @@ const DataTables = (props: any) => {
   const columns = props.columns
   const data = props.data
   const actionable = props.actionable
+  const uncontained = props.uncontained
    const {
     getTableProps, // table props from react-table
     getTableBodyProps, // table body props from react-table
@@ -20,7 +21,7 @@ const DataTables = (props: any) => {
   );
 
     return (
-      <div className={"table-container" + (actionable ? ' pb-5' : '')}>
+      <div className={(actionable ? 'pb-5' : '') + (uncontained ? '' : ' table-container')}>
         <table className="table" {...getTableProps()}>
           <thead>
             {headerGroups.map(headerGroup => (

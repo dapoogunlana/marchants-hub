@@ -17,7 +17,7 @@ function UserNavigationComponent() {
             case routeConstants.userLevels.vendor:
                 return <Navigate to={`/${routeConstants.vendor}/${routeConstants.dashboard}`}/>;
             case routeConstants.userLevels.dispatcher:
-                return <Navigate to={`/${routeConstants.dispatcher}/${routeConstants.dashboard}`}/>;
+                return <Navigate to={`/${routeConstants.dispatcher}/${routeConstants.orders}`}/>;
         }
     }
 

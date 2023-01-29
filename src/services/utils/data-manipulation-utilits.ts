@@ -76,3 +76,48 @@ export function acceptOnlyNumbers(event: any) {
     return false;
   }
 }
+export function acceptOnlyUppercase(event: any) {
+  event.target.value = event.target.value.replace(/[^A-Z]/g, '');
+  if (/[^A-Z]/.test(event.key)) {
+    event.preventDefault()
+    return false;
+  }
+}
+export function convertToUppercase(event: any) {
+  event.target.value = event.target.value.toLocaleUpperCase();
+}
+
+export function acceptOnlyLowercase(event: any) {
+  event.target.value = event.target.value.replace(/[^a-z]/g, '');
+  if (/[^a-z]/.test(event.key)) {
+    event.preventDefault()
+    return false;
+  }
+}
+export function convertToLowercase(event: any) {
+  event.target.value = event.target.value.toLocaleLowerCase();
+}
+
+export function acceptOnlyAlphabets(event: any) {
+  event.target.value = event.target.value.replace(/[^a-zA-Z]/g, '');
+  if (/[^a-zA-Z]/.test(event.key)) {
+    event.preventDefault()
+    return false;
+  }
+}
+
+export function acceptNumbersAndAlphabets(event: any) {
+  event.target.value = event.target.value.replace(/[^a-zA-Z0-9]/g, '');
+  if (/[^a-zA-Z0-9]/.test(event.key)) {
+    event.preventDefault()
+    return false;
+  }
+}
+
+export function clearSpaces(event: any) {
+  event.target.value = event.target.value.replace(/ /g, '');
+  if (/ /.test(event.key)) {
+    event.preventDefault()
+    return false;
+  }
+}

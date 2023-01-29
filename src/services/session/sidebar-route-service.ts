@@ -85,24 +85,15 @@ export const generateDispatcherRoutes = (): IroutObjectData[] => {
     const routes: IroutObjectData[] = [];
 
     routes.push({
-        label: 'children',
+        label: 'Orders',
         routes: [
-            { name: 'Dashboard', link: rc.childrenDashboard },
-            { name: 'All Children', link: rc.childrenList },
+            { name: 'All orders', link: rc.orders, icon: 'table-list' },
         ]
     });
     routes.push({
-        label: 'cohort',
+        label: 'Payments',
         routes: [
-            { name: 'Dashboard', link: rc.cohortDashboard },
-            { name: 'Cohorts', link: rc.cohortList },
-            { name: 'Pillars', link: rc.pillars },
-        ]
-    });
-    routes.push({
-        label: '',
-        routes: [
-            { name: 'Profile', link: rc.profile },
+            { name: 'Payment records', link: rc.payments, icon: 'building-columns' },
         ]
     });
     

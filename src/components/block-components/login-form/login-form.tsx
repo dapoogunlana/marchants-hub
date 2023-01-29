@@ -14,10 +14,11 @@ import { useDispatch } from 'react-redux';
 import { login } from '../../../services/actions/session-actions';
 import UserNavigationComponent from '../../../services/utils/navigation-component';
 import { regexConstants } from '../../../services/constants/validation-regex';
+import { propTypes } from 'react-bootstrap/esm/Image';
 // import { login } from '../../../services/actions/session-actions';
 // import { regexConstants } from '../../../services/constants/validation-regex';
 
-function AdminLoginForm() {
+function AdminLoginForm(props: any) {
 
     const [response, setResponse] = useState<any>();
     const [showPassword, setShowPassword] = useState(false);
@@ -91,12 +92,15 @@ function AdminLoginForm() {
     return (
         <div className='admin-login-box' onClick={clearResponse}>
             {useNav && <UserNavigationComponent />}
-            <div className='spread-info py-3'>
-                <Link to={routeConstants.home}>
-                    <img src={Logo} width={100} alt="" />
-                </Link>
-                <span></span>
-            </div>
+            {
+                !props.compact &&
+                <div className='spread-info py-3'>
+                    <Link to={routeConstants.home}>
+                        <img src={Logo} width={130} alt="" />
+                    </Link>
+                    <span></span>
+                </div>
+            }
             <Formik initialValues={{
                 email: '',
                 password: '',
@@ -110,7 +114,7 @@ function AdminLoginForm() {
             // onSubmit={(values, controls) => console.log('values, controls')}
             >
                 {
-                    (props: FormikProps<{
+                    (Props: FormikProps<{
                         email: string,
                         password: string,
                     }>) => {
@@ -122,7 +126,7 @@ function AdminLoginForm() {
                             handleBlur,
                             handleChange,
                             handleSubmit,
-                        } = props;
+                        } = Props;
                         return (
                             <form action="" onSubmit={handleSubmit}>
                                 <div className='reg-card'>
@@ -172,7 +176,9 @@ function AdminLoginForm() {
                                     </button>
                                 </div>
                                 <div className='text-right pb-2'>
-                                    <Link to={`/${routeConstants.registerVendor}`} className='reduced-x clickable-link'>SIGNUP</Link>
+                                    {
+                                        !props.compact && <Link to={`/${routeConstants.registerVendor}`} className='reduced-x clickable-link'>SIGNUP</Link>
+                                    }
                                     <Link to={`/${routeConstants.forgotPassword}`} className='reduced-x clickable-link ml-5'>FORGOT PASSWORD</Link>
                                 </div>
                                 <div className='text-center pt-3 pb-2'>

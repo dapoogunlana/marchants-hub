@@ -444,6 +444,9 @@
     font-size: 0.9em !important;
   }
 }
+.same-size{
+  font-size: 1em;
+}
 .increased {
   font-size: 1.2em;
 }
@@ -614,6 +617,9 @@
 .white {
   background-color: $white;
 }
+.lighter-grey {
+  background-color: $grey-lighter;
+}
 .light-grey {
   background-color: $grey-light;
 }
@@ -780,12 +786,17 @@
 }
 
 .hollow-button {
-  @include hollow-button($primary-green, $primary-green, 15px, 6px, 1em);
+  @include hollow-button($primary-green, $primary-green, 20px, 9px, 0.8em);
   border-radius: 6px;
   transition: 0.3s ease;
 }
 .solid-button {
-  @include solid-button($primary-green, $primary-green-hover, 15px, 6px, 1em);
+  @include solid-button($primary-green, $primary-green-hover, 20px, 9px, 0.8em);
+  border-radius: 6px;
+  transition: 0.3s ease;
+}
+.solid-button-danger {
+  @include solid-button($dull-red, $dull-red-hover, 20px, 9px, 0.8em);
   border-radius: 6px;
   transition: 0.3s ease;
 }
@@ -816,6 +827,9 @@
 
 .full-hidden {
   display: none;
+}
+.temp-hidden {
+  opacity: 0;
 }
 
 .deactivated {
@@ -991,7 +1005,7 @@ input[type=number] {
       margin-top: 1em;
       width: 100%;
   }
-  input, select{
+  input, select, textarea{
       color: $black;
       border-radius: 8px;
       padding: 5px 15px;
@@ -1025,6 +1039,9 @@ input[type=number] {
       width: 10px;
       transform: scale(2);
       box-shadow: none;
+  }
+  input[type=file]{
+    font-size: 0.77em;
   }
   select{
       padding: 8px 15px;

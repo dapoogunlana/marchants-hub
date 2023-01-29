@@ -10,7 +10,7 @@ function RegisterVendor() {
   
   return (
     <>
-      <div className="login">
+      <div className="register-vendor">
         <div className="center-form" data-aos='zoom-in'>
           <div className='w96 my-3' data-aos="fade-up">
             <RegisterVendorForm />

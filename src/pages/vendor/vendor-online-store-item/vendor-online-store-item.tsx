@@ -27,6 +27,8 @@ function VendorOnlineStoreItem() {
   const id = params.id;
   const slug = params.slug;
 
+  const [storeName, setStoreName] = useState('STORE');
+
   const paystackComponentProps = {
     email: orderData.customerEmail,
     amount: orderData.totalCost * 100,
@@ -190,11 +192,12 @@ function VendorOnlineStoreItem() {
   useEffect(() => {
     window.scrollTo(0, 0);
     getProduct();
+    setStoreName((slug?.replace(/-/g, ' ') || storeName).substring(0, 20).toLocaleLowerCase());
   }, []);
   
   return (
     <>
-      <StoreHeader/>
+      <StoreHeader storeName={storeName} />
       <div className='single-store-item py-5'>
         {
           purchaseStarted === 1 &&
@@ -380,7 +383,7 @@ function VendorOnlineStoreItem() {
               </Formik>
         </div>
       </div>
-      <StoreFooter/>
+      <StoreFooter storeName={storeName} />
       <div className='full-hidden'>
         <PaystackButton className='paystack_trigger' {...paystackComponentProps} />
       </div>

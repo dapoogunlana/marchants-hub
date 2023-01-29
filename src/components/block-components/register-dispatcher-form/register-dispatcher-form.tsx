@@ -15,6 +15,8 @@ import { login } from '../../../services/actions/session-actions';
 import UserNavigationComponent from '../../../services/utils/navigation-component';
 import { regexConstants } from '../../../services/constants/validation-regex';
 import { prepareDispatcherRegisterForm } from '../../../services/utils/form-preparation-service';
+import { acceptOnlyNumbers } from '../../../services/utils/data-manipulation-utilits';
+import { getCities, getLgas } from '../../../services/utils/core-api-util';
 // import { login } from '../../../services/actions/session-actions';
 // import { regexConstants } from '../../../services/constants/validation-regex';
 
@@ -27,7 +29,9 @@ function RegisterDispatcherForm() {
     const [useNav, setUseNav] = useState(false);
 
     const [states, setStates] = useState([]);
+    const [lgaList, setLgaList] = useState([]);
     const [banks, setBanks] = useState([]);
+    const [stateValue, setStateValue] = useState();
 
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -54,8 +58,8 @@ function RegisterDispatcherForm() {
         const invalid = invalidFormat && format ? true : false;
         // console.log({format, invalidFormat, invalid, fileSize})
     
-        if (!values.storeName) {
-            errors.storeName = 'Store name is required';
+        if (!values.companyName) {
+            errors.companyName = 'Company name is required';
         }
         if (!values.email) {
             errors.email = 'Email is required';
@@ -68,6 +72,9 @@ function RegisterDispatcherForm() {
         } else if (!regexConstants.phonePattern.test(values.phoneNumber)) {
             errors.phoneNumber = 'Invalid phone number';
         }
+        if (!values.cacNumber) {
+            errors.cacNumber = 'CAC number is required';
+        }
         if (!values.bizFirstName) {
             errors.bizFirstName = 'Field Required';
         }
@@ -77,8 +84,8 @@ function RegisterDispatcherForm() {
         if (!values.stateOfOperation) {
             errors.stateOfOperation = 'Field Required';
         }
-        if (!values.address) {
-            errors.address = 'Field Required';
+        if (!values.lgaOfOperation) {
+            errors.lgaOfOperation = 'Field Required';
         }
         if (!values.bankName) {
             errors.bankName = 'Field Required';
@@ -98,15 +105,6 @@ function RegisterDispatcherForm() {
         if (!values.statutoryID) {
             errors.statutoryID = 'Statutory ID is required';
         }
-        // if (invalidFormat) {
-        //     errors.statutoryID = 'Invalid format';
-        // } else {
-        //     errors.statutoryID = 'Valid format';
-        // }
-        console.log({statutoryIdFile})
-        setTimeout(() => {
-            // console.log({statutoryIdFile})
-        }, 100);
         return errors;
     
     }
@@ -128,9 +126,21 @@ function RegisterDispatcherForm() {
                 "country": "nigeria"
             }
         }, (res: any) => {
+            console.log({states: res.data.states});
             setStates(res.data.states || []);
         }, (err: any) => {
         });
+    }
+
+    const stateChange = (change: any) => { 
+        const stateCode = change.target.value;
+        setLgaList([]);
+        if (stateCode) {
+            getCities(stateCode,(lgas: any)=> {
+            setLgaList(lgas);
+            console.log({stateCode, lgas});
+            });
+        }
     }
 
     const submitRegistration = (values: any, controls: any) => {
@@ -139,46 +149,16 @@ function RegisterDispatcherForm() {
         sendRequest({
             url: 'auth/register',
             method: 'POST',
-            // header: {
-            //     Authorization: 'Basic ' + btoa(1 + ':qwerty'),
-            //     'Content-Type': 'application/x-www-form-urlencoded',
-            // },
             body: prepareDispatcherRegisterForm(values, statutoryIdFile)
         }, (res: any) => {
-            // controls.setSubmitting(false);
-            // setResponse(<p className='c-dark-green mb-0 pt-2'>{res.message}</p>);
+            controls.setSubmitting(false);
             toast.success(res.message);
-            // controls.resetForm();
-            // localStorage.setItem('token', res.payload?.token?.accessToken);
+            // controls.resetForm();/
             // sessionStorage.setItem('token', res.payload?.token?.accessToken);
-            // dispatch(login(res.payload?.token?.accessToken))
-            // navigate(`/${routeConstants.systemAdmin}`);
-            // getUserData(res.payload?.token?.accessToken, controls);
+            dispatch(login(res.data))
+            navigate(`/${routeConstants.confirmEmail}`);
         }, (err: any) => {
             controls.setSubmitting(false);
-            setResponse(<p className='c-red mb-0 pt-2'>{err.error?.emailError || err.message || 'Unable to complete'}</p>);
-            toast.error(err.error?.emailError || err.message || 'Unable to complete');
-        });
-    }
-    const getUserData = (token: string, controls: any) => {
-        sendRequest({
-            url: 'auth/user',
-            method: 'GET',
-        }, (res: any) => {
-            controls.setSubmitting(false);
-            setResponse(<p className='c-dark-green mb-0 pt-2'>{res.message}</p>);
-            toast.success(res.message);
-            controls.resetForm();
-            const data = {
-                role:res.payload?.oauthRole?.name,
-                ...res.payload?.user,
-                token
-            }
-            console.log({data})
-            dispatch(login(data))
-            // navigate(`/${routeConstants.systemAdmin}`);
-            setUseNav(true);
-        }, (err: any) => {
             setResponse(<p className='c-red mb-0 pt-2'>{err.error?.emailError || err.message || 'Unable to complete'}</p>);
             toast.error(err.error?.emailError || err.message || 'Unable to complete');
         });
@@ -196,23 +176,22 @@ function RegisterDispatcherForm() {
         getStates();
     }, []);
 
+    // useEffect(() => {
+    //   stateChange(stateValue);
+    // }, [stateValue]);
+
     return (
-        <div className='register-box' onClick={clearResponse}>
+        <div className='register-box pt-0' onClick={clearResponse}>
             {useNav && <UserNavigationComponent />}
-            <div className='spread-info py-3'>
-                <Link to={routeConstants.home}>
-                    <img src={Logo} width={100} alt="" />
-                </Link>
-                <span></span>
-            </div>
             <Formik initialValues={{
-                storeName: '',
+                companyName: '',
                 email: '',
                 phoneNumber: '',
+                cacNumber: '',
                 bizFirstName: '',
                 bizLastName: '',
                 stateOfOperation: '',
-                address: '',
+                lgaOfOperation: '',
                 bankName: '',
                 bankAccount: '',
                 password: '',
@@ -229,13 +208,14 @@ function RegisterDispatcherForm() {
             >
                 {
                     (props: FormikProps<{
-                        storeName: string,
+                        companyName: string,
                         email: string,
                         phoneNumber: string,
+                        cacNumber: string,
                         bizFirstName: string,
                         bizLastName: string,
                         stateOfOperation: string,
-                        address: string,
+                        lgaOfOperation: string,
                         bankName: string,
                         bankAccount: string,
                         password: string,
@@ -254,27 +234,27 @@ function RegisterDispatcherForm() {
                         return (
                             <form action="" onSubmit={handleSubmit}>
                                 <div className='reg-card'>
-                                    <label className='text-left'>Store  Name</label>
+                                    <label className='text-left'>Company  Name</label>
                                     <input
                                         type="text"
-                                        placeholder='Eg Azeta Technologies'
-                                        id='storeName'
-                                        value={values.storeName}
+                                        // placeholder='Eg Azeta Technologies'
+                                        id='companyName'
+                                        value={values.companyName}
                                         onBlur={handleBlur}
-                                        onFocus={() => errors.storeName = ''}
+                                        onFocus={() => errors.companyName = ''}
                                         onChange={handleChange}
-                                        className={(errors.storeName && touched.storeName) ? 'im-error' : ''}
+                                        className={(errors.companyName && touched.companyName) ? 'im-error' : ''}
                                     />
                                     {
-                                        errors.storeName && touched.storeName &&
-                                        <p className='reduced error-popup pt-1 mb-0'>{errors.storeName}</p>
+                                        errors.companyName && touched.companyName &&
+                                        <p className='reduced error-popup pt-1 mb-0'>{errors.companyName}</p>
                                     }
                                 </div>
                                 <div className='reg-card'>
                                     <label className='text-left'>Email</label>
                                     <input
                                         type="email"
-                                        placeholder='enter your email'
+                                        // placeholder='enter your email'
                                         id='email'
                                         value={values.email}
                                         onBlur={handleBlur}
@@ -291,7 +271,7 @@ function RegisterDispatcherForm() {
                                     <label className='text-left'>Phone Number</label>
                                     <input
                                         type="text"
-                                        placeholder='Enter Phone number'
+                                        // placeholder='Enter Phone number'
                                         id='phoneNumber'
                                         value={values.phoneNumber}
                                         onBlur={handleBlur}
@@ -304,12 +284,29 @@ function RegisterDispatcherForm() {
                                         <p className='reduced error-popup pt-1 mb-0'>{errors.phoneNumber}</p>
                                     }
                                 </div>
+                                <div className='reg-card'>
+                                    <label className='text-left'>CAC Number</label>
+                                    <input
+                                        type="text"
+                                        // placeholder='Eg Azeta Technologies'
+                                        id='cacNumber'
+                                        value={values.cacNumber}
+                                        onBlur={handleBlur}
+                                        onFocus={() => errors.cacNumber = ''}
+                                        onChange={handleChange}
+                                        className={(errors.cacNumber && touched.cacNumber) ? 'im-error' : ''}
+                                    />
+                                    {
+                                        errors.cacNumber && touched.cacNumber &&
+                                        <p className='reduced error-popup pt-1 mb-0'>{errors.cacNumber}</p>
+                                    }
+                                </div>
                                 <div className='info-grid'>
                                     <div className='reg-card'>
                                         <label className='text-left'>Business owner first name</label>
                                         <input
                                             type="text"
-                                            placeholder='Enter first name'
+                                            // placeholder='Enter first name'
                                             id='bizFirstName'
                                             value={values.bizFirstName}
                                             onBlur={handleBlur}
@@ -327,7 +324,7 @@ function RegisterDispatcherForm() {
                                         <label className='text-left'>Business owner last name</label>
                                         <input
                                             type="text"
-                                            placeholder='Enter last name'
+                                            // placeholder='Enter last name'
                                             id='bizLastName'
                                             value={values.bizLastName}
                                             onBlur={handleBlur}
@@ -343,19 +340,21 @@ function RegisterDispatcherForm() {
                                 </div>
                                 <div className='info-grid'>
                                     <div className='reg-card'>
-                                        <label className='text-left'>State of Operation</label>
+                                        <label className='text-left temp-hidden'>State of Operation</label>
                                         <select
                                             id='stateOfOperation'
                                             value={values.stateOfOperation}
                                             onBlur={handleBlur}
                                             onFocus={() => errors.stateOfOperation = ''}
-                                            onChange={handleChange}
+                                            // onChange={handleChange}
+                                            onChange={(change: any) => {handleChange(change); stateChange(change)}}
                                             className={(errors.stateOfOperation && touched.stateOfOperation) ? 'im-error' : ''}
                                         >
-                                            <option value="" disabled>Select State of Operation</option>
+                                            <option value="" disabled>State of Operation</option>
                                             {
                                                 states.map((item: any, index) => {
-                                                    return <option key={index} value={item.state_code}>{item.name}</option>
+                                                    // return <option key={index} value={item.state_code}>{item.name}</option>
+                                                    return <option key={index} value={item.name}>{item.name}</option>
                                                 })
                                             }
                                         </select>
@@ -366,26 +365,32 @@ function RegisterDispatcherForm() {
                                     </div>
                                     <div></div>
                                     <div className='reg-card'>
-                                        <label className='text-left'>Address</label>
-                                        <input
-                                            type="text"
-                                            placeholder='Enter address'
-                                            id='address'
-                                            value={values.address}
+                                        <label className='text-left temp-hidden'>LGA of Operation</label>
+                                        <select
+                                            id='lgaOfOperation'
+                                            value={values.lgaOfOperation}
                                             onBlur={handleBlur}
-                                            onFocus={() => errors.address = ''}
+                                            onFocus={() => errors.lgaOfOperation = ''}
                                             onChange={handleChange}
-                                            className={(errors.address && touched.address) ? 'im-error' : ''}
-                                        />
+                                            className={(errors.lgaOfOperation && touched.lgaOfOperation) ? 'im-error' : ''}
+                                        >
+                                            <option value="" disabled>LGA of Operation</option>
+                                            {
+                                                lgaList.map((item: any, index) => {
+                                                    // return <option key={index} value={item.state_code}>{item.name}</option>
+                                                    return <option key={index} value={item}>{item}</option>
+                                                })
+                                            }
+                                        </select>
                                         {
-                                            errors.address && touched.address &&
-                                            <p className='reduced error-popup pt-1 mb-0'>{errors.address}</p>
+                                            errors.lgaOfOperation && touched.lgaOfOperation &&
+                                            <p className='reduced error-popup pt-1 mb-0'>{errors.lgaOfOperation}</p>
                                         }
                                     </div>
                                 </div>
                                 <div className='info-grid'>
                                     <div className='reg-card'>
-                                        <label className='text-left'>Bank name</label>
+                                        <label className='text-left temp-hidden'>Bank name</label>
                                         <select
                                             id='bankName'
                                             value={values.bankName}
@@ -411,12 +416,13 @@ function RegisterDispatcherForm() {
                                         <label className='text-left'>Bank Account</label>
                                         <input
                                             type="text"
-                                            placeholder='Enter bank account'
+                                            // placeholder='Enter bank account'
                                             id='bankAccount'
                                             value={values.bankAccount}
                                             onBlur={handleBlur}
                                             onFocus={() => errors.bankAccount = ''}
                                             onChange={handleChange}
+                                            onKeyUp={acceptOnlyNumbers}
                                             className={(errors.bankAccount && touched.bankAccount) ? 'im-error' : ''}
                                         />
                                         {
@@ -425,53 +431,56 @@ function RegisterDispatcherForm() {
                                         }
                                     </div>
                                 </div>
-                                <div className='reg-card'>
-                                    <label className='text-left'>Password</label>
-                                    <input
-                                        type={showPassword ? 'text' : 'password'}
-                                        placeholder='Enter your password'
-                                        id='password'
-                                        value={values.password}
-                                        onBlur={handleBlur}
-                                        onFocus={() => errors.password = ''}
-                                        onChange={handleChange}
-                                        className={(errors.password && touched.password) ? 'im-error' : ''}
-                                    />
-                                    <div className='password-shower'>
+                                <div className='info-grid'>
+                                    <div className='reg-card'>
+                                        <label className='text-left'>Password</label>
+                                        <input
+                                            type={showPassword ? 'text' : 'password'}
+                                            placeholder='Enter your password'
+                                            id='password'
+                                            value={values.password}
+                                            onBlur={handleBlur}
+                                            onFocus={() => errors.password = ''}
+                                            onChange={handleChange}
+                                            className={(errors.password && touched.password) ? 'im-error' : ''}
+                                        />
+                                        <div className='password-shower'>
+                                            {
+                                                showPassword ? 
+                                                <i className="fa-solid fa-eye-slash" onClick={toggleShowPassword}></i> : 
+                                                <i className="fa-solid fa-eye" onClick={toggleShowPassword}></i>
+                                            }
+                                        </div>
                                         {
-                                            showPassword ? 
-                                            <i className="fa-solid fa-eye-slash" onClick={toggleShowPassword}></i> : 
-                                            <i className="fa-solid fa-eye" onClick={toggleShowPassword}></i>
+                                            errors.password && touched.password &&
+                                            <p className='reduced error-popup pt-1 mb-0'>{errors.password}</p>
                                         }
                                     </div>
-                                    {
-                                        errors.password && touched.password &&
-                                        <p className='reduced error-popup pt-1 mb-0'>{errors.password}</p>
-                                    }
-                                </div>
-                                <div className='reg-card'>
-                                    <label className='text-left'>Confirm Password</label>
-                                    <input
-                                        type={showPassword ? 'text' : 'password'}
-                                        placeholder='Confirm your password'
-                                        id='confirmPassword'
-                                        value={values.confirmPassword}
-                                        onBlur={handleBlur}
-                                        onFocus={() => errors.confirmPassword = ''}
-                                        onChange={handleChange}
-                                        className={(errors.confirmPassword && touched.confirmPassword) ? 'im-error' : ''}
-                                    />
-                                    <div className='password-shower'>
+                                    <div></div>
+                                    <div className='reg-card'>
+                                        <label className='text-left'>Confirm Password</label>
+                                        <input
+                                            type={showPassword ? 'text' : 'password'}
+                                            placeholder='Confirm your password'
+                                            id='confirmPassword'
+                                            value={values.confirmPassword}
+                                            onBlur={handleBlur}
+                                            onFocus={() => errors.confirmPassword = ''}
+                                            onChange={handleChange}
+                                            className={(errors.confirmPassword && touched.confirmPassword) ? 'im-error' : ''}
+                                        />
+                                        <div className='password-shower'>
+                                            {
+                                                showPassword ? 
+                                                <i className="fa-solid fa-eye-slash" onClick={toggleShowPassword}></i> : 
+                                                <i className="fa-solid fa-eye" onClick={toggleShowPassword}></i>
+                                            }
+                                        </div>
                                         {
-                                            showPassword ? 
-                                            <i className="fa-solid fa-eye-slash" onClick={toggleShowPassword}></i> : 
-                                            <i className="fa-solid fa-eye" onClick={toggleShowPassword}></i>
+                                            errors.confirmPassword && touched.confirmPassword &&
+                                            <p className='reduced error-popup pt-1 mb-0'>{errors.confirmPassword}</p>
                                         }
                                     </div>
-                                    {
-                                        errors.confirmPassword && touched.confirmPassword &&
-                                        <p className='reduced error-popup pt-1 mb-0'>{errors.confirmPassword}</p>
-                                    }
                                 </div>
                                 <div className='upload-box'>
                                     <label className='text-left'>Upload clear government issued ID card of business owner</label>
@@ -493,11 +502,8 @@ function RegisterDispatcherForm() {
                                 </div>
                                 <div className='text-center pt-3 pb-2'>
                                     <button type='submit' className='solid-button rad-3-im mx-0 reduced-im' disabled={isSubmitting}>
-                                        {isSubmitting ? 'SUBMITTING..' : 'REGISTER DISPATCHER'}
+                                        {isSubmitting ? 'SUBMITTING..' : 'PROCEED'}
                                     </button>
-                                </div>
-                                <div className='text-right pb-2'>
-                                    <Link to={`/${routeConstants.login}`} className='reduced-x clickable-link'>HAVE AN ACCOUNT? SIGN IN</Link>
                                 </div>
                             </form>
                         );

@@ -14,7 +14,7 @@
             font-size: 0.75em;
             font-weight: 500;
             margin-bottom: 0;
-            margin-top: 1em;
+            margin-top: 0.3em;
             transform: translate(10px, 10px);
             padding: 1px 10px;
             background-color: $white;
@@ -22,7 +22,8 @@
         input, select{
             // color: $white;
             border-radius: 3px;
-            padding: 5px 15px;
+            padding: 7px 15px;
+            font-size: 0.78em;
             border: 1px solid $input-border;
             // background-color: $primary-green-faint4;
             // box-shadow: 5px 5px 2px 0 $black-faint4;
@@ -38,7 +39,7 @@
             }
         }
         select{
-            padding: 6.5px 15px;
+            padding: 8px 15px;
         }
         .im-error{
             border-color: $red;
@@ -56,6 +57,12 @@
                 margin-top: -28px;
             }
         }
+    }
+    .financial-disclaimer{
+        color: #A33434;
+        font-size: 12px;
+        transform: translateY(2em);
+        margin-bottom: 0.7em;
     }
     .upload-box{
         label{

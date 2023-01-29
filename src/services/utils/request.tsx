@@ -25,7 +25,7 @@ export const sendRequest = (params: IrequestFormat, success: Function, failure: 
     })
     .then((result) => success(result?.data))
     .catch(error => {
-        const errorStatus = error.request.status;
+        const errorStatus = error?.request?.status;
 
         if(errorStatus === 401 || errorStatus === 403) {
             logoutUser();

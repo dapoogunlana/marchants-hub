@@ -21,6 +21,27 @@ export const getState = (callback: Function) => {
     })
 }
 
+export const getCities = (stateCode: string ,callback: Function) => {
+    
+    sendRequest({
+        // url: 'countries/state/cities',
+        url: 'https://countriesnow.space/api/v0.1/countries/state/cities',
+        external: true,
+        method: 'POST',
+        body: {
+            country: "Nigeria",
+            state: stateCode
+        }
+    }, (res: any) => {
+        coreLgas = res.data;
+        callback(res.data)
+    }, (err: any) => {
+        if (err) {
+            callback([])
+        }
+    })
+}
+
 export const getLgas = (id: number ,callback: Function) => {
     
     sendRequest({

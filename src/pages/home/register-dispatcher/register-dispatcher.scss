@@ -9,12 +9,15 @@
     @include mediaM(750px) {
         display: block;
     }
-    .center-form{
+    .top-center-form{
         width: 100%;
         min-height: 100vh;
         display: flex;
-        align-items: center;
+        align-items: flex-start;
         justify-content: center;
+    }
+    .pad15{
+        padding: 0 15px;
     }
     .bg-sect{
         background-image: url(./../../../assets/images/signup_bg.png);
@@ -22,5 +25,49 @@
         background-position: center;
         width: 100%;
         height: 100%;
+    }
+    .reg-tabs{
+        .nav{
+            // align-items: center;
+            justify-content: space-between;
+            padding: 0 15px;
+        }
+        .nav-tabs {
+            border: none;
+            text-align: center;
+            .nav-item{
+                .nav-link{
+                    padding: 0 9px;
+                    background-color: #fff;
+                    font-size: 0.92em;
+                    font-weight: bold;
+                    color: $black;
+                    &:focus{
+                        outline: none;
+                    }
+                    @include mediaM(550px) {
+                        font-size: 0.75em;
+                        padding: 0 6px;
+                    }
+                }
+                .active{
+                    border: none;
+                    &::after{
+                        content: ' ';
+                        display: block;
+                        width: calc(100% + 16px);
+                        transform: translateX(-8px);
+                        height: 6px;
+                        background-color: $primary-green;
+                        border-radius: 5px 5px 0 0;
+                        @include mediaM(550px) {
+                            width: calc(100% + 10px);
+                            transform: translateX(-5px);
+                            height: 4px;
+                        }
+                    }
+                }
+            }
+        }
     }
 }

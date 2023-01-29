@@ -17,6 +17,50 @@
         background-color: $white-faint4;
         padding: 10px;
         border-radius: 6px;
+        position: relative;
+        .settings-drop-down{
+            position: absolute;
+            width: 100px;
+            padding-top: 8%;
+            top: 100%;
+            right: 0;
+            transition: 0.4s ease;
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+            .clip-area{
+                position: absolute;
+                left: 0;
+                top: 0;
+                width: 100%;
+                height: 100%;
+                clip-path: polygon(0 20%, 70% 20%, 80% 0, 90% 20%, 100% 20%, 100% 95%, 0 95%);
+                background-color: $white;
+            }
+            .text-area{
+                padding: 10px;
+                box-shadow: -2px 3px 5px 0 $black-faint3;
+                // border: 1px solid $black-faint5;
+                border-top: none;
+                width: 100%;
+                background-color: $white;
+                border-radius: 3px;
+                position: relative;
+                p{
+                    color: $black-faint2;
+                    font-size: 0.8em;
+                    margin-bottom: 0;
+                    cursor: pointer;
+                }
+            }
+        }
+        &:hover{
+            .settings-drop-down{
+                max-height: 130px;
+                opacity: 1;
+                overflow: visible;
+            }
+        }
     }
     .route-sect{
         padding: 2em 0.8em;

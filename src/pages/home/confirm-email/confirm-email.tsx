@@ -10,7 +10,7 @@ function AdminConfirmEmail() {
   
   return (
     <>
-      <div className="login">
+      <div className="confirm-email">
         <div className="container center-form" data-aos='zoom-in'>
           <div className='w90 my-3' data-aos="fade-up">
             <AdminConfirmEmailForm />

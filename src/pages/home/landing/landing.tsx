@@ -14,7 +14,7 @@ function Landing() {
     <>
       <div className="landing">
         <div className="header">
-          <div className="container">
+          <div className="">
             <div className="spread-info mt-4">
               <Link to={routeConstants.home}>
                 <img src={Logo} className="cp-logo" alt="Logo" />
@@ -31,20 +31,20 @@ function Landing() {
                 Power your business, sell more with Vendu
               </h1>
               <div className="sub-info">
-                <p className="center-description py-4">
+                <p className="center-description pb-3">
                   Vendu helps you organize your business. Manage your product inventory, sell using 
                   your free custom ecommerce store, manage orders and receive payments seamlessly.
                 </p>
               </div>
               <Link to={routeConstants.registerVendor}>
                 <button className="solid-button">
-                  Create <span className='md-close'>online </span>store
+                  Create <span className='md-close same-size'>online </span>store
                 </button>
               </Link>
               <span className='px-2'></span>
               <Link to={routeConstants.login}>
                 <button className="hollow-button">
-                  Login to <span className='md-close'>online </span>store
+                  Login to <span className='md-close same-size'>online </span>store
                 </button>
               </Link>
               <br/>

@@ -18,7 +18,7 @@ import './store-header.scss'
   return (
     <div className="store-header">
       {/* <Link to={'/'}>5th Perfumery</Link> */}
-      <p className="mb-0 clickable" onClick={close}>5th Perfumery</p>
+      <p className="mb-0 clickable" style={{textTransform: 'capitalize'}} onClick={close}>{props.storeName}</p>
       <div className="cart">
         <div className="cart-count">{cartCount}</div>
         <i className="fa-solid fa-cart-shopping increased"></i>

@@ -91,7 +91,7 @@ const NewProductModal = (props: any) => {
   return (
     <div className="app-data-modal">
       <div className="modal-bg"></div>
-      <div className={"modal-container mid no-pad"}>
+      <div className={"modal-container mid-small no-pad"}>
         <div className="modal-content">
           
           {/* Any content goes in here */}
@@ -147,7 +147,7 @@ const NewProductModal = (props: any) => {
                                       
                                       <Field
                                             type="text"
-                                            placeholder='name'
+                                            // placeholder='name'
                                             id='name'
                                             value={values.name}
                                             onBlur={handleBlur}
@@ -163,9 +163,9 @@ const NewProductModal = (props: any) => {
                                     <div className='styled-form2'>
                                       <label>Description</label>
                                       
-                                      <Field
-                                            type="text"
-                                            placeholder='Enter description'
+                                      <textarea
+                                            rows={2}
+                                            // placeholder='Enter description'
                                             id='description'
                                             value={values.description}
                                             onBlur={handleBlur}
@@ -236,7 +236,7 @@ const NewProductModal = (props: any) => {
                                             }}
                                         />
                                       {
-                                          errors.image1 && touched.image1 &&
+                                          errors.image1 && (touched.image1 || touched.image2 || touched.image3) &&
                                           <p className='reduced error-popup pt-1 mb-0'>{errors.image1}</p>
                                       }
                                     </div>
@@ -258,7 +258,7 @@ const NewProductModal = (props: any) => {
                                             }}
                                         />
                                       {
-                                          errors.image2 && touched.image2 &&
+                                          errors.image2 && (touched.image1 || touched.image2 || touched.image3) &&
                                           <p className='reduced error-popup pt-1 mb-0'>{errors.image2}</p>
                                       }
                                     </div>
@@ -280,15 +280,15 @@ const NewProductModal = (props: any) => {
                                             }}
                                         />
                                       {
-                                          errors.image3 && touched.image3 &&
+                                          errors.image3 && (touched.image1 || touched.image2 || touched.image3) &&
                                           <p className='reduced error-popup pt-1 mb-0'>{errors.image3}</p>
                                       }
                                     </div>
                                   </div>
                                 </div>
-                              <div className='text-right pt-3 pb-2 light-grey pb-3' style={{padding: '20px'}}>
-                                  <button type='button' onClick={closeModal} className='btn btn-danger mx-0 px-3 rad-10 mr-3' disabled={isSubmitting}><i className="fa-solid fa-circle-xmark mr-2"></i>Cancel</button>
-                                  <button type='submit' className='btn btn-success mx-0 px-3 rad-10' disabled={isSubmitting}>{isSubmitting ? 'Processing..' : <><i className="fa-solid fa-circle-check mr-2"></i> Submit</>}</button>
+                              <div className='text-right pt-3 pb-2 lighter-grey pb-3' style={{padding: '20px'}}>
+                                  <button type='button' onClick={closeModal} className='solid-button-danger mx-0 px-3 rad-10 mr-3' disabled={isSubmitting}><i className="fa-solid fa-circle-xmark mr-2"></i>Cancel</button>
+                                  <button type='submit' className='btn solid-button mx-0 px-4 rad-10' disabled={isSubmitting}>{isSubmitting ? 'Processing..' : <><i className="fa-solid fa-circle-check mr-2"></i> Proceed</>}</button>
                                   {
                                       response && <div className='error-popup text-center'>{response}</div>
                                   }

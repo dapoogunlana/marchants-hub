@@ -70,7 +70,7 @@ const InitiatePaymentModal = (props: any) => {
   return (
     <div className="app-data-modal">
       <div className="modal-bg"></div>
-      <div className={"modal-container mid no-pad small-i"}>
+      <div className={"modal-container mid-small no-pad"}>
         <div className="modal-content">
           
           {/* Any content goes in here */}
@@ -99,10 +99,10 @@ const InitiatePaymentModal = (props: any) => {
                         } = Props;
                         return (
                             <form action="" onSubmit={handleSubmit}>
-                                <h4 className="pt-3 pb-2 px-3">Withdrawal confirmation</h4>
+                                <h4 className="pt-3 pb-2 mb-2 px-4 increased">Withdrawal confirmation</h4>
                                 <div style={{padding: '20px', borderTop: '1px solid #ddd'}}>
                                   <div className='styled-form2 w90-fl'>
-                                      <p className="max300">Enter OTP sent to your email to confirm this withdrawal</p>
+                                      <p className="max300 reduced-soft">Enter OTP sent to your email to confirm this withdrawal</p>
                                       
                                       <Field
                                             type="text"
@@ -125,9 +125,9 @@ const InitiatePaymentModal = (props: any) => {
                                     {otpStatus === 'REQUESTING' && <span className="reduced-soft">Requesting....</span>}
                                   </p>
                                 </div>
-                              <div className='text-center pt-3 pb-2 light-grey pb-3' style={{padding: '20px'}}>
-                                  <button type='button' onClick={closeModal} className='btn btn-danger mx-0 px-3 rad-10 mr-3' disabled={isSubmitting}><i className="fa-solid fa-circle-xmark mr-2"></i>Cancel</button>
-                                  <button type='submit' className='btn btn-success mx-0 px-3 rad-10' disabled={isSubmitting}>{isSubmitting ? 'Processing..' : <><i className="fa-solid fa-circle-check mr-2"></i> Proceed</>}</button>
+                              <div className='text-center pt-3 pb-2 lighter-grey pb-3' style={{padding: '20px'}}>
+                                  <button type='button' onClick={closeModal} className='solid-button-danger mx-0 px-3 rad-10 mr-3' disabled={isSubmitting}><i className="fa-solid fa-circle-xmark mr-2"></i>Cancel</button>
+                                  <button type='submit' className='solid-button mx-0 px-4' disabled={isSubmitting}>{isSubmitting ? 'Processing..' : <><i className="fa-solid fa-circle-check mr-2"></i> Proceed</>}</button>
                                   {
                                       response && <div className='error-popup text-center'>{response}</div>
                                   }

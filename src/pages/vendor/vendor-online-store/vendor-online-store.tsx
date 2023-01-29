@@ -22,7 +22,8 @@ function VendorOnlineStore(props: any) {
   const dispatch = useDispatch();
   const sessionData :IsessionData = useSelector((state: Istate) => state.session);
   const slug = useParams().slug || '';
-  // const slug = props.slug || '';
+
+  const [storeName, setStoreName] = useState('STORE');
 
 
   const getProducts = () => {
@@ -60,11 +61,12 @@ function VendorOnlineStore(props: any) {
   useEffect(() => {
     window.scrollTo(0, 0);
     getProducts();
+    setStoreName((slug?.replace(/-/g, ' ') || storeName).substring(0, 20).toLocaleLowerCase());
   }, []);
   
   return (
     <>
-      <StoreHeader/>
+      <StoreHeader storeName={storeName} />
       <div className='top-banner py-5'>
         <div className='w90 max600'>
           <h1 className='text-center'>Online Store</h1>
@@ -94,7 +96,7 @@ function VendorOnlineStore(props: any) {
                   </div>
                   <h6 className='text-center min-41'>{item.name}</h6>
                   <div className='spread-info'>
-                    <h6 className='mb-0 increased-x'>{item.amount}</h6>
+                    <h6 className='mb-0 increased-x'>₦{item.amount}</h6>
                     <p className='mb-0 increased-soft'>{item.availableQuantity} in stock</p>
                   </div>
                   <div className='info-grid pt-2'>
@@ -117,7 +119,7 @@ function VendorOnlineStore(props: any) {
           </div>
         </div>
       }
-      <StoreFooter/>
+      <StoreFooter storeName={storeName} />
     </>
   );
 }

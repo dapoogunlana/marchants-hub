@@ -51,12 +51,12 @@ export const paymentRecordList = [
     },
     {
       id: 1,
-      product: 'Gucci Bag',
+      product: 'Lambogini Murchelago (2023 Edition)',
       amount: '120,000',
       date: '21-10-2022',
-      customerName: 'Enahoro Azeta',
+      customerName: 'Buhari Enahoro Tinubu',
       transactionId: '12345543',
-      orderId: 'No 5 Owolabi street, off Ikorodu road, shomolu',
+      orderId: 'God bless PDAPC',
       status: 'Paid',
     },
     {

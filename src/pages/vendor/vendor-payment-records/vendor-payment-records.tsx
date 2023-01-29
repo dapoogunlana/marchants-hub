@@ -142,7 +142,12 @@ function VendorPaymentRecords(props: any) {
   return (
     <>
       <div className='p-4'>
-        <div className='row pt-5'>
+        <div className='pt-5'>
+          <div className='payment-disclaimer'>
+            <p><span>Important:</span> To see payment for an order, the order needs to be <span>marked as fulfilled</span></p>
+          </div>
+        </div>
+        <div className='row'>
           <div className='col-lg-9 px-4 mt-4'>
             <div className='db-board'>
               <div className='row'>
@@ -153,7 +158,7 @@ function VendorPaymentRecords(props: any) {
                       <img src={TotalSalesIcon} width={40} alt="" />
                     </div>
                     <p className='mb-0 reduced-x font-weight-bold'>Total Sales</p>
-                    <h5 className='font-weight-bold mb-0'>N100,233,500</h5>
+                    <h5 className='font-weight-bold mb-0'>N500,000</h5>
                   </div>
                 </div>
                 <div className='col-sm-4'>
@@ -162,8 +167,8 @@ function VendorPaymentRecords(props: any) {
                       <span></span>
                       <img src={TotalOrdersIcon} width={40} alt="" />
                     </div>
-                    <p className='mb-0 reduced-x font-weight-bold'>Total Orders</p>
-                    <h5 className='font-weight-bold mb-0'>50</h5>
+                    <p className='mb-0 reduced-x font-weight-bold'>Wallet balance</p>
+                    <h5 className='font-weight-bold mb-0'>N150,000</h5>
                   </div>
                 </div>
                 <div className='col-sm-4'>
@@ -172,8 +177,8 @@ function VendorPaymentRecords(props: any) {
                       <span></span>
                       <img src={ListedProductsIcon} width={40} alt="" />
                     </div>
-                    <p className='mb-1 reduced-x font-weight-bold'>Listed Products</p>
-                    <h5 className='font-weight-bold mb-0'>33</h5>
+                    <p className='mb-1 reduced-x font-weight-bold'>Total withdrawals</p>
+                    <h5 className='font-weight-bold mb-0'>N350,000</h5>
                   </div>
                 </div>
               </div>
@@ -190,12 +195,12 @@ function VendorPaymentRecords(props: any) {
               <Tabs defaultActiveKey={'Payment Records'} onSelect={changKey} >
                 <Tab eventKey={'Payment Records'} title={'Payment Records'}>
                   {
-                    (activeKey === 'Payment Records') && <DataTables data={orderList} columns={tableColumns}/>
+                    (activeKey === 'Payment Records') && <DataTables uncontained data={orderList} columns={tableColumns}/>
                   }
                 </Tab>
                 <Tab eventKey={'Withdrawal Records'} title={'Withdrawal Records'}>
                   {
-                    (activeKey === 'Withdrawal Records') && <DataTables data={orderList} columns={tableColumns}/>
+                    (activeKey === 'Withdrawal Records') && <DataTables uncontained data={orderList} columns={tableColumns}/>
                   }
                 </Tab>
               </Tabs>

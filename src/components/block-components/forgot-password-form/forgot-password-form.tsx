@@ -62,7 +62,7 @@ function AdminForgotPasswordForm() {
             {useNav && <UserNavigationComponent />}
             <div className='spread-info py-3'>
                 <Link to={routeConstants.home}>
-                    <img src={Logo} width={100} alt="" />
+                    <img src={Logo} width={130} alt="" />
                 </Link>
                 <span></span>
             </div>

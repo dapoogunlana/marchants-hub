@@ -44,6 +44,13 @@ function Sidebar(props: any) {
         <div className='user-info spread-info mt-3'>
           <p className='mb-0 reduced font-weight-bold c-white'>{`${sessionData.user?.ownerFirstName} ${sessionData.user?.ownerLastName}`}</p>
           <i className="fas fa-chevron-down"></i>
+          <div className='settings-drop-down'>
+            <div className='clip-area'></div>
+            <div className='text-area'>
+              <p className='mb-1'><i className="fas fa-chevron-down mr-2"></i>Signout</p>
+              <p><i className="fas fa-chevron-down mr-2"></i>Settings</p>
+            </div>
+          </div>
         </div>
       </div>
       <div className='route-sect'>

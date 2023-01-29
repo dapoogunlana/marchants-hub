@@ -46,8 +46,8 @@
      profile: 'profile',
 
      userLevels: {
-        systemAdmin: 'SYSTEMADMIN',
+        systemAdmin: 'Admin',
         vendor: 'Store',
-        dispatcher: 'DISPATCHER',
+        dispatcher: 'Dispatcher',
      },
  };

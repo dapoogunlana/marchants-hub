@@ -14,7 +14,8 @@ import { useDispatch } from 'react-redux';
 import { login } from '../../../services/actions/session-actions';
 import UserNavigationComponent from '../../../services/utils/navigation-component';
 import { regexConstants } from '../../../services/constants/validation-regex';
-import { prepareDispatcherRegisterForm } from '../../../services/utils/form-preparation-service';
+import { prepareVendorRegisterForm } from '../../../services/utils/form-preparation-service';
+import { acceptOnlyNumbers } from '../../../services/utils/data-manipulation-utilits';
 // import { login } from '../../../services/actions/session-actions';
 // import { regexConstants } from '../../../services/constants/validation-regex';
 
@@ -103,7 +104,6 @@ function RegisterVendorForm() {
         // } else {
         //     errors.statutoryID = 'Valid format';
         // }
-        console.log({statutoryIdFile})
         setTimeout(() => {
             // console.log({statutoryIdFile})
         }, 100);
@@ -139,7 +139,7 @@ function RegisterVendorForm() {
         sendRequest({
             url: 'auth/register',
             method: 'POST',
-            body: prepareDispatcherRegisterForm(values, statutoryIdFile)
+            body: prepareVendorRegisterForm(values, statutoryIdFile)
         }, (res: any) => {
             controls.setSubmitting(false);
             toast.success(res.message);
@@ -167,7 +167,6 @@ function RegisterVendorForm() {
                 ...res.payload?.user,
                 token
             }
-            console.log({data})
             dispatch(login(data))
             // navigate(`/${routeConstants.systemAdmin}`);
             setUseNav(true);
@@ -192,9 +191,9 @@ function RegisterVendorForm() {
     return (
         <div className='register-box' onClick={clearResponse}>
             {useNav && <UserNavigationComponent />}
-            <div className='spread-info py-3'>
+            <div className='spread-info pb-3'>
                 <Link to={routeConstants.home}>
-                    <img src={Logo} width={100} alt="" />
+                    <img src={Logo} width={130} alt="" />
                 </Link>
                 <span></span>
             </div>
@@ -218,7 +217,6 @@ function RegisterVendorForm() {
             // })}
             validate={(value) => validate(value)}
             onSubmit={(values, controls) => submitRegistration(values, controls)}
-            // onSubmit={(values, controls) => console.log('values, controls')}
             >
                 {
                     (props: FormikProps<{
@@ -250,7 +248,7 @@ function RegisterVendorForm() {
                                     <label className='text-left'>Store  Name</label>
                                     <input
                                         type="text"
-                                        placeholder='Eg Azeta Technologies'
+                                        // placeholder='Eg Azeta Technologies'
                                         id='storeName'
                                         value={values.storeName}
                                         onBlur={handleBlur}
@@ -267,7 +265,7 @@ function RegisterVendorForm() {
                                     <label className='text-left'>Email</label>
                                     <input
                                         type="email"
-                                        placeholder='enter your email'
+                                        // placeholder='enter your email'
                                         id='email'
                                         value={values.email}
                                         onBlur={handleBlur}
@@ -284,7 +282,7 @@ function RegisterVendorForm() {
                                     <label className='text-left'>Phone Number</label>
                                     <input
                                         type="text"
-                                        placeholder='Enter Phone number'
+                                        // placeholder='Enter Phone number'
                                         id='phoneNumber'
                                         value={values.phoneNumber}
                                         onBlur={handleBlur}
@@ -302,7 +300,7 @@ function RegisterVendorForm() {
                                         <label className='text-left'>Business owner first name</label>
                                         <input
                                             type="text"
-                                            placeholder='Enter first name'
+                                            // placeholder='Enter first name'
                                             id='bizFirstName'
                                             value={values.bizFirstName}
                                             onBlur={handleBlur}
@@ -320,7 +318,7 @@ function RegisterVendorForm() {
                                         <label className='text-left'>Business owner last name</label>
                                         <input
                                             type="text"
-                                            placeholder='Enter last name'
+                                            // placeholder='Enter last name'
                                             id='bizLastName'
                                             value={values.bizLastName}
                                             onBlur={handleBlur}
@@ -336,7 +334,7 @@ function RegisterVendorForm() {
                                 </div>
                                 <div className='info-grid'>
                                     <div className='reg-card'>
-                                        <label className='text-left'>State of Operation</label>
+                                        <label className='text-left temp-hidden'>State of Operation</label>
                                         <select
                                             id='stateOfOperation'
                                             value={values.stateOfOperation}
@@ -345,7 +343,7 @@ function RegisterVendorForm() {
                                             onChange={handleChange}
                                             className={(errors.stateOfOperation && touched.stateOfOperation) ? 'im-error' : ''}
                                         >
-                                            <option value="" disabled>Select State of Operation</option>
+                                            <option value="" disabled>State of Operation</option>
                                             {
                                                 states.map((item: any, index) => {
                                                     return <option key={index} value={item.state_code}>{item.name}</option>
@@ -362,7 +360,7 @@ function RegisterVendorForm() {
                                         <label className='text-left'>Address</label>
                                         <input
                                             type="text"
-                                            placeholder='Enter address'
+                                            // placeholder='Enter address'
                                             id='address'
                                             value={values.address}
                                             onBlur={handleBlur}
@@ -376,9 +374,12 @@ function RegisterVendorForm() {
                                         }
                                     </div>
                                 </div>
+                                <p className='financial-disclaimer'>
+                                    Ensure your bank details matches your name as this is a KYC requirement
+                                </p>
                                 <div className='info-grid'>
                                     <div className='reg-card'>
-                                        <label className='text-left'>Bank name</label>
+                                        <label className='text-left temp-hidden'>Bank name</label>
                                         <select
                                             id='bankName'
                                             value={values.bankName}
@@ -404,12 +405,13 @@ function RegisterVendorForm() {
                                         <label className='text-left'>Bank Account</label>
                                         <input
                                             type="text"
-                                            placeholder='Enter bank account'
+                                            // placeholder='Enter bank account'
                                             id='bankAccount'
                                             value={values.bankAccount}
                                             onBlur={handleBlur}
                                             onFocus={() => errors.bankAccount = ''}
                                             onChange={handleChange}
+                                            onKeyUp={acceptOnlyNumbers}
                                             className={(errors.bankAccount && touched.bankAccount) ? 'im-error' : ''}
                                         />
                                         {

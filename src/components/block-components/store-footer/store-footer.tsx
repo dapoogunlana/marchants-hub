@@ -7,11 +7,13 @@ import './store-footer.scss'
   
   const cartCount = 20;
 
-  useEffect(() => {});
+  useEffect(() => {
+    console.log({props});
+  });
 
   return (
     <div className="store-footer p-5">
-      <h6 className="increased-x pb-4">5th Perfumery</h6>
+      <h6 className="increased-x pb-4" style={{textTransform: 'capitalize'}}>{props.storeName}</h6>
       <div className="row">
         <div className="col-md-6">
           <p className="reduced-soft c-dark-grey">

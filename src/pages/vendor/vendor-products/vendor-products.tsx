@@ -147,7 +147,7 @@ function VendorProducts() {
                 </div>
                 <h6 className='text-center min-41'>{item.name}</h6>
                 <div className='spread-info'>
-                  <h6 className='mb-0'>{item.amount}</h6>
+                  <h6 className='mb-0'>₦{item.amount}</h6>
                   <p className='mb-0 reduced-x'>{item.availableQuantity} in stock</p>
                 </div>
                 <div className='info-grid pt-2'>

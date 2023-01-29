@@ -5,8 +5,8 @@ import { routeConstants } from '../services/constants/route-constants';
 
 const UserModule = lazy(() => import("../layout/user/user-module"));
 const DispatcherModule = lazy(() => import("../layout/user/user_types/dispatcher/dispatcher-module"));
-const ChildrenDashboard = lazy(() => import("../pages/admin/children-dashboard/children-dashboard"));
-const ChildrenList = lazy(() => import("../pages/admin/children-list/children-list"));
+const TabbedVendorOrders = lazy(() => import("../pages/vendor/vendor-orders/tabbed-vendor-orders"));
+const VendorPaymentRecords = lazy(() => import("../pages/vendor/vendor-payment-records/vendor-payment-records"));
 
 function DispatcherRoute() {
   return (
@@ -14,9 +14,9 @@ function DispatcherRoute() {
       <Routes>
         <Route path={routeConstants.all} element={<UserModule/>}>
           <Route path={routeConstants.all} element={<DispatcherModule/>}>
-            <Route path={routeConstants.childrenDashboard} element={<ChildrenDashboard/>}></Route>
-            <Route path={routeConstants.childrenList} element={<ChildrenList/>}></Route>
-            <Route path={routeConstants.all} element={<Navigate to={routeConstants.childrenDashboard}/>}></Route>
+            <Route path={routeConstants.orders} element={<TabbedVendorOrders/>}></Route>
+            <Route path={routeConstants.payments} element={<VendorPaymentRecords/>}></Route>
+            <Route path={routeConstants.all} element={<Navigate to={routeConstants.orders}/>}></Route>
           </Route>
         </Route>
       </Routes>

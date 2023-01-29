@@ -2,7 +2,8 @@ import { Formik, FormikProps, FormikValues } from 'formik';
 import React, { useEffect, useState } from 'react';
 import { sendRequest } from '../../../services/utils/request';
 import { toast } from 'react-toastify';
-
+import { useSelector } from 'react-redux';
+import { Istate } from '../../../services/constants/interfaces/state-schemas';
 import './confirm-email-form.scss';
 import { useNavigate } from 'react-router';
 import { routeConstants } from '../../../services/constants/route-constants';
@@ -15,6 +16,8 @@ function AdminConfirmEmailForm() {
 
     const [response, setResponse] = useState<any>();
     const [useNav, setUseNav] = useState(false);
+    const sessionData = useSelector((state: Istate) => state.session);
+    const userRole = sessionData.user?.role;
 
     const navigate = useNavigate();
 
@@ -37,7 +40,18 @@ function AdminConfirmEmailForm() {
                 verificationCode: values.code,
             }
         }, (res: any) => {
-            navigate(`/${routeConstants.vendor}`);
+            toast.error(res.message);
+            switch(userRole) {
+            // case routeConstants.userLevels.systemAdmin:
+            //     navigate(`/${routeConstants.systemAdmin}`);
+            //     break;
+            case routeConstants.userLevels.vendor:
+                navigate(`/${routeConstants.vendor}`);
+                break;
+            case routeConstants.userLevels.dispatcher:
+                navigate(`/${routeConstants.dispatcher}`);
+                break;
+            }
             setUseNav(true);
         }, (err: any) => {
             controls.setSubmitting(false);
@@ -59,7 +73,7 @@ function AdminConfirmEmailForm() {
             {/* {useNav && <UserNavigationComponent />} */}
             <div className='spread-info py-3'>
                 <Link to={routeConstants.home}>
-                    <img src={Logo} width={100} alt="" />
+                    <img src={Logo} width={130} alt="" />
                 </Link>
                 <span></span>
             </div>
