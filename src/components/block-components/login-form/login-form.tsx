@@ -68,7 +68,6 @@ function AdminLoginForm(props: any) {
         }, (res: any) => {
             controls.setSubmitting(false);
             setResponse(<p className='c-dark-green mb-0 pt-2'>{res.message}</p>);
-            toast.success(res.message);
             controls.resetForm();
             dispatch(login(res.data))
             // navigate(`/${routeConstants.systemAdmin}`);

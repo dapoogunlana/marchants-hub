@@ -16,11 +16,14 @@ import { paymentRecordList } from '../../../services/constants/order-and-payment
 import InitiatePaymentModal from '../../../components/block-components/modals/initiate-payment-modal/initiate-payment-modal';
 import { sendRequest } from '../../../services/utils/request';
 import { toast } from 'react-toastify';
+import { useSelector } from 'react-redux';
+import { routeConstants } from '../../../services/constants/route-constants';
 
 function VendorPaymentRecords(props: any) {
   const [initiating, setinItiating] = useState<boolean>(false);
   const [viewInitiateWithdrawal, setViewInitiateWithdrawal] = useState(false);
   const [orderList, setOrderList] = useState<any[]>([]);
+  const user = useSelector((state:any) => state.session?.user);
   let id: any;
   const query = props.query;
   const [activeKey, setActiveKey] = useState('Payment Records');
@@ -142,11 +145,16 @@ function VendorPaymentRecords(props: any) {
   return (
     <>
       <div className='p-4'>
-        <div className='pt-5'>
+        {
+          user.role === routeConstants.userLevels.vendor ?
+          <div className='pt-5'>
           <div className='payment-disclaimer'>
             <p><span>Important:</span> To see payment for an order, the order needs to be <span>marked as fulfilled</span></p>
           </div>
+        </div> :
+          <div className='pt-4'>
         </div>
+        }
         <div className='row'>
           <div className='col-lg-9 px-4 mt-4'>
             <div className='db-board'>

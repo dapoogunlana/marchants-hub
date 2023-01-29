@@ -155,13 +155,15 @@ function VendorDashboard(props: any) {
               </div>
             </div>
             <div>
-              <div className='pt-3'>
-                <button className='btn btn-secondary rad-25 dashboard-button2 pl-2'><span className='pending-count mr-2'>4</span> Pending Orders</button>
+              <div className='pt-4'>
+                <button className='pending-orders-pill'>
+                  <span className='pending-count mr-2'>4</span> Pending Orders
+                </button>
               </div>
               <div className='order-list px-3'>
                 {/* <FacilitatorListFilter  submitFilters={(filter: any) => handleFilter(filter)} /> */}
                 <div className='row'>
-                  <div className='card-container col-md-12'>
+                  <div className='card-container col-md-12 mt-3'>
                     <DataTables data={orderList} columns={tableColumns}/>
                     <div className='text-center pb-4'>
                       <Link to={`/${routeConstants.vendor}/${routeConstants.orders}`}>
