@@ -1,9 +1,4 @@
 
-
-export interface Istate {
-    session: any,
-}
-
 export interface IsessionData {
     address : string,
     bankAccount : string,

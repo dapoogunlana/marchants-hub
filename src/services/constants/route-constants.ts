@@ -11,6 +11,8 @@
      forgotPassword: 'forgot-password',
      resetPassword: 'reset-password',
      confirmEmail: 'confirm-email',
+     cart: 'cart',
+     checkout: 'checkout',
      terms: 'terms',
      faq: 'faq',
 

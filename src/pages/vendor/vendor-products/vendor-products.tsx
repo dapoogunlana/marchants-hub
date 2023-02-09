@@ -2,8 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import NewProductModal from '../../../components/block-components/modals/new-product-modal/new-product-modal';
-import { Iproduts } from '../../../services/constants/interfaces/product-and-orders-schema';
-import { IsessionData, Istate } from '../../../services/constants/interfaces/state-schemas';
+import { IstoreState } from '../../../services/constants/interfaces/data-schemas';
+import { Iproduct } from '../../../services/constants/interfaces/product-and-orders-schema';
+import { IsessionData } from '../../../services/constants/interfaces/state-schemas';
 import { storeItemList } from '../../../services/constants/product-dummy-constants';
 import { stringifyFilter } from '../../../services/utils/data-manipulation-utilits';
 import { sendRequest } from '../../../services/utils/request';
@@ -16,10 +17,10 @@ function VendorProducts() {
   const [viewNewProduct, setViewNewProduct] = useState(false);
   const [viewEditProduct, setViewEditProduct] = useState(false);
   const [viewRestockProduct, setViewRestockProduct] = useState(false);
-  const [products, setProducts] = useState<Iproduts[]>([]);
+  const [products, setProducts] = useState<Iproduct[]>([]);
   const [activeProduct, setActiveProduct] = useState();
   
-  const sessionData :IsessionData = useSelector((state: Istate) => state.session);
+  const sessionData :IsessionData = useSelector((state: IstoreState) => state.session);
 
   const submit = () => {
     submitFilters(filter);
@@ -89,26 +90,26 @@ function VendorProducts() {
     });
   }
   
-  const deleteProduct = (item: any) => {
-    swal.fire({
-        title: 'Delete Product',
-        text: `You are about to delete a product from you inventory (${item.name}), once you do this, it will no longer be 
-        displayed on your products page and also on your online store`,
-        icon: 'error',
-    }).then((result: any) => {
-        if (result.isConfirmed) {
-            sendRequest({
-                url: 'products/' + item._id,
-                method:'DELETE',
-            }, (res: any) => {
-                toast.success(res.message);
-                getProducts();
-                return;
-            }, (err: any) => {
-                toast.error(err.error?.emailError || err.message || 'Unable to complete');
-            });
-        }
-    })
+const deleteProduct = (item: any) => {
+  swal.fire({
+      title: 'Delete Product',
+      text: `You are about to delete a product from you inventory (${item.name}), once you do this, it will no longer be 
+      displayed on your products page and also on your online store`,
+      icon: 'error',
+  }).then((result: any) => {
+      if (result.isConfirmed) {
+          sendRequest({
+              url: 'products/' + item._id,
+              method:'DELETE',
+          }, (res: any) => {
+              toast.success(res.message);
+              getProducts();
+              return;
+          }, (err: any) => {
+              toast.error(err.error?.emailError || err.message || 'Unable to complete');
+          });
+      }
+  })
 }
 
   useEffect(() => {

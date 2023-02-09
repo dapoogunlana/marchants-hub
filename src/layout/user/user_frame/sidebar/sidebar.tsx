@@ -4,18 +4,17 @@ import { Logo, StoreImg } from '../../../../assets/images';
 import { routeConstants as rc } from '../../../../services/constants/route-constants';
 import { useSelector } from 'react-redux';
 import './sidebar.scss';
-import { Istate } from '../../../../services/constants/interfaces/state-schemas';
 import { generateAdminRoutes, generateVendorRoutes, generateDispatcherRoutes } from '../../../../services/session/sidebar-route-service';
-import { IroutObjectData } from '../../../../services/constants/interfaces/data-schemas';
+import { IroutObjectData, IstoreState } from '../../../../services/constants/interfaces/data-schemas';
 import { sortRoute } from '../../../../services/utils/navigation-utilities';
 import { logout } from '../../../../services/actions/session-actions';
 
 function Sidebar(props: any) {
 
-  const sessionData = useSelector((state: Istate) => state.session);
+  const sessionData = useSelector((state: IstoreState) => state.session);
   const [routes, setRoutes] = useState<IroutObjectData[]>([]);
   // console.log({sessionData});
-  const userRole = sessionData.user?.role;
+  const userRole = sessionData.role;
 
   useEffect(() => {
     if(!userRole) {
@@ -42,7 +41,7 @@ function Sidebar(props: any) {
           <img src={StoreImg} alt="" />
         </div>
         <div className='user-info spread-info mt-3'>
-          <p className='mb-0 reduced font-weight-bold c-white'>{`${sessionData.user?.ownerFirstName} ${sessionData.user?.ownerLastName}`}</p>
+          <p className='mb-0 reduced font-weight-bold c-white'>{`${sessionData.ownerFirstName} ${sessionData.ownerLastName}`}</p>
           <i className="fas fa-chevron-down"></i>
           <div className='settings-drop-down'>
             <div className='clip-area'></div>

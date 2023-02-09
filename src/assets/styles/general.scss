@@ -10,6 +10,9 @@
 .h-bold {
   font-weight: 700 !important;
 }
+.h-black {
+  font-weight: 900 !important;
+}
 
 .mr-5-web{
   @include mediaW(455px) {
@@ -800,6 +803,34 @@
   border-radius: 6px;
   transition: 0.3s ease;
 }
+.solid-button-black{
+    background-color: $black;
+    border: 1px solid $black;
+    border-radius: 0;
+    color: $white;
+    padding: 5px 9px;
+    font-size: 0.8em;
+    transition: 0.3s ease;
+    &:focus{
+        outline: none;
+    }
+}
+.hollow-button-black{
+    background-color: $white;
+    border: 1px solid $black;
+    border-radius: 0;
+    color: $black;
+    padding: 5px 9px;
+    font-size: 0.8em;
+    transition: 0.3s ease;
+    &:hover{
+        background-color: $black;
+        color: $white;
+    }
+    &:focus{
+        outline: none;
+    }
+}
 
 .relative {
   position: relative;
@@ -920,6 +951,17 @@
   &:hover{
     font-weight: 700;
     color: $primary-green-hover;
+  }
+}
+.underlined {
+  text-decoration: underline;
+}
+.underlined-red {
+  cursor: pointer;
+  transition: 0.25s ease;
+  text-decoration: underline;
+  &:hover{
+    color: $black;
   }
 }
 .no-wrap {

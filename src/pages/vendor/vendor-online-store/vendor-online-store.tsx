@@ -6,9 +6,11 @@ import { toast } from 'react-toastify';
 import PaginatedItems from '../../../components/base-components/pagination-component/pagination-component';
 import StoreFooter from '../../../components/block-components/store-footer/store-footer';
 import StoreHeader from '../../../components/block-components/store-header/store-header';
+import { addCartItem } from '../../../services/actions/cart-actions';
 import { setActiveProduct } from '../../../services/actions/product-actions';
-import { Iproduts } from '../../../services/constants/interfaces/product-and-orders-schema';
-import { IsessionData, Istate } from '../../../services/constants/interfaces/state-schemas';
+import { IstoreState } from '../../../services/constants/interfaces/data-schemas';
+import { Iproduct } from '../../../services/constants/interfaces/product-and-orders-schema';
+import { IsessionData } from '../../../services/constants/interfaces/state-schemas';
 import { routeConstants } from '../../../services/constants/route-constants';
 import { stringifyFilter } from '../../../services/utils/data-manipulation-utilits';
 import { sendRequest } from '../../../services/utils/request';
@@ -16,11 +18,11 @@ import './vendor-online-store.scss';
 
 function VendorOnlineStore(props: any) {
   
-  const [products, setProducts] = useState<Iproduts[]>([]);
+  const [products, setProducts] = useState<Iproduct[]>([]);
   const [productsLoaded, setProductsLoaded] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const sessionData :IsessionData = useSelector((state: Istate) => state.session);
+  const sessionData :IsessionData = useSelector((state: IstoreState) => state.session);
   const slug = useParams().slug || '';
 
   const [storeName, setStoreName] = useState('STORE');
@@ -46,12 +48,12 @@ function VendorOnlineStore(props: any) {
   }
 
   const viewProduct = (product: any) => {
-    dispatch(setActiveProduct(product));
+    // dispatch(setActiveProduct(product));
     navigate(`/${routeConstants.onlineStore}/${slug}/${product._id}`);
   }
 
   const addProductToCart = (product: any) => {
-    toast.info('Under Development');
+    dispatch(addCartItem(product));
   }
 
   const changePage = (pageDetails: any) => {

@@ -13,6 +13,8 @@ const ResetPasswordPage = lazy(() => import("../pages/home/reset-password/reset-
 const ConfirmEmailPage = lazy(() => import("../pages/home/confirm-email/confirm-email"));
 const OnlineStorePage = lazy(() => import("../pages/vendor/vendor-online-store/vendor-online-store"));
 const OnlineStoreItemPage = lazy(() => import("../pages/vendor/vendor-online-store-item/vendor-online-store-item"));
+const VendorUserCartPage = lazy(() => import("../pages/vendor/vendor-user-cart/vendor-user-cart"));
+const VendorUserCheckoutPage = lazy(() => import("../pages/vendor/vendor-user-checkout/vendor-user-checkout"));
 
 function HomeRoute() {
   return (
@@ -28,6 +30,8 @@ function HomeRoute() {
             <Route path={routeConstants.confirmEmail} element={<ConfirmEmailPage/>}></Route>
             <Route path={routeConstants.onlineStore + '/:slug'} element={<OnlineStorePage/>}></Route>
             <Route path={routeConstants.onlineStore + '/:slug/:id'} element={<OnlineStoreItemPage/>}></Route>
+            <Route path={routeConstants.cart + '/:slug'} element={<VendorUserCartPage/>}></Route>
+            <Route path={routeConstants.checkout + '/:slug'} element={<VendorUserCheckoutPage/>}></Route>
             <Route path={routeConstants.all} element={<Navigate to={routeConstants.home}/>}></Route>
           </Route>
       </Routes>

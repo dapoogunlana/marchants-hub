@@ -11,15 +11,18 @@ import {
   TotalSalesIcon,
   TotalOrdersIcon,
   ListedProductsIcon,
+  FeaturesMoreSalesIcon,
+  FeaturesBusinessLoansIcon,
   FeaturesCheaperIcon,
  } from '../../../assets/images';
 import { sendRequest } from '../../../services/utils/request';
 import { useSelector } from 'react-redux';
-import { IsessionData, Istate } from '../../../services/constants/interfaces/state-schemas';
+import { IsessionData } from '../../../services/constants/interfaces/state-schemas';
 import { tabQueryConstants } from '../../../services/constants/general-constants';
+import { IstoreState } from '../../../services/constants/interfaces/data-schemas';
 
 function VendorDashboard(props: any) {
-  const sessionData: IsessionData = useSelector((state: Istate) => state.session.user);
+  const sessionData: IsessionData = useSelector((state: IstoreState) => state.session);
   const [orderList, setOrderList] = useState<any[]>([]);
   let id: any;
   const query = props.query;
@@ -185,12 +188,12 @@ function VendorDashboard(props: any) {
                 </div>
                 <div className='col-lg-12 col-sm-6'>
                   <div className='feature spread-info-front mt-3'>
-                    <img src={FeaturesCheaperIcon} width={60} alt="" />
+                    <img src={FeaturesMoreSalesIcon} width={60} alt="" />
                     <p className='mb-0 reduced-x pl-3'>More sales channels for you</p>
                   </div>
                   <div className='feature spread-info-front mt-3'>
-                    <img src={FeaturesCheaperIcon} width={60} alt="" />
-                    <p className='mb-0 reduced-x pl-3'>Logistics management</p>
+                    <img src={FeaturesBusinessLoansIcon} width={60} alt="" />
+                    <p className='mb-0 reduced-x pl-3'>Business loans</p>
                   </div>
                   <div className='feature spread-info-front mt-3'>
                     <img src={FeaturesCheaperIcon} width={60} alt="" />

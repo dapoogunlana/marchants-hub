@@ -7,11 +7,12 @@ import { Link, useNavigate } from 'react-router-dom';
 import { routeConstants } from '../../../services/constants/route-constants';
 import { sendRequest } from '../../../services/utils/request';
 import { useSelector } from 'react-redux';
-import { IsessionData, Istate } from '../../../services/constants/interfaces/state-schemas';
+import { IsessionData } from '../../../services/constants/interfaces/state-schemas';
 import { tabQueryConstants } from '../../../services/constants/general-constants';
+import { IstoreState } from '../../../services/constants/interfaces/data-schemas';
 
 function VendorOrders(props: any) {
-  const sessionData: IsessionData = useSelector((state: Istate) => state.session.user);
+  const sessionData: IsessionData = useSelector((state: IstoreState) => state.session);
   const [orderList, setOrderList] = useState<any[]>([]);
   let id: any;
   const query = props.query;

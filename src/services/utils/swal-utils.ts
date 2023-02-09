@@ -27,7 +27,7 @@ export const swalSuccess = Swal.mixin({
 
 export const swalDanger = Swal.mixin({
     customClass: {
-      confirmButton: 'btn btn-danger',
+      confirmButton: 'btn btn-danger ml-3',
       cancelButton: 'btn btn-secondary'
     },
     icon: 'error',

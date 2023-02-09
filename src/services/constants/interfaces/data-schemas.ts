@@ -1,3 +1,6 @@
+import { Iproduct } from "./product-and-orders-schema";
+import { IsessionData } from "./state-schemas";
+
 export interface IloginData {
     token: number,
     firstname: string,
@@ -15,3 +18,9 @@ export interface IroutObjectData {
     }[],
 }
 
+
+export interface IstoreState{
+    session: IsessionData,
+    activeProduct: Iproduct,
+    cart: Iproduct[],
+}

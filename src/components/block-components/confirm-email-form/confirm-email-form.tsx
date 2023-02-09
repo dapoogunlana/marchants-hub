@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react';
 import { sendRequest } from '../../../services/utils/request';
 import { toast } from 'react-toastify';
 import { useSelector } from 'react-redux';
-import { Istate } from '../../../services/constants/interfaces/state-schemas';
 import './confirm-email-form.scss';
 import { useNavigate } from 'react-router';
 import { routeConstants } from '../../../services/constants/route-constants';
@@ -11,13 +10,14 @@ import { Link } from 'react-router-dom';
 import { Logo } from '../../../assets/images';
 import UserNavigationComponent from '../../../services/utils/navigation-component';
 import { regexConstants } from '../../../services/constants/validation-regex';
+import { IstoreState } from '../../../services/constants/interfaces/data-schemas';
 
 function AdminConfirmEmailForm() {
 
     const [response, setResponse] = useState<any>();
     const [useNav, setUseNav] = useState(false);
-    const sessionData = useSelector((state: Istate) => state.session);
-    const userRole = sessionData.user?.role;
+    const sessionData = useSelector((state: IstoreState) => state.session);
+    const userRole = sessionData?.role;
 
     const navigate = useNavigate();
 
