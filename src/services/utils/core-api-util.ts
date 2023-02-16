@@ -1,4 +1,4 @@
-import { dummyLga, dummyState } from "../constants/dashboard-dummy-constants";
+
 import { sendRequest } from "./request";
 
 export let coreStates = [];

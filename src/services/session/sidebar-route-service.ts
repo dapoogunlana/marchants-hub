@@ -6,37 +6,6 @@ export const generateAdminRoutes = (): IroutObjectData[] => {
 
     const routes: IroutObjectData[] = [];
 
-    routes.push({
-        label: 'Facilitator',
-        routes: [
-            { name: 'Dashboard', link: rc.facilitatorDashboard },
-            { name: 'All Facilitators', link: rc.facilitatorList },
-        ]
-    });
-    routes.push({
-        label: 'children',
-        routes: [
-            { name: 'Dashboard', link: rc.childrenDashboard },
-            { name: 'All Children', link: rc.childrenList },
-        ]
-    });
-    routes.push({
-        label: 'cohort',
-        routes: [
-            { name: 'Dashboard', link: rc.cohortDashboard },
-            { name: 'Cohorts', link: rc.cohortList },
-            { name: 'Pillars', link: rc.pillars },
-        ]
-    });
-    routes.push({
-        label: '',
-        routes: [
-            { name: 'User Management', link: rc.userManagement },
-            { name: 'Admin', link: rc.systemAdmin },
-            { name: 'Profile', link: rc.profile },
-        ]
-    });
-
     return routes;
 }
 

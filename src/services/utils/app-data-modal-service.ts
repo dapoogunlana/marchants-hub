@@ -14,7 +14,6 @@ export const closeAppModal = (callback: Function) => {
   };
 
   export const openModal = () => {
-    console.log('happy console');
     document.body.style.overflow = 'hidden';
     const appModal: any = document.querySelector('.app-data-modal');
     const modalContent: any = document.querySelector('.modal-container');

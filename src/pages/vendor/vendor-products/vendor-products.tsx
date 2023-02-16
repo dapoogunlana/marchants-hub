@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
+import DeleteModal from '../../../components/block-components/modals/delete-modal/delete-modal';
 import NewProductModal from '../../../components/block-components/modals/new-product-modal/new-product-modal';
 import { IstoreState } from '../../../services/constants/interfaces/data-schemas';
 import { Iproduct } from '../../../services/constants/interfaces/product-and-orders-schema';
 import { IsessionData } from '../../../services/constants/interfaces/state-schemas';
-import { storeItemList } from '../../../services/constants/product-dummy-constants';
+import { deleteProductMessage, storeItemList } from '../../../services/constants/product-dummy-constants';
 import { stringifyFilter } from '../../../services/utils/data-manipulation-utilits';
 import { sendRequest } from '../../../services/utils/request';
 import { swal } from '../../../services/utils/swal-utils';
@@ -17,6 +18,7 @@ function VendorProducts() {
   const [viewNewProduct, setViewNewProduct] = useState(false);
   const [viewEditProduct, setViewEditProduct] = useState(false);
   const [viewRestockProduct, setViewRestockProduct] = useState(false);
+  const [viewDeleteProduct, setViewDeleteProduct] = useState(false);
   const [products, setProducts] = useState<Iproduct[]>([]);
   const [activeProduct, setActiveProduct] = useState();
   
@@ -47,8 +49,8 @@ function VendorProducts() {
     }
   }
 
-  const openEditProductModal = (id: any) => {
-    setActiveProduct(id)
+  const openEditProductModal = (product: any) => {
+    setActiveProduct(product)
     setViewEditProduct(true);
   }
 
@@ -60,8 +62,8 @@ function VendorProducts() {
     }
   }
 
-  const openRestockProductModal = (id: any) => {
-    setActiveProduct(id)
+  const openRestockProductModal = (product: any) => {
+    setActiveProduct(product)
     setViewRestockProduct(true);
   }
 
@@ -89,28 +91,46 @@ function VendorProducts() {
     }, (err: any) => {
     });
   }
+
+  const openDeleteProductModal = (product: any) => {
+    setActiveProduct(product);
+    setViewDeleteProduct(true);
+  }
   
-const deleteProduct = (item: any) => {
-  swal.fire({
-      title: 'Delete Product',
-      text: `You are about to delete a product from you inventory (${item.name}), once you do this, it will no longer be 
-      displayed on your products page and also on your online store`,
-      icon: 'error',
-  }).then((result: any) => {
-      if (result.isConfirmed) {
-          sendRequest({
-              url: 'products/' + item._id,
-              method:'DELETE',
-          }, (res: any) => {
-              toast.success(res.message);
-              getProducts();
-              return;
-          }, (err: any) => {
-              toast.error(err.error?.emailError || err.message || 'Unable to complete');
-          });
-      }
-  })
-}
+  const deleteProduct = (item?: any, feedback?: any) => {
+    setViewDeleteProduct(false);
+    if (feedback) {
+      sendRequest({
+          url: 'products/' + item?._id,
+          method:'DELETE',
+      }, (res: any) => {
+          toast.success(res.message);
+          getProducts();
+          return;
+      }, (err: any) => {
+          toast.error(err.error?.emailError || err.message || 'Unable to complete');
+      });
+    }
+    // swal.fire({
+    //     title: 'Delete Product',
+    //     text: `You are about to delete a product from you inventory (${item.name}), once you do this, it will no longer be 
+    //     displayed on your products page and also on your online store`,
+    //     icon: 'error',
+    // }).then((result: any) => {
+    //     if (result.isConfirmed) {
+    //         sendRequest({
+    //             url: 'products/' + item._id,
+    //             method:'DELETE',
+    //         }, (res: any) => {
+    //             toast.success(res.message);
+    //             getProducts();
+    //             return;
+    //         }, (err: any) => {
+    //             toast.error(err.error?.emailError || err.message || 'Unable to complete');
+    //         });
+    //     }
+    // })
+  }
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -152,14 +172,15 @@ const deleteProduct = (item: any) => {
                   <p className='mb-0 reduced-x'>{item.availableQuantity} in stock</p>
                 </div>
                 <div className='info-grid pt-2'>
-                  <button className='solid-button reduced' onClick={() => openEditProductModal(item)}>Edit</button>
+                  <button className='solid-button reduced px-3' onClick={() => openEditProductModal(item)}>Edit</button>
                   <span></span>
-                  <button className='hollow-button reduced' onClick={() => deleteProduct(item)}>Delete</button>
+                  <button className='hollow-button reduced' onClick={() => openDeleteProductModal(item)}>Delete</button>
                 </div>
                 {item.availableQuantity === 0 && <div className='out-of-scock-banner center-info-col' data-aos="fade-in" data-aos-delay={(index * 100) + 600}>
-                  <button className='btn btn-success rad-3-im px-3' onClick={() => openRestockProductModal(item)}>Restock</button>
-                  <span className='py-3'></span>
-                  <button className='hollow-button reduced rad-3-im px-3' onClick={() => deleteProduct(item)}><span className='py-1 px-2'>Delete</span></button>
+                  <p className='increased'>Out of stock</p>
+                  <button className='solid-button rad-3-im px-3' onClick={() => openRestockProductModal(item)}>&nbsp;&nbsp; Restock &nbsp;&nbsp;</button>
+                  <span className='py-2'></span>
+                  <button className='hollow-button reduced rad-3-im px-3' onClick={() => openDeleteProductModal(item)}><span className='py-1 px-2'>Delete</span></button>
                 </div>}
               </div>
             </div>
@@ -169,6 +190,7 @@ const deleteProduct = (item: any) => {
       {viewNewProduct && <NewProductModal closeModal={closeNewProductModal} />}
       {viewEditProduct && <NewProductModal title={'Edit'} product={activeProduct} closeModal={closeEditProductModal} />}
       {viewRestockProduct && <NewProductModal title={'Restock'} product={activeProduct} closeModal={closeRestockProductModal} />}
+      {viewDeleteProduct && <DeleteModal title={'Delete2'} writeup={deleteProductMessage} product={activeProduct} closeModal={deleteProduct} />}
     </>
   );
 }

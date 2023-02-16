@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import DataTables from '../../../components/block-components/data-table/data-table';
 import './vendor-dashboard.scss';
-import { calculateAge, formatDate, formatNumber, stringifyFilter } from '../../../services/utils/data-manipulation-utilits';
+import { formatDate, formatNumber, stringifyFilter } from '../../../services/utils/data-manipulation-utilits';
 import DropdownStyledButton from '../../../components/base-components/styled-dropdown-button/dropdown-button';
 import { Link, useNavigate } from 'react-router-dom';
-import { getFacilitators, updateFilters } from '../../../services/utils/facilitator-list-service';
 import { routeConstants } from '../../../services/constants/route-constants';
 import { 
   ComingSoon,

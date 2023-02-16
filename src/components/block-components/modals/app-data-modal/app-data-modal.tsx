@@ -1,5 +1,4 @@
 import React, { useEffect } from "react";
-import Profile from "../../../../pages/admin/profile/profile";
 import { closeAppModal, openModal } from "../../../../services/utils/app-data-modal-service";
 
 const AppDataModal = (props: any) => {
@@ -25,20 +24,7 @@ const AppDataModal = (props: any) => {
           
           {/* Any content goes in here */}
           <div>
-            <Profile/>
-            <Profile/>
-            <Profile/>
-            <Profile/>
-            <Profile/>
-            <Profile/>
-            <Profile/>
-            <Profile/>
-            <Profile/>
-            <Profile/>
-            <Profile/>
-            <Profile/>
-            <Profile/>
-            <Profile/>
+            <div className="p-5"></div>
           </div>
           {/* Content ends  here */}
 
