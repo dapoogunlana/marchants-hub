@@ -23,7 +23,7 @@ function VendorPaymentRecords(props: any) {
   const [initiating, setinItiating] = useState<boolean>(false);
   const [viewInitiateWithdrawal, setViewInitiateWithdrawal] = useState(false);
   const [orderList, setOrderList] = useState<any[]>([]);
-  const user = useSelector((state:any) => state.session?.user);
+  const user = useSelector((state:any) => state.session);
   let id: any;
   const query = props.query;
   const [activeKey, setActiveKey] = useState('Payment Records');

@@ -6,7 +6,7 @@ import { useSelector } from 'react-redux';
 import './sidebar.scss';
 import { generateAdminRoutes, generateVendorRoutes, generateDispatcherRoutes } from '../../../../services/session/sidebar-route-service';
 import { IroutObjectData, IstoreState } from '../../../../services/constants/interfaces/data-schemas';
-import { sortRoute } from '../../../../services/utils/navigation-utilities';
+import { logoutUser, sortRoute } from '../../../../services/utils/navigation-utilities';
 import { logout } from '../../../../services/actions/session-actions';
 import SettingsModal from '../../../../components/block-components/modals/settings-modal/settings-modal';
 
@@ -27,6 +27,7 @@ function Sidebar(props: any) {
   }
 
   useEffect(() => {
+    console.log({sessionData});
     if(!userRole) {
       logout();
     }
@@ -57,7 +58,7 @@ function Sidebar(props: any) {
             <div className='settings-drop-down'>
               <div className='clip-area'></div>
               <div className='text-area'>
-                <p className='mb-1'><i className="fas fa-chevron-down mr-2"></i>Signout</p>
+                <p className='mb-1' onClick={logoutUser}><i className="fas fa-chevron-down mr-2"></i>Signout</p>
                 <p onClick={openSettingsModal}><i className="fas fa-chevron-down mr-2"></i>Settings</p>
               </div>
             </div>
@@ -74,7 +75,8 @@ function Sidebar(props: any) {
                   route.routes.map((item, routeIndex) => (
                     <React.Fragment key={routeIndex}>
                       <NavLink target={item.standalone ? '_blank' : '_self'} to={item.standalone ? `/${item.link}` : `${sortRoute(userRole)}${item.link}`} className={({isActive}) => isActive ? 'bar-link selected' : 'bar-link'} onClick={props.clickLink}>
-                        <i className={'reduced fas fa-' + (item.icon || 'table-list')}></i><span className='reduced pl-2'>{item.name}</span>
+                        {/* <i className={'reduced fas fa-' + (item.icon || 'table-list')}></i><span className='reduced pl-2'>{item.name}</span> */}
+                        <img src={item.image} width={item.width} alt="" /><span className='reduced pl-2'>{item.name}</span>
                       </NavLink>
                     </React.Fragment>
                   ))

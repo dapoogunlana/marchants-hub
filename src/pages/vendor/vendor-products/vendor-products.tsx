@@ -6,10 +6,9 @@ import NewProductModal from '../../../components/block-components/modals/new-pro
 import { IstoreState } from '../../../services/constants/interfaces/data-schemas';
 import { Iproduct } from '../../../services/constants/interfaces/product-and-orders-schema';
 import { IsessionData } from '../../../services/constants/interfaces/state-schemas';
-import { deleteProductMessage, storeItemList } from '../../../services/constants/product-dummy-constants';
+import { deleteProductMessage } from '../../../services/constants/product-dummy-constants';
 import { stringifyFilter } from '../../../services/utils/data-manipulation-utilits';
 import { sendRequest } from '../../../services/utils/request';
-import { swal } from '../../../services/utils/swal-utils';
 import './vendor-products.scss';
 
 function VendorProducts() {

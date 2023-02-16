@@ -24,8 +24,6 @@ function VendorDashboard(props: any) {
   const sessionData: IsessionData = useSelector((state: IstoreState) => state.session);
   const [orderList, setOrderList] = useState<any[]>([]);
   let id: any;
-  const query = props.query;
-  const navigate = useNavigate();
 
   const tableColumns = [
     {
@@ -65,21 +63,6 @@ function VendorDashboard(props: any) {
 
    const actionButtonProp = (id:any) => {      
      const actions: any = {};
-     switch(query) {
-      //  case tabQueryConstants.applied.query:
-      //    actions['Update to Evaluated'] = () => openEvaluateModal(id);
-      //    break;
-      //  case tabQueryConstants.evaluated.query:
-      //    actions.Accept = () => openAcceptModal(id);
-      //    actions.Reject = () => rejectFacilitator(id, getFacilitatorsList);
-      //    break;
-      //  case tabQueryConstants.confirmed.query:
-      //   //  actions.Confirm = () => console.log('Confirm');
-      //    break;
-      //  case tabQueryConstants.active.query:
-      //   //  actions.Active = () => console.log('Active');
-      //    break;
-     }
     return ({
       name: '',
       variant: 'success',

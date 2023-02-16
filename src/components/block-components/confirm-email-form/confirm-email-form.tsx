@@ -16,8 +16,7 @@ function AdminConfirmEmailForm() {
 
     const [response, setResponse] = useState<any>();
     const [useNav, setUseNav] = useState(false);
-    const sessionData = useSelector((state: IstoreState) => state.session);
-    const userRole = sessionData?.role;
+    const userRole = useSelector((state: IstoreState) => state.session?.role);
 
     const navigate = useNavigate();
 

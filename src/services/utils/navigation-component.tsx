@@ -3,14 +3,14 @@ import React from 'react';
 import { Navigate } from 'react-router';
 import { useSelector } from 'react-redux';
 import { routeConstants } from '../constants/route-constants';
+import { IstoreState } from '../constants/interfaces/data-schemas';
 
 function UserNavigationComponent() {
 
-    const user = useSelector((state:any) => state.session?.user);
-    console.log({user})
+    const role = useSelector((state:IstoreState) => state.session.role);
 
     const routeSorter = () => {
-        switch(user.role) {
+        switch(role) {
             case routeConstants.userLevels.systemAdmin:
                 return <Navigate to={`/${routeConstants.vendor}/${routeConstants.dashboard}`}/>;
                 // return <Navigate to={`/${routeConstants.systemAdmin}/${routeConstants.dashboard}`}/>;

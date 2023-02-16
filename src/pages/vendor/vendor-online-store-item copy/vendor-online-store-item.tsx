@@ -48,10 +48,7 @@ function VendorOnlineStoreItem() {
     onClose: () => console.log('Closed'),
   }
   
-  const sessionData :IsessionData = useSelector((state: IstoreState) => {
-    console.log({state});
-    return state.session
-  });
+  const sessionData :IsessionData = useSelector((state: IstoreState) => state.session);
 
   const completePayment = () => {
     setPurchaseStarted(2);

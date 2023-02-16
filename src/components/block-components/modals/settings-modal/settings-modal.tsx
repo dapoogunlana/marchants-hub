@@ -5,61 +5,54 @@ import Select from "react-select";
 import { sendRequest } from "../../../../services/utils/request";
 import { toast } from "react-toastify";
 import { prepareNewProductForm } from "../../../../services/utils/form-preparation-service";
+import { acceptOnlyNumbers } from "../../../../services/utils/data-manipulation-utilits";
 
 const SettingsModal = (props: any) => {
   const [response, setResponse] = useState<any>();
-  const [pillars, setPillars] = useState([]);
+    const [banks, setBanks] = useState([]);
   const id = props.product?._id;
   const closeModal = (feedback: any) => {
     closeAppModal(()=> props.closeModal(feedback));
   };
 
+  const getBanks = () => {
+      sendRequest({
+          url: 'banks',
+      }, (res: any) => {
+          setBanks(res.data.data || []);
+      }, (err: any) => {
+      });
+  }
+
   const validate = (values: FormikValues) => {   
       const errors: any = {};
   
-      if (!values.name) {
-          errors.name = 'Product name is required';
+      if (!values.accountNumber) {
+          errors.accountNumber = 'Account number is required';
+      } else if (values.accountNumber.length < 10) {
+        errors.accountNumber = 'Invalid account number';
+    }
+      if (!values.bankName) {
+          errors.bankName = 'Bank is required';
       }
-      if (!values.description) {
-          errors.description = 'Description is required';
+      if (!values.storeName) {
+          errors.storeName = 'Store name required';
       }
-      if (!values.amount) {
-          errors.amount = 'Amount required';
-      } else if (values.amount <= 0) {
-        errors.amount = 'Invalin amount';
+      if (!values.address) {
+          errors.address = 'Business address is required';
       }
-      if (!values.availableQuantity) {
-          errors.availableQuantity = 'Number is required';
-      } else if (values.availableQuantity <= 0) {
-        errors.availableQuantity = 'Invalin number';
+      if (!values.slug) {
+          errors.slug = 'Business web Link is required';
       }
-      if (!props.title && !values.image1 && !values.image2 && !values.image3) {
-        errors.image1 = 'One image is required';
-        errors.image2 = 'One image is required';
-        errors.image3 = 'One image is required';
+      if (!values.image) {
+        errors.image = 'Image is required';
       }
-      if(values.file1){
-        const format = values.file1.name?.substring(values.file1.name.lastIndexOf('.') + 1);
+      if(values.file){
+        const format = values.file.name?.substring(values.file.name.lastIndexOf('.') + 1);
         if(format !== 'jpg' && format !== 'jpeg' && format !== 'png' && format !== 'gif' && format !== 'pdf'){
-          errors.image1 = 'Invalid format';
-        }else if(values.file1.size > 2097152){
-          errors.image1 = 'Image must not be more than 2MB';
-        }
-      }
-      if(values.file2){
-        const format = values.file2.name?.substring(values.file2.name.lastIndexOf('.') + 1);
-        if(format !== 'jpg' && format !== 'jpeg' && format !== 'png' && format !== 'gif' && format !== 'pdf'){
-          errors.image2 = 'Invalid format';
-        }else if(values.file2.size > 2097152){
-          errors.image2 = 'Image must not be more than 2MB';
-        }
-      }
-      if(values.file3){
-        const format = values.file3.name?.substring(values.file3.name.lastIndexOf('.') + 1);
-        if(format !== 'jpg' && format !== 'jpeg' && format !== 'png' && format !== 'gif' && format !== 'pdf'){
-          errors.image3 = 'Invalid format';
-        }else if(values.file3.size > 2097152){
-          errors.image3 = 'Image must not be more than 2MB';
+          errors.image = 'Invalid format';
+        }else if(values.file.size > 2097152){
+          errors.image = 'Image must not be more than 2MB';
         }
       }
 
@@ -69,8 +62,8 @@ const SettingsModal = (props: any) => {
   const saveProduct = (values: any, controls: any) => {
     // return closeModal('refresh');
     sendRequest({
-      url: props.title ? 'products/' + id : 'products',
-      method:props.title ? 'PATCH' : 'POST',
+      url: 'undone/products',
+      method: 'POST',
       body: prepareNewProductForm(values),
     }, (res: any) => {
       toast.success(res.message);
@@ -85,7 +78,7 @@ const SettingsModal = (props: any) => {
 
   useEffect(() => {
     openModal();
-    console.log({props});
+    getBanks();
   }, []);
 
   return (
@@ -97,21 +90,13 @@ const SettingsModal = (props: any) => {
           {/* Any content goes in here */}
           <div>
              <Formik initialValues={{
-                name: props.product?.name || '',
-                description: props.product?.description || '',
-                amount: props.product?.amount || 0,
-                availableQuantity: props.product?.availableQuantity || 0,
-                // image1: props.product?.images[0]?.photoId || '',
-                // image2: props.product?.images[1]?.photoId || '',
-                // image3: props.product?.images[2]?.photoId || '',
-
-                // name: '',
-                // description: '',
-                // amount: 0,
-                // availableQuantity: 0,
-                image1: '',
-                image2: '',
-                image3: '',
+                accountNumber: props.product?.accountNumber || '',
+                bankName: props.product?.bankName || '',
+                storeName: props.product?.storeName || '',
+                address: props.product?.address || '',
+                slug: props.product?.slug || '',
+                image: '',
+                // image: props.product?.images[0]?.photoId || '',
             }}
             validate={(value) => validate(value)}
             onSubmit={(values, controls) => saveProduct(values, controls)}
@@ -119,13 +104,12 @@ const SettingsModal = (props: any) => {
             >
                 {
                     (Props: FormikProps<{
-                      name: string,
-                      description: string,
-                      amount: number,
-                      availableQuantity: number,
-                      image1: string,
-                      image2: string,
-                      image3: string,
+                      accountNumber: string,
+                      bankName: string,
+                      storeName: string,
+                      address: string,
+                      slug: string,
+                      image: string,
                     }>) => {
                         const {
                             values,
@@ -140,129 +124,139 @@ const SettingsModal = (props: any) => {
                         } = Props;
                         return (
                             <form action="" onSubmit={handleSubmit}>
-                                <h6 className="increased-soft pt-3 pb-1" style={{paddingLeft: '20px'}}>Settings</h6>
-                                <div style={{padding: '20px', borderTop: '1px solid #ddd'}}>
+                                <h6 className="increased-soft pt-3 pb-1 modal-space-sect">Settings</h6>
+                                <div className="modal-space-sect py-4">
+                                  <p className="mb-0 reduced-soft">Bank details</p>
                                   <div className="info-grid">
                                     <div className='styled-form2'>
-                                        <label>Product name</label>
+                                        <label className="mt-2 h-bold">Account number</label>
                                         
                                         <Field
                                               type="text"
                                               // placeholder='name'
-                                              id='name'
-                                              value={values.name}
+                                              id='accountNumber'
+                                              value={values.accountNumber}
                                               onBlur={handleBlur}
-                                              onFocus={() => errors.name = ''}
+                                              maxlength={10}
+                                              onFocus={() => errors.accountNumber = ''}
                                               onChange={handleChange}
-                                              className={(errors.name && touched.name) ? 'im-error' : ''}
+                                              onKeyUp={acceptOnlyNumbers}
+                                              className={(errors.accountNumber && touched.accountNumber) ? 'im-error' : ''}
                                           />
                                         {
-                                            errors.name && touched.name &&
-                                            <p className='reduced error-popup pt-1 mb-0'>{errors.name}</p>
+                                            errors.accountNumber && touched.accountNumber &&
+                                            <p className='reduced error-popup pt-1 mb-0'>{errors.accountNumber}</p>
                                         }
                                     </div>
                                     <span></span>
                                     <div className='styled-form2'>
-                                        <label>Product name</label>
-                                        
-                                        <Field
-                                              type="text"
-                                              // placeholder='name'
-                                              id='name'
-                                              value={values.name}
-                                              onBlur={handleBlur}
-                                              onFocus={() => errors.name = ''}
-                                              onChange={handleChange}
-                                              className={(errors.name && touched.name) ? 'im-error' : ''}
-                                          />
+                                        <label className="mt-2 h-bold">Bank name</label>
+                                        <select
+                                            id='bankName'
+                                            style={{borderRadius: '3px', padding: '7px 15px'}}
+                                            value={values.bankName}
+                                            onBlur={handleBlur}
+                                            onFocus={() => errors.bankName = ''}
+                                            onChange={handleChange}
+                                            className={(errors.bankName && touched.bankName) ? 'im-error' : ''}
+                                        >
+                                            <option value="" disabled></option>
+                                            {
+                                                banks.map((item: any, index) => {
+                                                    return <option key={index} value={item.id + '|' + item.name}>{item.name}</option>
+                                                })
+                                            }
+                                        </select>
                                         {
-                                            errors.name && touched.name &&
-                                            <p className='reduced error-popup pt-1 mb-0'>{errors.name}</p>
+                                            errors.bankName && touched.bankName &&
+                                            <p className='reduced error-popup pt-1 mb-0'>{errors.bankName}</p>
                                         }
                                     </div>
                                   </div>
                                 </div>
-                                <div style={{padding: '20px', borderTop: '1px solid #ddd'}}>
+                                <div className="modal-space-sect py-4">
+                                  <p className="mb-0 reduced-soft">Store details</p>
                                   <div className="info-grid">
                                     <div className='styled-form2'>
-                                        <label>Product name</label>
+                                        <label className="mt-3 mb-1 h-bold">Store name</label>
                                         
                                         <Field
                                               type="text"
-                                              // placeholder='name'
-                                              id='name'
-                                              value={values.name}
+                                              // placeholder='store name'
+                                              id='storeName'
+                                              value={values.storeName}
                                               onBlur={handleBlur}
-                                              onFocus={() => errors.name = ''}
+                                              onFocus={() => errors.storeName = ''}
                                               onChange={handleChange}
-                                              className={(errors.name && touched.name) ? 'im-error' : ''}
+                                              className={(errors.storeName && touched.storeName) ? 'im-error' : ''}
                                           />
                                         {
-                                            errors.name && touched.name &&
-                                            <p className='reduced error-popup pt-1 mb-0'>{errors.name}</p>
+                                            errors.storeName && touched.storeName &&
+                                            <p className='reduced error-popup pt-1 mb-0'>{errors.storeName}</p>
                                         }
                                     </div>
                                     <span></span>
                                     <div className='styled-form2'>
-                                        <label>Product name</label>
+                                        <label className="mt-0 h-bold">Business address <span className="reduced">(will serve as pickup address for dispatchers)</span></label>
                                         
                                         <Field
                                               type="text"
-                                              // placeholder='name'
-                                              id='name'
-                                              value={values.name}
+                                              // placeholder='address'
+                                              id='address'
+                                              value={values.address}
                                               onBlur={handleBlur}
-                                              onFocus={() => errors.name = ''}
+                                              onFocus={() => errors.address = ''}
                                               onChange={handleChange}
-                                              className={(errors.name && touched.name) ? 'im-error' : ''}
+                                              className={(errors.address && touched.address) ? 'im-error' : ''}
                                           />
                                         {
-                                            errors.name && touched.name &&
-                                            <p className='reduced error-popup pt-1 mb-0'>{errors.name}</p>
+                                            errors.address && touched.address &&
+                                            <p className='reduced error-popup pt-1 mb-0'>{errors.address}</p>
                                         }
                                     </div>
                                   </div>
                                 </div>
-                                <div style={{padding: '20px', borderTop: '1px solid #ddd'}}>
+                                <div className="modal-space-sect py-4">
+                                  <p className="mb-0 reduced-soft c-dark-mid">Add domain name</p>
                                   <div className="info-grid">
                                     <div className='styled-form2'>
-                                        <label>Product name</label>
+                                        <label className="mt-2 h-bold c-dark-mid">Enter domain name</label>
                                         
                                         <Field
                                               type="text"
-                                              // placeholder='name'
-                                              id='name'
-                                              value={values.name}
+                                              // placeholder='slug'
+                                              id='slug'
+                                              value={values.slug}
                                               onBlur={handleBlur}
-                                              onFocus={() => errors.name = ''}
+                                              onFocus={() => errors.slug = ''}
                                               onChange={handleChange}
-                                              className={(errors.name && touched.name) ? 'im-error' : ''}
+                                              className={(errors.slug && touched.slug) ? 'im-error' : ''}
                                           />
                                         {
-                                            errors.name && touched.name &&
-                                            <p className='reduced error-popup pt-1 mb-0'>{errors.name}</p>
+                                            errors.slug && touched.slug &&
+                                            <p className='reduced error-popup pt-1 mb-0'>{errors.slug}</p>
                                         }
                                     </div>
                                     <span></span>
                                     <div className='styled-form2 no-select-button'>
-                                      <label>Image 1</label>
+                                      <label className="mt-2 h-bold">Image</label>
                                       
                                       <input
                                             type="file"
-                                            id='image1'
-                                            value={values.image1}
+                                            id='image'
+                                            value={values.image}
                                             onBlur={handleBlur}
-                                            onFocus={() => errors.image1 = ''}
+                                            onFocus={() => errors.image = ''}
                                             // onChange={handleChange}
-                                            className={(errors.image1 && touched.image1) ? 'im-error' : ''}
+                                            className={(errors.image && touched.image) ? 'im-error' : ''}
                                             onChange={(event: any) => {
                                               handleChange(event);
-                                              setFieldValue("file1", event.currentTarget.files[0]);
+                                              setFieldValue("file", event.currentTarget.files[0]);
                                             }}
                                         />
                                       {
-                                          errors.image1 && (touched.image1 || touched.image2 || touched.image3) &&
-                                          <p className='reduced error-popup pt-1 mb-0'>{errors.image1}</p>
+                                          errors.image && touched.image &&
+                                          <p className='reduced error-popup pt-1 mb-0'>{errors.image}</p>
                                       }
                                     </div>
                                   </div>
