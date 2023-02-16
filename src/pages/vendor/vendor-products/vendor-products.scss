@@ -43,16 +43,18 @@
         .min-41{
             min-height: 41px;
         }
-        .solid-button{
-            background-color: $black;
-            border: 1px solid $black;
-            border-radius: 0;
-            color: $white;
-            padding: 5px 9px;
-            font-size: 0.8em;
-            transition: 0.3s ease;
-            &:focus{
-                outline: none;
+        .info-grid{
+            .solid-button{
+                background-color: $black;
+                border: 1px solid $black;
+                border-radius: 0;
+                color: $white;
+                padding: 5px 9px;
+                font-size: 0.8em;
+                transition: 0.3s ease;
+                &:focus{
+                    outline: none;
+                }
             }
         }
         .hollow-button{
@@ -79,6 +81,9 @@
             left: 0;
             top: 0;
             border-radius: 5px;
+            p{
+                color: $white;
+            }
         }
     }
 }

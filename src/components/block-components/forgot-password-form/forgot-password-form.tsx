@@ -8,13 +8,9 @@ import { useNavigate } from 'react-router';
 import { routeConstants } from '../../../services/constants/route-constants';
 import { Link } from 'react-router-dom';
 import { Logo } from '../../../assets/images';
-import UserNavigationComponent from '../../../services/utils/navigation-component';
 import { regexConstants } from '../../../services/constants/validation-regex';
 
 function AdminForgotPasswordForm() {
-
-    const [response, setResponse] = useState<any>();
-    const [useNav, setUseNav] = useState(false);
 
     const navigate = useNavigate();
 
@@ -31,35 +27,25 @@ function AdminForgotPasswordForm() {
 
     const submitRegistration = (values: any, controls: any) => {
         sendRequest({
-            url: 'auth/login',
+            url: 'auth/forgot-password',
             method: 'POST',
-            header: {
-                Authorization: 'Basic ' + btoa(1 + ':qwerty'),
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
             body: {
                 email: values.email,
             }
         }, (res: any) => {
-            navigate(routeConstants.login);
+            navigate(`/${routeConstants.resetPassword}`);
         }, (err: any) => {
             controls.setSubmitting(false);
             const message = err.error?.emailError || err.message || 'Unable to complete';
-            setResponse(<p className='c-red mb-0 pt-2'>{message}</p>);
             toast.error(message);
         });
-    }
-
-    const clearResponse = () => {
-        setResponse(undefined);
     }
 
     useEffect(() => {
     });
 
     return (
-        <div className='admin-login-box' onClick={clearResponse}>
-            {useNav && <UserNavigationComponent />}
+        <div className='admin-login-box'>
             <div className='spread-info py-3'>
                 <Link to={routeConstants.home}>
                     <img src={Logo} width={130} alt="" />
@@ -112,11 +98,6 @@ function AdminForgotPasswordForm() {
                                 </div>
                                 <div className='text-center pb-2'>
                                     <Link to={`/${routeConstants.login}`} className='reduced-x clickable-link'>BACK TO LOGIN</Link>
-                                </div>
-                                <div className='text-center pt-3 pb-2'>
-                                    {
-                                        response && <div className=''>{response}</div>
-                                    }
                                 </div>
                             </form>
                         );

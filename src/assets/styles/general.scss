@@ -1075,6 +1075,17 @@ input[type=number] {
           display: block;
       }
   }
+  .no-select-button{
+    &::file-selector-button {
+        font-weight: bold;
+        // color: dodgerblue;
+        padding: 0 10px;
+        border: none;
+        // border-right: 1px solid grey;
+        background-color: none;
+        display: none;
+    }
+  }
   input[type=checkbox]{
       margin-right: 10px;
       margin-left: 5px;

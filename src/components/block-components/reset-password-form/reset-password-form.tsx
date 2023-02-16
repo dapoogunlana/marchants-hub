@@ -1,5 +1,5 @@
 import { Formik, FormikProps, FormikValues } from 'formik';
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 // import * as Yup from 'yup';
 import * as qs from 'qs';
 import { sendRequest } from '../../../services/utils/request';
@@ -10,31 +10,18 @@ import { useNavigate } from 'react-router';
 import { routeConstants } from '../../../services/constants/route-constants';
 import { Link } from 'react-router-dom';
 import { Logo } from '../../../assets/images';
-import { useDispatch } from 'react-redux';
-import { login } from '../../../services/actions/session-actions';
-import UserNavigationComponent from '../../../services/utils/navigation-component';
-import { regexConstants } from '../../../services/constants/validation-regex';
-import { prepareDispatcherRegisterForm } from '../../../services/utils/form-preparation-service';
-// import { login } from '../../../services/actions/session-actions';
-// import { regexConstants } from '../../../services/constants/validation-regex';
 
 function ResetPasswordForm() {
 
-    const [response, setResponse] = useState<any>();
     const [showPassword, setShowPassword] = useState(false);
-    const [statutoryIdFile, setStatutoryIdFile] = useState<any>();
-    // let statutoryIdFile: any;
-    const [useNav, setUseNav] = useState(false);
-
-    const [states, setStates] = useState([]);
-    const [banks, setBanks] = useState([]);
-
-    const dispatch = useDispatch();
     const navigate = useNavigate();
 
     const validate = (values: FormikValues, change?: any) => {   
         const errors: any = {};
     
+        if (!values.token) {
+            errors.token = 'Token is required';
+        }
         if (!values.password) {
             errors.password = 'Password is required';
         } else if (values.password.length < 3) {
@@ -45,9 +32,6 @@ function ResetPasswordForm() {
         } else if (values.password !== values.confirmPassword) {
             errors.confirmPassword = 'Passwords do not match';
         }
-        if (!values.statutoryID) {
-            errors.statutoryID = 'Statutory ID is required';
-        }
         return errors;
     
     }
@@ -56,33 +40,28 @@ function ResetPasswordForm() {
         // setTimeout(() => controls.setSubmitting(false), 2000);
         // return
         sendRequest({
-            url: 'auth/register',
+            url: 'auth/reset-password',
             method: 'POST',
-            body: prepareDispatcherRegisterForm(values, statutoryIdFile)
+            body: {
+                token: values.token,
+                password: values.password,
+                confirmPassword: values.confirmPassword,
+            }
         }, (res: any) => {
             controls.setSubmitting(false);
             toast.success(res.message);
-            // controls.resetForm();/
-            sessionStorage.setItem('token', res.payload?.token?.accessToken);
-            dispatch(login(res.payload?.token?.accessToken))
-            navigate(`/${routeConstants.confirmEmail}`);
+            navigate(`/${routeConstants.login}`);
         }, (err: any) => {
             controls.setSubmitting(false);
-            setResponse(<p className='c-red mb-0 pt-2'>{err.error?.emailError || err.message || 'Unable to complete'}</p>);
-            toast.error(err.error?.emailError || err.message || 'Unable to complete');
+            toast.error(err.message || 'Unable to complete');
         });
     }
     const toggleShowPassword = () => {
         setShowPassword(!showPassword);
     }
 
-    const clearResponse = () => {
-        setResponse(undefined);
-    }
-
     return (
-        <div className='register-box' onClick={clearResponse}>
-            {useNav && <UserNavigationComponent />}
+        <div className='register-box'>
             <div className='spread-info py-3'>
                 <Link to={routeConstants.home}>
                     <img src={Logo} width={130} alt="" />
@@ -90,6 +69,7 @@ function ResetPasswordForm() {
                 <span></span>
             </div>
             <Formik initialValues={{
+                token: '',
                 password: '',
                 confirmPassword: '',
             }}
@@ -99,6 +79,7 @@ function ResetPasswordForm() {
             >
                 {
                     (props: FormikProps<{
+                        token: string,
                         password: string,
                         confirmPassword: string,
                     }>) => {
@@ -113,7 +94,25 @@ function ResetPasswordForm() {
                         } = props;
                         return (
                             <form action="" onSubmit={handleSubmit}>
-                            <h6 className='pt-4'>Reset Password</h6>
+                                <h6 className='pt-4'>Reset Password</h6>
+                                <p className='reduced-soft'>Enter token sent to your email</p>
+                                <div className='reg-card'>
+                                    <label className='text-left'>Token</label>
+                                    <input
+                                        type="token"
+                                        placeholder='enter your token'
+                                        id='token'
+                                        value={values.token}
+                                        onBlur={handleBlur}
+                                        onFocus={() => errors.token = ''}
+                                        onChange={handleChange}
+                                        className={(errors.token && touched.token) ? 'im-error' : ''}
+                                    />
+                                    {
+                                        errors.token && touched.token &&
+                                        <p className='reduced error-popup pt-1 mb-0'>{errors.token}</p>
+                                    }
+                                </div>
                                 <div className='reg-card'>
                                     <label className='text-left'>Password</label>
                                     <input
@@ -164,8 +163,11 @@ function ResetPasswordForm() {
                                 </div>
                                 <div className='text-center pt-3 pb-2'>
                                     <button type='submit' className='solid-button rad-3-im mx-0 reduced-im' disabled={isSubmitting}>
-                                        {isSubmitting ? 'SUBMITTING..' : 'REGISTER STORE'}
+                                        {isSubmitting ? 'SUBMITTING..' : 'PROCEED'}
                                     </button>
+                                </div>
+                                <div className='text-center pb-2'>
+                                    <Link to={`/${routeConstants.login}`} className='reduced-x clickable-link'>BACK TO LOGIN</Link>
                                 </div>
                             </form>
                         );
