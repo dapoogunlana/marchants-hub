@@ -8,8 +8,6 @@ import { useNavigate } from 'react-router';
 import { routeConstants } from '../../../services/constants/route-constants';
 import { Link } from 'react-router-dom';
 import { Logo } from '../../../assets/images';
-import UserNavigationComponent from '../../../services/utils/navigation-component';
-import { regexConstants } from '../../../services/constants/validation-regex';
 import { IstoreState } from '../../../services/constants/interfaces/data-schemas';
 
 function AdminConfirmEmailForm() {

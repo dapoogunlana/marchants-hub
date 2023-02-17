@@ -137,7 +137,7 @@ const SettingsModal = (props: any) => {
                                               id='accountNumber'
                                               value={values.accountNumber}
                                               onBlur={handleBlur}
-                                              maxlength={10}
+                                              maxLength={10}
                                               onFocus={() => errors.accountNumber = ''}
                                               onChange={handleChange}
                                               onKeyUp={acceptOnlyNumbers}

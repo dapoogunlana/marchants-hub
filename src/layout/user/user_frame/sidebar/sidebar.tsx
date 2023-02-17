@@ -9,6 +9,7 @@ import { IroutObjectData, IstoreState } from '../../../../services/constants/int
 import { logoutUser, sortRoute } from '../../../../services/utils/navigation-utilities';
 import { logout } from '../../../../services/actions/session-actions';
 import SettingsModal from '../../../../components/block-components/modals/settings-modal/settings-modal';
+import { copyStoreLink } from '../../../../services/utils/data-manipulation-utilits';
 
 function Sidebar(props: any) {
 
@@ -58,8 +59,9 @@ function Sidebar(props: any) {
             <div className='settings-drop-down'>
               <div className='clip-area'></div>
               <div className='text-area'>
-                <p className='mb-1' onClick={logoutUser}><i className="fas fa-chevron-down mr-2"></i>Signout</p>
-                <p onClick={openSettingsModal}><i className="fas fa-chevron-down mr-2"></i>Settings</p>
+                <p onClick={() => copyStoreLink(sessionData.slug)}><i className="fas fa-copy mr-2"></i>Store Link</p>
+                <p onClick={openSettingsModal}><i className="fas fa-screwdriver-wrench mr-2"></i>Settings</p>
+                <p className='mb-1' onClick={logoutUser}><i className="fas fa-right-from-bracket mr-2"></i>Signout</p>
               </div>
             </div>
           </div>

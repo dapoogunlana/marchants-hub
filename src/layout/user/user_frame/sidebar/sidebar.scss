@@ -20,7 +20,7 @@
         position: relative;
         .settings-drop-down{
             position: absolute;
-            width: 100px;
+            width: 110px;
             padding-top: 8%;
             top: 100%;
             right: 0;
@@ -38,7 +38,7 @@
                 background-color: $white;
             }
             .text-area{
-                padding: 10px;
+                padding: 6px 0;
                 box-shadow: -2px 3px 5px 0 $black-faint3;
                 // border: 1px solid $black-faint5;
                 border-top: none;
@@ -51,6 +51,14 @@
                     font-size: 0.8em;
                     margin-bottom: 0;
                     cursor: pointer;
+                    padding: 5px 10px;
+                    transition: 0.3s ease;
+                    &:hover{
+                        background-color: $grey-lighter;
+                    }
+                    i{
+                        font-size: 0.9em;
+                    }
                 }
             }
         }

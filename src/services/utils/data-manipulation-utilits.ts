@@ -1,3 +1,4 @@
+import { toast } from "react-toastify";
 
 
   export const clipToLength = (item: string, length: number) => {
@@ -25,6 +26,23 @@
     }
     filterString = filterString ? `?${filterString}` : filterString; 
     return filterString;
+  }
+
+  export const copyStoreLink = (link: string) => {
+    const textarea = document.createElement('textarea');
+    textarea.value = `https://vendu.netlify.app/store/${link}`;
+    textarea.id = 'textId';
+    textarea.style.opacity = '0';
+    document.body.appendChild(textarea);
+    textarea.focus();
+    textarea.select();
+    document.execCommand('copy');
+    document.body.removeChild(textarea);
+    if (document.execCommand('copy')) {
+      toast.success('Store link copied to clipboard!');
+    } else {
+      toast.error('Store link could not be copied!');
+    }
   }
 
   export const formatNumber = (input: any, decimal?: number) => {
