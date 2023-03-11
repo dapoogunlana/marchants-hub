@@ -16,7 +16,6 @@ function Sidebar(props: any) {
   const sessionData = useSelector((state: IstoreState) => state.session);
   const [viewSettings, setViewSettings] = useState(false);
   const [routes, setRoutes] = useState<IroutObjectData[]>([]);
-  // console.log({sessionData});
   const userRole = sessionData.role;
 
   const openSettingsModal = (id: any) => {
@@ -28,7 +27,6 @@ function Sidebar(props: any) {
   }
 
   useEffect(() => {
-    console.log({sessionData});
     if(!userRole) {
       logout();
     }

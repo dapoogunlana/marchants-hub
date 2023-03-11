@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
 import DeleteModal from '../../../components/block-components/modals/delete-modal/delete-modal';
@@ -11,7 +11,7 @@ import { stringifyFilter } from '../../../services/utils/data-manipulation-utili
 import { sendRequest } from '../../../services/utils/request';
 import './vendor-products.scss';
 
-function VendorProducts() {
+function VendorProducts(props: any) {
 
   const [filter, setFilter] = useState<any>({ name: '' });
   const [viewNewProduct, setViewNewProduct] = useState(false);
@@ -54,7 +54,6 @@ function VendorProducts() {
   }
 
   const closeEditProductModal = (feedback?: any) => {
-    console.log({feedback});
     setViewEditProduct(false);
     if (feedback === 'refresh') {
       getProducts();
@@ -67,7 +66,6 @@ function VendorProducts() {
   }
 
   const closeRestockProductModal = (feedback?: any) => {
-    console.log({feedback});
     setViewRestockProduct(false);
     if (feedback === 'refresh') {
       getProducts();
@@ -85,7 +83,6 @@ function VendorProducts() {
         body: {}
     }, (res: any) => {
         // navigate(routeConstants.login);
-        console.log({res})
         setProducts(res.data)
     }, (err: any) => {
     });
@@ -134,7 +131,7 @@ function VendorProducts() {
   useEffect(() => {
     window.scrollTo(0, 0);
     getProducts();
-  }, []);
+  }, [props]);
   
   return (
     <>

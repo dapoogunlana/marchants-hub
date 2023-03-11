@@ -38,11 +38,7 @@ import { toast } from "react-toastify";
     textarea.select();
     document.execCommand('copy');
     document.body.removeChild(textarea);
-    if (document.execCommand('copy')) {
-      toast.success('Store link copied to clipboard!');
-    } else {
-      toast.error('Store link could not be copied!');
-    }
+    toast.success('Store link copied to clipboard!');
   }
 
   export const formatNumber = (input: any, decimal?: number) => {

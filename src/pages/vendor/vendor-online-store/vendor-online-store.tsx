@@ -12,7 +12,7 @@ import { IstoreState } from '../../../services/constants/interfaces/data-schemas
 import { Iproduct } from '../../../services/constants/interfaces/product-and-orders-schema';
 import { IsessionData } from '../../../services/constants/interfaces/state-schemas';
 import { routeConstants } from '../../../services/constants/route-constants';
-import { stringifyFilter } from '../../../services/utils/data-manipulation-utilits';
+import { formatNumber, stringifyFilter } from '../../../services/utils/data-manipulation-utilits';
 import { sendRequest } from '../../../services/utils/request';
 import './vendor-online-store.scss';
 
@@ -98,7 +98,7 @@ function VendorOnlineStore(props: any) {
                   </div>
                   <h6 className='text-center min-41'>{item.name}</h6>
                   <div className='spread-info'>
-                    <h6 className='mb-0 increased-x'>₦{item.amount}</h6>
+                    <h6 className='mb-0 increased-x'>₦{formatNumber(item.amount)}</h6>
                     <p className='mb-0 increased-soft'>{item.availableQuantity} in stock</p>
                   </div>
                   <div className='info-grid pt-2'>

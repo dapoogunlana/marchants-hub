@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import BaseRoute from './routes/_base-route';
 import './assets/styles/general.scss';
 import './App.scss';
@@ -11,9 +11,6 @@ function App() {
   AOS.init({
     duration: 1200,
   });
-  useEffect(() => {
-    console.log('I log Upper child');
-  })
   return (
     <div className="App">
       <BaseRoute></BaseRoute>

@@ -15,6 +15,7 @@ import './vendor-online-store-item.scss';
 import { apiKeys } from '../../../config/environment';
 import { addCartItem } from '../../../services/actions/cart-actions';
 import { IstoreState } from '../../../services/constants/interfaces/data-schemas';
+import { formatNumber } from '../../../services/utils/data-manipulation-utilits';
 
 function VendorOnlineStoreItem() {
   
@@ -252,7 +253,7 @@ function VendorOnlineStoreItem() {
                             <h6 className=''>{product.name}</h6>
                             <p className='reduced c-dark-grey'>{product.description}</p>
                             <div className='spread-info'>
-                              <h6 className='mb-0 increased'>₦{product.amount}</h6>
+                              <h6 className='mb-0 increased'>₦{formatNumber(product.amount)}</h6>
                               <p className='mb-0'>{product.availableQuantity} in stock</p>
                             </div>
                             <div className='row pt-4 pb-2'>
