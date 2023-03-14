@@ -107,25 +107,6 @@ function VendorProducts(props: any) {
           toast.error(err.error?.emailError || err.message || 'Unable to complete');
       });
     }
-    // swal.fire({
-    //     title: 'Delete Product',
-    //     text: `You are about to delete a product from you inventory (${item.name}), once you do this, it will no longer be 
-    //     displayed on your products page and also on your online store`,
-    //     icon: 'error',
-    // }).then((result: any) => {
-    //     if (result.isConfirmed) {
-    //         sendRequest({
-    //             url: 'products/' + item._id,
-    //             method:'DELETE',
-    //         }, (res: any) => {
-    //             toast.success(res.message);
-    //             getProducts();
-    //             return;
-    //         }, (err: any) => {
-    //             toast.error(err.error?.emailError || err.message || 'Unable to complete');
-    //         });
-    //     }
-    // })
   }
 
   useEffect(() => {

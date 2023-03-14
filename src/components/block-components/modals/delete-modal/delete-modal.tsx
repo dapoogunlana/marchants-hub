@@ -10,7 +10,6 @@ const DeleteModal = (props: any) => {
 
   useEffect(() => {
     openModal();
-    console.log({props});
   }, []);
 
   return (
@@ -26,7 +25,7 @@ const DeleteModal = (props: any) => {
               <p>{props.writeup}</p>
             </div>
             <div className='text-right pt-3 pb-2 lighter-grey pb-3' style={{padding: '20px'}}>
-                <button onClick={closeModal} className='solid-button-danger mx-0 px-3 rad-10 mr-3'>
+                <button onClick={() => closeModal(false)} className='solid-button-danger mx-0 px-3 rad-10 mr-3'>
                   <i className="fa-solid fa-circle-xmark mr-2"></i>Cancel
                 </button>
                 <button onClick={() => closeModal(true)} className='btn solid-button mx-0 px-4 rad-10'>
