@@ -42,7 +42,7 @@ import { IorderSettings } from "../constants/interfaces/product-and-orders-schem
     const list: any[] = [];
     products.map((product) => {
       list.push({
-          product: product.name,
+          product: product._id,
           quantity: Math.round(product.quantity),
           amount: Math.round(product.amount)
       });
