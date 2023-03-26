@@ -33,6 +33,7 @@ function VendorUserCheckout() {
   const [storeName, setStoreName] = useState('STORE');
   const [costs, setCosts] = useState<any>({});
   const [sellerAccountDetails, setSellerAccountDetails] = useState<any>({});
+  const [gettingSellerDetails, setGettingSellerDetails] = useState(0);
 
   const getCostRates = () => {
     sendRequest({
@@ -44,12 +45,20 @@ function VendorUserCheckout() {
   }
 
   const getSellerAccountDetails = () => {
+    setGettingSellerDetails(0);
     sendRequest({
         url: `orders/account-details/${slug}`,
         method: 'GET',
     }, (res: any) => {
       setSellerAccountDetails(res.data || {});
-    }, (err: any) => {});
+      setGettingSellerDetails(1);
+    }, (err: any) => {
+      if(!sellerAccountDetails.account_name) {
+        setGettingSellerDetails(2);
+      } else {
+        setGettingSellerDetails(1);
+      }
+    });
   }
 
   const getOrderCosts = (cost: IorderSettings) => {
@@ -108,6 +117,7 @@ function VendorUserCheckout() {
   }
 
   const proceedToTransfer = () => {
+    console.log({sellerAccountDetails})
     setPurchaseStarted(3);
   }
 
@@ -302,11 +312,33 @@ function VendorUserCheckout() {
                                 <h2 className='h-black mb-0'>N{formatNumber(costs.totalCost)}</h2>
                               </div>
                             </div>
-                            <p className='text-center py-3 reduced-soft'>
-                              Transfer the money to the seller then press the complete button to finish your order.
-                            </p>
-                            <div className={'p-2 text-center summary-green-space-button clickable' + (processingPayment ? ' deactivated' : '')}>
-                              <p className='mb-0 h-bold reduced-soft' onClick={completePayment}>{processingPayment ? 'Processing...' : 'Complete Order'}</p>
+                            {
+                              gettingSellerDetails === 0 &&
+                              <p className='text-center py-3 reduced-soft'>
+                                Requesting seller's account details.
+                              </p>
+                            }
+                            {
+                              gettingSellerDetails === 1 &&
+                              <p className='text-center py-3 reduced-soft'>
+                                Transfer the money to the seller then press the complete button to finish your order.
+                              </p>
+                            }
+                            {
+                              gettingSellerDetails === 2 &&
+                              <p className='text-center py-3 reduced-soft'>
+                                Failed to retrieve seller's account details try to request details again.
+                              </p>
+                            }
+                            <div className={'p-2 text-center summary-green-space-button clickable' + ((processingPayment || gettingSellerDetails === 0) ? ' deactivated' : '')}>
+                              {
+                                gettingSellerDetails === 1 &&
+                                <p className='mb-0 h-bold reduced-soft' onClick={completePayment}>{processingPayment ? 'Processing...' : 'Complete Order'}</p>
+                              }
+                              {
+                                (gettingSellerDetails === 0 || gettingSellerDetails === 2) &&
+                                <p className={'mb-0 h-bold reduced-soft' + ((gettingSellerDetails === 0) ? ' deactivated' : '')} onClick={getSellerAccountDetails}>{gettingSellerDetails === 0 ? 'Requesting...' : 'Request Details'}</p>
+                              }
                             </div>
                           </div>
                         </div>
