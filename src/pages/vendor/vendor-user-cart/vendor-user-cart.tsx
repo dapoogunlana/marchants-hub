@@ -8,7 +8,7 @@ import PaginatedItems from '../../../components/base-components/pagination-compo
 import StoreFooter from '../../../components/block-components/store-footer/store-footer';
 import StoreHeader from '../../../components/block-components/store-header/store-header';
 import { addCartItem, changeCartItemQuantity, removeCartItem } from '../../../services/actions/cart-actions';
-import { setActiveProduct } from '../../../services/actions/product-actions';
+import { removeActiveProduct, setActiveProduct } from '../../../services/actions/product-actions';
 import { IstoreState } from '../../../services/constants/interfaces/data-schemas';
 import { IorderSettings, Iproduct, sampleOrderSettings } from '../../../services/constants/interfaces/product-and-orders-schema';
 import { IsessionData } from '../../../services/constants/interfaces/state-schemas';
@@ -21,11 +21,8 @@ import './vendor-user-cart.scss';
 
 function VendorUserCart(props: any) {
   
-  const [products, setProducts] = useState<Iproduct[]>([]);
-  const [productsLoaded, setProductsLoaded] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const sessionData :IsessionData = useSelector((state: IstoreState) => state.session);
   const slug = useParams().slug || '';
   const cart = useSelector((item: IstoreState) => item.cart);
 
@@ -75,6 +72,7 @@ function VendorUserCart(props: any) {
   useEffect(() => {
     window.scrollTo(0, 0);
     getCostRates();
+    dispatch(removeActiveProduct());
     setStoreName((slug?.replace(/-/g, ' ') || storeName).substring(0, 20).toLocaleLowerCase());
   }, [props]);
 

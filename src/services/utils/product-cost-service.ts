@@ -36,3 +36,35 @@ import { IorderSettings } from "../constants/interfaces/product-and-orders-schem
       charges,
     }
   }
+
+
+  const listProducts = (products: any[]) => {
+    const list: any[] = [];
+    products.map((product) => {
+      list.push({
+          product: product.name,
+          quantity: Math.round(product.quantity),
+          amount: Math.round(product.amount)
+      });
+    });
+    return list;
+  }
+
+  export const prepareCreateOrderPayload = (products: any, costData: any, buyerData: any, sellerDetail: any, slug: string) => {
+    const payload = {
+      customerName: buyerData.name,
+      storeSlug: slug,
+      deliveryDistance: 5,
+      isPaid: true,
+      reference: sellerDetail.initiationTranRef,
+      customerEmail: buyerData.email,
+      customerPhoneNumber: buyerData.phoneNumber,
+      customerAddress: buyerData.address,
+      products: listProducts(products),
+      productsCost: Math.round(costData.productsCost),
+      deliveryCost: Math.round(costData.deliveryCost),
+      charges: Math.round(costData.charges), 
+      totalCost: Math.round(costData.totalCost)
+    }
+    return payload;
+  }
