@@ -18,6 +18,7 @@ export interface IsessionData {
     role : string,
     slug : string,
     state : string,
+    totalSales: number;
     updatedAt : string,
     verificationCode : any,
     verificationCodeExpires : any,

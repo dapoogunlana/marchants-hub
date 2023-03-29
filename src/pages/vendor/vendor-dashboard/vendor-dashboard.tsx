@@ -16,13 +16,19 @@ import {
  } from '../../../assets/images';
 import { sendRequest } from '../../../services/utils/request';
 import { useSelector } from 'react-redux';
-import { IsessionData } from '../../../services/constants/interfaces/state-schemas';
+import { IsessionData } from '../../../services/constants/interfaces/session-schemas';
 import { tabQueryConstants } from '../../../services/constants/general-constants';
 import { IstoreState } from '../../../services/constants/interfaces/data-schemas';
 
 function VendorDashboard(props: any) {
   const sessionData: IsessionData = useSelector((state: IstoreState) => state.session);
   const [orderList, setOrderList] = useState<any[]>([]);
+  const [orderCount, setOrderCount] = useState<number>();
+  const [orderCountLoaded, setOrderCountLoaded] = useState(false);
+  const [pendingOrderCount, setPendingOrderCount] = useState<number>();
+  const [pendingOrderCountLoaded, setPendingOrderCountLoaded] = useState(false);
+  const [productCount, setProductCount] = useState<number>();
+  const [productCountLoaded, setProductCountLoaded] = useState(false);
   let id: any;
 
   const tableColumns = [
@@ -95,9 +101,57 @@ function VendorDashboard(props: any) {
     });
   }
 
- useEffect(() => {
+  const getOrderCount = () => {
+    const params = {
+      store: sessionData._id,
+    }
+    sendRequest({
+        url: 'get/order/count' + stringifyFilter(params),
+        method: 'POST',
+        body: {}
+    }, (res: any) => {
+        setOrderCount(res.data);
+        setOrderCountLoaded(true);
+    }, (err: any) => {
+    });
+  }
+
+  const getPendingOrderCount = () => {
+    const params = {
+      store: sessionData._id,
+      status: tabQueryConstants.pending.query,
+    }
+    sendRequest({
+        url: 'get/order/count' + stringifyFilter(params),
+        method: 'POST',
+        body: {}
+    }, (res: any) => {
+        setPendingOrderCount(res.data);
+        setPendingOrderCountLoaded(true);
+    }, (err: any) => {
+    });
+  }
+  const getProductCount = () => {
+    const params = {
+      store: sessionData._id,
+    }
+    sendRequest({
+        url: 'get/products/count' + stringifyFilter(params),
+        method: 'POST',
+        body: {}
+    }, (res: any) => {
+        setProductCount(res.data);
+        setProductCountLoaded(true);
+    }, (err: any) => {
+    });
+  }
+
+  useEffect(() => {
     window.scrollTo(0, 0);
     getOrders();
+    getOrderCount();
+    getPendingOrderCount();
+    getProductCount();
   }, [props]);
   
   return (
@@ -114,7 +168,7 @@ function VendorDashboard(props: any) {
                       <img src={TotalSalesIcon} width={40} alt="" />
                     </div>
                     <p className='mb-0 reduced-x font-weight-bold'>Total Sales</p>
-                    <h5 className='font-weight-bold mb-0'>₦30,233,500</h5>
+                    <h5 className='font-weight-bold mb-0'>₦{formatNumber(sessionData.totalSales)}</h5>
                   </div>
                 </div>
                 <div className='col-sm-4'>
@@ -124,7 +178,7 @@ function VendorDashboard(props: any) {
                       <img src={TotalOrdersIcon} width={40} alt="" />
                     </div>
                     <p className='mb-0 reduced-x font-weight-bold'>Total Orders</p>
-                    <h5 className='font-weight-bold mb-0'>50</h5>
+                    <h5 className='font-weight-bold mb-0'>{orderCountLoaded ? (orderCount ? formatNumber(orderCount) : 0) : '...'}</h5>
                   </div>
                 </div>
                 <div className='col-sm-4'>
@@ -134,7 +188,7 @@ function VendorDashboard(props: any) {
                       <img src={ListedProductsIcon} width={40} alt="" />
                     </div>
                     <p className='mb-1 reduced-x font-weight-bold'>Listed Products</p>
-                    <h5 className='font-weight-bold mb-0'>33</h5>
+                    <h5 className='font-weight-bold mb-0'>{productCountLoaded ? (productCount ? formatNumber(productCount) : 0) : '...'}</h5>
                   </div>
                 </div>
               </div>
@@ -142,7 +196,7 @@ function VendorDashboard(props: any) {
             <div>
               <div className='pt-4'>
                 <button className='pending-orders-pill'>
-                  <span className='pending-count mr-2'>4</span> Pending Orders
+                  <span className='pending-count mr-2'>{pendingOrderCountLoaded ? (pendingOrderCount ? formatNumber(pendingOrderCount) : 0) : '...'}</span> Pending Orders
                 </button>
               </div>
               <div className='order-list px-3'>

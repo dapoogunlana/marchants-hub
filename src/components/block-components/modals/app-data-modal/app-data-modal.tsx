@@ -5,7 +5,6 @@ const AppDataModal = (props: any) => {
 
   const data = props.data;
   const closeModal = () => {
-    console.log('Rita is a good child');
     closeAppModal(()=> props.closeModal(data));
   };
 

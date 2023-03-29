@@ -15,6 +15,7 @@ export interface Iproduct {
     name: string;
     store: string;
     storeSlug: string;
+    totalSales: number;
     updatedAt: string;
     __v: number;
     _id: string;
@@ -33,6 +34,7 @@ export const sampleProdut = {
     name: '',
     store: '',
     storeSlug: '',
+    totalSales: 0,
     updatedAt : '',
     __v: 0,
     _id : '',

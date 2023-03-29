@@ -1,5 +1,5 @@
 import { Iproduct } from "./product-and-orders-schema";
-import { IsessionData } from "./state-schemas";
+import { IsessionData } from "./session-schemas";
 
 export interface IloginData {
     token: number,

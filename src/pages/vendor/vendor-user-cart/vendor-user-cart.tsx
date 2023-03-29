@@ -11,7 +11,7 @@ import { addCartItem, changeCartItemQuantity, removeCartItem } from '../../../se
 import { removeActiveProduct, setActiveProduct } from '../../../services/actions/product-actions';
 import { IstoreState } from '../../../services/constants/interfaces/data-schemas';
 import { IorderSettings, Iproduct, sampleOrderSettings } from '../../../services/constants/interfaces/product-and-orders-schema';
-import { IsessionData } from '../../../services/constants/interfaces/state-schemas';
+import { IsessionData } from '../../../services/constants/interfaces/session-schemas';
 import { routeConstants } from '../../../services/constants/route-constants';
 import { formatNumber, stringifyFilter } from '../../../services/utils/data-manipulation-utilits';
 import { calculateProductCost } from '../../../services/utils/product-cost-service';

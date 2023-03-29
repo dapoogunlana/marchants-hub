@@ -18,11 +18,17 @@ import { sendRequest } from '../../../services/utils/request';
 import { toast } from 'react-toastify';
 import { useSelector } from 'react-redux';
 import { routeConstants } from '../../../services/constants/route-constants';
+import { formatDate, formatNumber, stringifyFilter } from '../../../services/utils/data-manipulation-utilits';
+import { IstoreState } from '../../../services/constants/interfaces/data-schemas';
+import { IsessionData } from '../../../services/constants/interfaces/session-schemas';
 
 function VendorPaymentRecords(props: any) {
+  const sessionData: IsessionData = useSelector((state: IstoreState) => state.session);
   const [initiating, setinItiating] = useState<boolean>(false);
   const [viewInitiateWithdrawal, setViewInitiateWithdrawal] = useState(false);
-  const [orderList, setOrderList] = useState<any[]>([]);
+  const [paymentRecords, setPaymentRecords] = useState<any[]>([]);
+  const [walletBalance, setWalletBalance] = useState<number>();
+  const [walletBalanceLoaded, setWalletBalanceLoaded] = useState(false);
   const user = useSelector((state:any) => state.session);
   let id: any;
   const query = props.query;
@@ -39,36 +45,25 @@ function VendorPaymentRecords(props: any) {
     }
   }
 
-  const tableColumns = [
-    {
-      Header: 'Product',
-      accessor: 'product',
-    },
-    {
-      Header: 'Amount',
-      accessor: 'amount',
-    },
-    {
-      Header: 'Date',
-      accessor: 'date',
-    },
-    {
-      Header: 'Customer Name',
-      accessor: 'customerName',
-    },
-    {
-      Header: 'Transaction ID',
-      accessor: 'transactionId',
-    },
-    {
-      Header: 'Order ID',
-      accessor: 'orderId',
-    },
-    {
-      Header: 'Status',
-      accessor: 'status',
-    },
-  ]
+  const paymentTableColumns = [
+    { Header: 'Product', accessor: 'product', },
+    { Header: 'Amount', accessor: 'amount', },
+    { Header: 'Date', accessor: 'date', },
+    { Header: 'Customer Name', accessor: 'customerName', },
+    { Header: 'Customer Phone', accessor: 'customerPhoneNumber', },
+    { Header: 'Customer Address', accessor: 'customerAddress', },
+    { Header: 'Status', accessor: 'status', },
+  ];
+
+  const withdrawalTableColumns = [
+    { Header: 'Product', accessor: 'product', },
+    { Header: 'Amount', accessor: 'amount', },
+    { Header: 'Date', accessor: 'date', },
+    { Header: 'Customer Name', accessor: 'customerName', },
+    { Header: 'Customer Phone', accessor: 'customerPhoneNumber', },
+    { Header: 'Customer Address', accessor: 'customerAddress', },
+    { Header: 'Status', accessor: 'status', },
+  ];
 
   const AddButtonToCell = (cell:any) =>{
     id =  cell.row.original.id;
@@ -82,23 +77,8 @@ function VendorPaymentRecords(props: any) {
     )
   }
 
-   const actionButtonProp = (id:any) => {      
+  const actionButtonProp = (id:any) => {      
      const actions: any = {};
-     switch(query) {
-      //  case tabQueryConstants.applied.query:
-      //    actions['Update to Evaluated'] = () => openEvaluateModal(id);
-      //    break;
-      //  case tabQueryConstants.evaluated.query:
-      //    actions.Accept = () => openAcceptModal(id);
-      //    actions.Reject = () => rejectFacilitator(id, getFacilitatorsList);
-      //    break;
-      //  case tabQueryConstants.confirmed.query:
-      //   //  actions.Confirm = () => console.log('Confirm');
-      //    break;
-      //  case tabQueryConstants.active.query:
-      //   //  actions.Active = () => console.log('Active');
-      //    break;
-     }
     return ({
       name: '',
       variant: 'success',
@@ -110,13 +90,54 @@ function VendorPaymentRecords(props: any) {
     })
   };
 
+  const getWalletBalance = () => {
+    const params = {
+      owner: sessionData._id,
+    }
+    sendRequest({
+        url: 'get/wallet' + stringifyFilter(params),
+        method: 'POST',
+        body: {}
+    }, (res: any) => {
+        setWalletBalance(res.data[0].balance);
+        setWalletBalanceLoaded(true);
+    }, (err: any) => {
+    });
+  }
+
   const getRecords = () => {
-    const list = paymentRecordList.map((item: any, index: number) => {
-      item.status = item.status === 'Paid' ? <button className='btn btn-success dashboard-button rad-25 px-4'>Paid</button> :
-      <button className='btn btn-success dashboard-button rad-25 px-4'>Paid</button>
-      return item;
-    })
-    setOrderList(list)
+    const params = {
+      owner: sessionData._id,
+      limit: 20,
+      page: 1,
+    }
+    sendRequest({
+      url: 'get/payments' + stringifyFilter(params),
+      method: 'POST',
+      body: {
+        "populate": [{
+            "path": "order",
+            "select": "isPaid customerName customerEmail customerAddress customerPhoneNumber"
+        }]
+      }
+    }, (res: any) => {
+      const record = res.data.map((item: any) => {
+        const payload: any = {
+          product: item.order?.products?.map((product: any) => product.product.name) || '--',
+          amount: item.totalAmount,
+          date: formatDate(item.createdAt),
+          customerName: item.order?.customerName,
+          customerPhoneNumber: item.order?.customerPhoneNumber,
+          customerAddress: item.order?.customerAddress,
+          status: item.order?.isPaid ? <button className='btn btn-success dashboard-button rad-25 px-4'>Paid</button> :
+          <button className='btn btn-success dashboard-button rad-25 px-4'>Paid</button>
+        }
+        return payload;
+      });
+      setPaymentRecords(record);
+      setWalletBalanceLoaded(true);
+    }, (err: any) => {
+    });
   }
   const initiateWithdrawal = () => {
     setinItiating(true);
@@ -137,8 +158,9 @@ function VendorPaymentRecords(props: any) {
     });
   }
 
- useEffect(() => {
+  useEffect(() => {
     window.scrollTo(0, 0);
+    getWalletBalance();
     getRecords();
   }, [props]);
   
@@ -166,7 +188,7 @@ function VendorPaymentRecords(props: any) {
                       <img src={TotalSalesIcon} width={40} alt="" />
                     </div>
                     <p className='mb-0 reduced-x font-weight-bold'>Total Sales</p>
-                    <h5 className='font-weight-bold mb-0'>N500,000</h5>
+                    <h5 className='font-weight-bold mb-0'>N{formatNumber(sessionData.totalSales)}</h5>
                   </div>
                 </div>
                 <div className='col-sm-4'>
@@ -176,7 +198,7 @@ function VendorPaymentRecords(props: any) {
                       <img src={TotalOrdersIcon} width={40} alt="" />
                     </div>
                     <p className='mb-0 reduced-x font-weight-bold'>Wallet balance</p>
-                    <h5 className='font-weight-bold mb-0'>N150,000</h5>
+                    <h5 className='font-weight-bold mb-0'>N{walletBalanceLoaded ? (walletBalance ? formatNumber(walletBalance) : '') : '...'}</h5>
                   </div>
                 </div>
                 <div className='col-sm-4'>
@@ -186,7 +208,7 @@ function VendorPaymentRecords(props: any) {
                       <img src={ListedProductsIcon} width={40} alt="" />
                     </div>
                     <p className='mb-1 reduced-x font-weight-bold'>Total withdrawals</p>
-                    <h5 className='font-weight-bold mb-0'>N350,000</h5>
+                    <h5 className='font-weight-bold mb-0'>N{walletBalanceLoaded ? (walletBalance ? formatNumber(350000) : '') : '...'}</h5>
                   </div>
                 </div>
               </div>
@@ -203,12 +225,12 @@ function VendorPaymentRecords(props: any) {
               <Tabs defaultActiveKey={'Payment Records'} onSelect={changKey} >
                 <Tab eventKey={'Payment Records'} title={'Payment Records'}>
                   {
-                    (activeKey === 'Payment Records') && <DataTables uncontained data={orderList} columns={tableColumns}/>
+                    (activeKey === 'Payment Records') && <DataTables uncontained data={paymentRecords} columns={paymentTableColumns}/>
                   }
                 </Tab>
                 <Tab eventKey={'Withdrawal Records'} title={'Withdrawal Records'}>
                   {
-                    (activeKey === 'Withdrawal Records') && <DataTables uncontained data={orderList} columns={tableColumns}/>
+                    (activeKey === 'Withdrawal Records') && <DataTables uncontained data={paymentRecords} columns={paymentTableColumns}/>
                   }
                 </Tab>
               </Tabs>

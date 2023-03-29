@@ -7,19 +7,19 @@ import PaginatedItems from '../../../components/base-components/pagination-compo
 import StoreFooter from '../../../components/block-components/store-footer/store-footer';
 import StoreHeader from '../../../components/block-components/store-header/store-header';
 import { addCartItem } from '../../../services/actions/cart-actions';
-import { removeActiveProduct, setActiveProduct } from '../../../services/actions/product-actions';
+import { setActiveProduct } from '../../../services/actions/product-actions';
 import { IstoreState } from '../../../services/constants/interfaces/data-schemas';
 import { Iproduct } from '../../../services/constants/interfaces/product-and-orders-schema';
 import { IsessionData } from '../../../services/constants/interfaces/session-schemas';
 import { routeConstants } from '../../../services/constants/route-constants';
-import { formatNumber, stringifyFilter } from '../../../services/utils/data-manipulation-utilits';
+import { stringifyFilter } from '../../../services/utils/data-manipulation-utilits';
 import { sendRequest } from '../../../services/utils/request';
 import './vendor-online-store.scss';
 
 function VendorOnlineStore(props: any) {
   
   const [products, setProducts] = useState<Iproduct[]>([]);
-  const [productsLoaded, setProductsLoaded] = useState(0);
+  const [productsLoaded, setProductsLoaded] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const sessionData :IsessionData = useSelector((state: IstoreState) => state.session);
@@ -42,14 +42,13 @@ function VendorOnlineStore(props: any) {
         // navigate(routeConstants.login);
         console.log({res})
         setProducts(res.data);
-        setProductsLoaded(1);
+        setProductsLoaded(true);
     }, (err: any) => {
-      setProductsLoaded(2);
     });
   }
 
   const viewProduct = (product: any) => {
-    // dispatch(setActiveProduct(product));
+    dispatch(setActiveProduct(product));
     navigate(`/${routeConstants.onlineStore}/${slug}/${product._id}`);
   }
 
@@ -64,7 +63,6 @@ function VendorOnlineStore(props: any) {
   useEffect(() => {
     window.scrollTo(0, 0);
     getProducts();
-    dispatch(removeActiveProduct());
     setStoreName((slug?.replace(/-/g, ' ') || storeName).substring(0, 20).toLocaleLowerCase());
   }, []);
   
@@ -89,7 +87,7 @@ function VendorOnlineStore(props: any) {
         </div>
       </div>
       {
-        productsLoaded === 1 &&
+        productsLoaded ?
         <div className='main-store-sect py-5'>
           <div className='w90 max1200 row'>
             {products.map((item, index) => (
@@ -100,7 +98,7 @@ function VendorOnlineStore(props: any) {
                   </div>
                   <h6 className='text-center min-41'>{item.name}</h6>
                   <div className='spread-info'>
-                    <h6 className='mb-0 increased-x'>₦{formatNumber(item.amount)}</h6>
+                    <h6 className='mb-0 increased-x'>₦{item.amount}</h6>
                     <p className='mb-0 increased-soft'>{item.availableQuantity} in stock</p>
                   </div>
                   <div className='info-grid pt-2'>
@@ -116,21 +114,10 @@ function VendorOnlineStore(props: any) {
             </div>}
           </div>
           {products.length === 0 && <h4 className='text-center py-5'>This store has no products presently</h4>}
-        </div> 
-      }
-      {
-        productsLoaded === 0 &&
+        </div> :
         <div className='main-store-sect py-5'>
           <div className='w90 max1200'>
             <h4 className='text-center py-5'>Loading . . .</h4>
-          </div>
-        </div>
-      }
-      {
-        productsLoaded === 2 &&
-        <div className='main-store-sect py-5'>
-          <div className='w90 max1200'>
-            <h4 className='text-center py-5'>Network Error</h4>
           </div>
         </div>
       }

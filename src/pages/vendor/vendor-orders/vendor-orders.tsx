@@ -7,7 +7,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { routeConstants } from '../../../services/constants/route-constants';
 import { sendRequest } from '../../../services/utils/request';
 import { useSelector } from 'react-redux';
-import { IsessionData } from '../../../services/constants/interfaces/state-schemas';
+import { IsessionData } from '../../../services/constants/interfaces/session-schemas';
 import { tabQueryConstants } from '../../../services/constants/general-constants';
 import { IstoreState } from '../../../services/constants/interfaces/data-schemas';
 

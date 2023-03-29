@@ -5,7 +5,7 @@ import DeleteModal from '../../../components/block-components/modals/delete-moda
 import NewProductModal from '../../../components/block-components/modals/new-product-modal/new-product-modal';
 import { IstoreState } from '../../../services/constants/interfaces/data-schemas';
 import { Iproduct } from '../../../services/constants/interfaces/product-and-orders-schema';
-import { IsessionData } from '../../../services/constants/interfaces/state-schemas';
+import { IsessionData } from '../../../services/constants/interfaces/session-schemas';
 import { deleteProductMessage } from '../../../services/constants/product-dummy-constants';
 import { stringifyFilter } from '../../../services/utils/data-manipulation-utilits';
 import { sendRequest } from '../../../services/utils/request';
