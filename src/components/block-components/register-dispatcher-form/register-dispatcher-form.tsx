@@ -145,12 +145,12 @@ function RegisterDispatcherForm() {
     }
     
     const verifyAccountDetails = (values: FormikValues) => {
-        setVerifying(true);
         const payload = {
             account_no: values.bankAccount,
             bank_code: values.bankName.split('|')[0],
             bank_name: values.bankName.split('|')[1],
         }
+        setVerifying(true);
         sendRequest({
             url: 'verify-account',
             method: 'POST',
@@ -425,7 +425,6 @@ function RegisterDispatcherForm() {
                                             className={(errors.bankName && touched.bankName) ? 'im-error' : ''}
                                         >
                                             <option value="" disabled>Select Bank Name</option>
-                                            <option value="101|operate">Operation</option>
                                             {
                                                 banks.map((item: any, index) => {
                                                     return <option key={index} value={item.id + '|' + item.name}>{item.name}</option>

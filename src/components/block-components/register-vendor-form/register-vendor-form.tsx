@@ -23,7 +23,7 @@ function RegisterVendorForm() {
 
     const [response, setResponse] = useState<any>();
     const [showPassword, setShowPassword] = useState(false);
-    const [statutoryIdFile, setStatutoryIdFile] = useState<any>();
+    const [verifying, setVerifying] = useState(false);
     // let statutoryIdFile: any;
     const [useNav, setUseNav] = useState(false);
     const [accountDetailsVerified, setAccountDetailsVerified] = useState(false);
@@ -142,14 +142,17 @@ function RegisterVendorForm() {
             bank_code: values.bankName.split('|')[0],
             bank_name: values.bankName.split('|')[1],
         }
+        setVerifying(true);
         sendRequest({
             url: 'verify-account',
             method: 'POST',
             body: payload
         }, (res: any) => {
+            setVerifying(false);
             setAccountDetailsVerified(true);
             toast.success('Account verified successfully');
         }, (err: any) => {
+            setVerifying(false);
             toast.error(err.message);
         });
     }
@@ -423,8 +426,12 @@ function RegisterVendorForm() {
                                 </div>
                                 {
                                     values.bankName && values.bankAccount.length === 10 && !accountDetailsVerified &&
-                                    <div className='solid-button rad-3-im mx-0 reduced-im my-2 text-center' onClick={() => verifyAccountDetails(values)}>
-                                        Verify Account
+                                    <div className={'solid-button rad-3-im mx-0 reduced-im my-2 text-center clickable' + (verifying ? ' deactivated' : '')} onClick={() => verifyAccountDetails(values)}>
+                                        {
+                                            verifying ?
+                                            <>Verifying.. Account</> :
+                                            <>Verify Account</>
+                                        }
                                     </div>
                                 }
                                 {
