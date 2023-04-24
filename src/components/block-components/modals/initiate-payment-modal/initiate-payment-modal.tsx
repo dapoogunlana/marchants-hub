@@ -8,7 +8,7 @@ import { prepareNewProductForm } from "../../../../services/utils/form-preparati
 
 const InitiatePaymentModal = (props: any) => {
   const [response, setResponse] = useState<any>();
-  const [otpStatus, setOtpStatus] = useState<'REQUESTING' | 'READY' | 'WAITING'>('READY');
+  const [otpStatus, setOtpStatus] = useState<'REQUESTING' | 'READY' | 'WAITING'>('WAITING');
   const id = props.product?._id;
   const closeModal = (feedback: any) => {
     closeAppModal(()=> props.closeModal(feedback));
@@ -26,13 +26,13 @@ const InitiatePaymentModal = (props: any) => {
       return errors;
   }
 
-  const saveProduct = (values: any, controls: any) => {
+  const confirmWithdrawal = (values: any, controls: any) => {
     // return closeModal('refresh');
     sendRequest({
-      url: 'payment',
+      url: 'withdrawals/transfer',
       method: 'POST',
       body: {
-        otp: values.otp,
+        transferOtp: values.otp,
       },
     }, (res: any) => {
       toast.success(res.message);
@@ -48,22 +48,21 @@ const InitiatePaymentModal = (props: any) => {
   const resendOTP = () => {
     setOtpStatus('REQUESTING');
     sendRequest({
-      url: 'resend-otp',
-      method: 'POST',
-      body: {},
-    }, (res: any) => {
-      toast.success(res.message);
+      url: 'withdrawals/transfer-otp',
+      method: 'GET',
+    }, (res?: any) => {
+      toast.success('OTP successfully requested');
       setOtpStatus('WAITING');
-      setTimeout(() => setOtpStatus('READY'), 120000);
-      closeModal('refresh');
+      setTimeout(() => setOtpStatus('READY'), 180000);
     }, (err: any) => {
         setOtpStatus('READY');
-        toast.error(err.error?.emailError || err.message || 'Unable to complete');
+        toast.error(err?.error?.emailError || err?.message || 'Unable to complete');
     });
   }
 
   useEffect(() => {
     openModal();
+    setTimeout(() => setOtpStatus('READY'), 180000);
     console.log({props});
   }, []);
 
@@ -79,7 +78,7 @@ const InitiatePaymentModal = (props: any) => {
                 otp: '',
             }}
             validate={(value) => validate(value)}
-            onSubmit={(values, controls) => saveProduct(values, controls)}
+            onSubmit={(values, controls) => confirmWithdrawal(values, controls)}
             // onSubmit={(values, controls) => console.log('values, controls')}
             >
                 {

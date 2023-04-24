@@ -24,9 +24,6 @@ function VendorProducts(props: any) {
   const sessionData :IsessionData = useSelector((state: IstoreState) => state.session);
 
   const submit = () => {
-    submitFilters(filter);
-  }
-  const submitFilters = (filter: any) => {
     getProducts();
   }
 
@@ -77,10 +74,14 @@ function VendorProducts(props: any) {
       store: sessionData._id,
       limit: 10000,
     }
+    const payload: any = {};
+    if(filter.name) {
+      payload.search = filter;
+    }
     sendRequest({
         url: `get/products` + stringifyFilter(params),
         method: 'POST',
-        body: {}
+        body: payload
     }, (res: any) => {
         // navigate(routeConstants.login);
         setProducts(res.data)

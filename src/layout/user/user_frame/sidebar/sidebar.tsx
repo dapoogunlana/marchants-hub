@@ -9,7 +9,7 @@ import { IroutObjectData, IstoreState } from '../../../../services/constants/int
 import { logoutUser, sortRoute } from '../../../../services/utils/navigation-utilities';
 import { logout } from '../../../../services/actions/session-actions';
 import SettingsModal from '../../../../components/block-components/modals/settings-modal/settings-modal';
-import { copyStoreLink } from '../../../../services/utils/data-manipulation-utilits';
+import { copyStoreLink, numberUserMode } from '../../../../services/utils/data-manipulation-utilits';
 
 function Sidebar(props: any) {
 
@@ -17,6 +17,7 @@ function Sidebar(props: any) {
   const [viewSettings, setViewSettings] = useState(false);
   const [routes, setRoutes] = useState<IroutObjectData[]>([]);
   const userRole = sessionData.role;
+  const userMode = numberUserMode(sessionData.role);
 
   const openSettingsModal = (id: any) => {
     setViewSettings(true);
@@ -49,7 +50,13 @@ function Sidebar(props: any) {
       <div className='bar'>
         <div className='profile'>
           <div className='store-image'>
-            <img src={StoreImg} alt="" />
+            <img src={StoreImg} className={sessionData.photoUrl && 'hidden'} alt="" />
+            {
+              sessionData.photoUrl &&
+              <div className='overlay-dynamic-image'>
+                <img src={sessionData.photoUrl} alt="" />
+              </div>
+            }
           </div>
           <div className='user-info spread-info mt-3'>
             <p className='mb-0 reduced font-weight-bold c-white'>{`${sessionData.ownerFirstName} ${sessionData.ownerLastName}`}</p>
@@ -57,7 +64,10 @@ function Sidebar(props: any) {
             <div className='settings-drop-down'>
               <div className='clip-area'></div>
               <div className='text-area'>
-                <p onClick={() => copyStoreLink(sessionData.slug)}><i className="fas fa-copy mr-2"></i>Store Link</p>
+                {
+                  userMode === 1 &&
+                  <p onClick={() => copyStoreLink(sessionData.slug)}><i className="fas fa-copy mr-2"></i>Store Link</p>
+                }
                 <p onClick={openSettingsModal}><i className="fas fa-screwdriver-wrench mr-2"></i>Settings</p>
                 <p className='mb-1' onClick={logoutUser}><i className="fas fa-right-from-bracket mr-2"></i>Signout</p>
               </div>

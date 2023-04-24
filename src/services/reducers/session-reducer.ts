@@ -6,7 +6,6 @@ export const sessionReducer = (state: any = {}, action: any) => {
         case LOGIN:
             return {...action.payload};
         case GETSESSIONDATA:
-
             return {...action.payload};
         case LOGOUT:
             return action.payload;

@@ -8,12 +8,17 @@ export let coreBanks = [];
 export let coreOcupations = [];
 export let corePillars = [];
 
-export const getState = (callback: Function) => {
+export const getStates = (callback: Function) => {
     sendRequest({
-      url: '/state'
+        url: 'https://countriesnow.space/api/v0.1/countries/states',
+        external: true,
+        method: 'POST',
+        body: {
+            "country": "nigeria"
+        }
     }, (res: any)=>{
-        coreStates = res.payload.rows;
-        callback(res.payload.rows)
+        coreStates = res.data.states;
+        callback(res.data.states || []);
     }, (err: any)=>{
         if (err) {
             callback([])

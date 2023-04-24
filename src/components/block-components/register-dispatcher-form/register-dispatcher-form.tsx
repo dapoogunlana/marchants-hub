@@ -16,7 +16,7 @@ import UserNavigationComponent from '../../../services/utils/navigation-componen
 import { regexConstants } from '../../../services/constants/validation-regex';
 import { prepareDispatcherRegisterForm } from '../../../services/utils/form-preparation-service';
 import { acceptOnlyNumbers } from '../../../services/utils/data-manipulation-utilits';
-import { getCities, getLgas } from '../../../services/utils/core-api-util';
+import { getCities, getLgas, getStates } from '../../../services/utils/core-api-util';
 // import { login } from '../../../services/actions/session-actions';
 // import { regexConstants } from '../../../services/constants/validation-regex';
 
@@ -24,9 +24,10 @@ function RegisterDispatcherForm() {
 
     const [response, setResponse] = useState<any>();
     const [showPassword, setShowPassword] = useState(false);
-    const [statutoryIdFile, setStatutoryIdFile] = useState<any>();
+    const [verifying, setVerifying] = useState(false);
     // let statutoryIdFile: any;
     const [useNav, setUseNav] = useState(false);
+    const [accountDetailsVerified, setAccountDetailsVerified] = useState(false);
 
     const [states, setStates] = useState([]);
     const [lgaList, setLgaList] = useState([]);
@@ -51,12 +52,12 @@ function RegisterDispatcherForm() {
 
         //     }
         // }
-        const file = change?.target?.files[0];
-        const format = file ? file.name.substring(file.name.lastIndexOf('.') + 1) : '';
-        const fileSize = file ? file.size : '';
-        const invalidFormat = (format !== 'png' && format !== 'jpg' && format !== 'jpeg' && format !== 'pdf') ? true : false;
-        const invalid = invalidFormat && format ? true : false;
-        // console.log({format, invalidFormat, invalid, fileSize})
+        // const file = change?.target?.files[0];
+        // const format = file ? file.name.substring(file.name.lastIndexOf('.') + 1) : '';
+        // const fileSize = file ? file.size : '';
+        // const invalidFormat = (format !== 'png' && format !== 'jpg' && format !== 'jpeg' && format !== 'pdf') ? true : false;
+        // const invalid = invalidFormat && format ? true : false;
+        // // console.log({format, invalidFormat, invalid, fileSize})
     
         if (!values.companyName) {
             errors.companyName = 'Company name is required';
@@ -105,6 +106,14 @@ function RegisterDispatcherForm() {
         if (!values.statutoryID) {
             errors.statutoryID = 'Statutory ID is required';
         }
+        if(values.file){
+          const format = values.file.name?.substring(values.file.name.lastIndexOf('.') + 1);
+          if(format !== 'jpg' && format !== 'jpeg' && format !== 'png' && format !== 'gif' && format !== 'pdf'){
+            errors.statutoryID = 'Invalid format';
+          }else if(values.file.size > 2097152){
+            errors.statutoryID = 'Image must not be more than 2MB';
+          }
+        }
         return errors;
     
     }
@@ -113,27 +122,19 @@ function RegisterDispatcherForm() {
         sendRequest({
             url: 'banks',
         }, (res: any) => {
-            setBanks(res.data.data || []);
+            setBanks(res.data || []);
         }, (err: any) => {
         });
     }
-    const getStates = () => {
-        sendRequest({
-            url: 'https://countriesnow.space/api/v0.1/countries/states',
-            external: true,
-            method: 'POST',
-            body: {
-                "country": "nigeria"
-            }
-        }, (res: any) => {
-            console.log({states: res.data.states});
-            setStates(res.data.states || []);
-        }, (err: any) => {
+    const getStateList = () => {
+        getStates((states: any)=> {
+            setStates(states);
         });
     }
 
-    const stateChange = (change: any) => { 
+    const stateChange = (change: any, setValues: Function, values: FormikValues) => { 
         const stateCode = change.target.value;
+        setValues({...values, stateOfOperation: stateCode, lgaOfOperation: ''})
         setLgaList([]);
         if (stateCode) {
             getCities(stateCode,(lgas: any)=> {
@@ -142,19 +143,41 @@ function RegisterDispatcherForm() {
             });
         }
     }
+    
+    const verifyAccountDetails = (values: FormikValues) => {
+        setVerifying(true);
+        const payload = {
+            account_no: values.bankAccount,
+            bank_code: values.bankName.split('|')[0],
+            bank_name: values.bankName.split('|')[1],
+        }
+        sendRequest({
+            url: 'verify-account',
+            method: 'POST',
+            body: payload
+        }, (res: any) => {
+            setVerifying(false);
+            setAccountDetailsVerified(true);
+            toast.success('Account verified successfully');
+        }, (err: any) => {
+            setVerifying(false);
+            toast.error(err.message);
+        });
+    }
 
     const submitRegistration = (values: any, controls: any) => {
-        // setTimeout(() => controls.setSubmitting(false), 2000);
-        // return
+        if(!accountDetailsVerified) {
+            toast.error('Account details have to be verified for you to proceed');
+            controls.setSubmitting(false);
+            return;
+        }
         sendRequest({
             url: 'auth/register',
             method: 'POST',
-            body: prepareDispatcherRegisterForm(values, statutoryIdFile)
+            body: prepareDispatcherRegisterForm(values)
         }, (res: any) => {
             controls.setSubmitting(false);
             toast.success(res.message);
-            // controls.resetForm();/
-            // sessionStorage.setItem('token', res.payload?.token?.accessToken);
             dispatch(login(res.data))
             navigate(`/${routeConstants.confirmEmail}`);
         }, (err: any) => {
@@ -173,7 +196,7 @@ function RegisterDispatcherForm() {
 
     useEffect(() => {
         getBanks();
-        getStates();
+        getStateList();
     }, []);
 
     // useEffect(() => {
@@ -230,6 +253,8 @@ function RegisterDispatcherForm() {
                             handleBlur,
                             handleChange,
                             handleSubmit,
+                            setValues,
+                            setFieldValue,
                         } = props;
                         return (
                             <form action="" onSubmit={handleSubmit}>
@@ -347,7 +372,7 @@ function RegisterDispatcherForm() {
                                             onBlur={handleBlur}
                                             onFocus={() => errors.stateOfOperation = ''}
                                             // onChange={handleChange}
-                                            onChange={(change: any) => {handleChange(change); stateChange(change)}}
+                                            onChange={(change: any) => {handleChange(change); stateChange(change, setValues, values)}}
                                             className={(errors.stateOfOperation && touched.stateOfOperation) ? 'im-error' : ''}
                                         >
                                             <option value="" disabled>State of Operation</option>
@@ -396,10 +421,11 @@ function RegisterDispatcherForm() {
                                             value={values.bankName}
                                             onBlur={handleBlur}
                                             onFocus={() => errors.bankName = ''}
-                                            onChange={handleChange}
+                                            onChange={(change) => {handleChange(change); setAccountDetailsVerified(false)}}
                                             className={(errors.bankName && touched.bankName) ? 'im-error' : ''}
                                         >
                                             <option value="" disabled>Select Bank Name</option>
+                                            <option value="101|operate">Operation</option>
                                             {
                                                 banks.map((item: any, index) => {
                                                     return <option key={index} value={item.id + '|' + item.name}>{item.name}</option>
@@ -421,7 +447,7 @@ function RegisterDispatcherForm() {
                                             value={values.bankAccount}
                                             onBlur={handleBlur}
                                             onFocus={() => errors.bankAccount = ''}
-                                            onChange={handleChange}
+                                            onChange={(change) => {handleChange(change); setAccountDetailsVerified(false)}}
                                             onKeyUp={acceptOnlyNumbers}
                                             className={(errors.bankAccount && touched.bankAccount) ? 'im-error' : ''}
                                         />
@@ -431,6 +457,22 @@ function RegisterDispatcherForm() {
                                         }
                                     </div>
                                 </div>
+                                {
+                                    values.bankName && values.bankAccount.length === 10 && !accountDetailsVerified &&
+                                    <div className={'solid-button rad-3-im mx-0 reduced-im my-2 text-center clickable' + (verifying ? ' deactivated' : '')} onClick={() => verifyAccountDetails(values)}>
+                                        {
+                                            verifying ?
+                                            <>Verifying.. Account</> :
+                                            <>Verify Account</>
+                                        }
+                                    </div>
+                                }
+                                {
+                                    (!values.bankName || values.bankAccount.length !== 10) && !accountDetailsVerified &&
+                                    <p className='sreduced-im text-center reduced-im mt-1 text-danger'>
+                                        Account Details not verified
+                                    </p>
+                                }
                                 <div className='info-grid'>
                                     <div className='reg-card'>
                                         <label className='text-left'>Password</label>
@@ -492,7 +534,11 @@ function RegisterDispatcherForm() {
                                         onBlur={handleBlur}
                                         onFocus={() => errors.statutoryID = ''}
                                         // onChange={(change) => {handleChange(change); validate(values, change)}}
-                                        onChange={(change: any) => {handleChange(change); setStatutoryIdFile(change?.target?.files[0])}}
+                                        // onChange={(change: any) => {handleChange(change); setStatutoryIdFile(change?.target?.files[0])}}
+                                        onChange={(event: any) => {
+                                            handleChange(event);
+                                            setFieldValue("file", event.currentTarget.files[0]);
+                                        }}
                                         className={(errors.statutoryID && touched.statutoryID) ? 'im-error' : ''}
                                     />
                                     {

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { getLgas, getPillars, getState } from "../../../services/utils/core-api-util";
+import { getLgas, getPillars, getStates } from "../../../services/utils/core-api-util";
 import './facilitator-list-filter.scss'
 
 const FacilitatorListFilter = (props: any) => {
@@ -61,7 +61,7 @@ const FacilitatorListFilter = (props: any) => {
   }
 
   useEffect(() => {
-    getState((states: any)=> {
+    getStates((states: any)=> {
       setStateList(states);
     });
     getPillars((pillars: any) => {

@@ -18,6 +18,7 @@ import './vendor-online-store.scss';
 
 function VendorOnlineStore(props: any) {
   
+  const [filter, setFilter] = useState<any>({ name: '' });
   const [products, setProducts] = useState<Iproduct[]>([]);
   const [productsLoaded, setProductsLoaded] = useState(0);
   const navigate = useNavigate();
@@ -27,17 +28,32 @@ function VendorOnlineStore(props: any) {
 
   const [storeName, setStoreName] = useState('STORE');
 
+  const updateForm = (field: string, ev: any) => {
+    const newFilter = {...filter};
+    const value = ev.target.value;
+    console.log({ev, code: ev.keycode})
+    const keyCode = ev.keyCode;
+    newFilter[field] = value;
+    setFilter(newFilter);
+    console.log({filter})
+  }
+
 
   const getProducts = () => {
     const params = {
       storeSlug: slug,
-      store: sessionData._id,
+      // store: sessionData._id,
       limit: 10000,
+    }
+    console.log({filter2: filter})
+    const payload: any = {};
+    if(filter.name) {
+      payload.search = filter;
     }
     sendRequest({
         url: `get/products` + stringifyFilter(params),
         method: 'POST',
-        body: {}
+        body: payload
     }, (res: any) => {
         // navigate(routeConstants.login);
         console.log({res})
@@ -62,6 +78,7 @@ function VendorOnlineStore(props: any) {
   }
 
   useEffect(() => {
+    console.log('need console')
     window.scrollTo(0, 0);
     getProducts();
     dispatch(removeActiveProduct());
@@ -80,9 +97,9 @@ function VendorOnlineStore(props: any) {
           </p>
           <div className='search-panel'>
             <div className='input'>
-              <input type="text" placeholder='Search by product name' />
+              <input type="text" placeholder='Search by product name' value={filter.name} onChange={(e) => updateForm('name', e)}  />
             </div>
-            <div className='action'>
+            <div className='action' onClick={getProducts}>
               <i className="fa-solid fa-magnifying-glass"></i>
             </div>
           </div>
@@ -115,7 +132,16 @@ function VendorOnlineStore(props: any) {
               <PaginatedItems itemsPerPage={1} changePage={changePage} />
             </div>}
           </div>
-          {products.length === 0 && <h4 className='text-center py-5'>This store has no products presently</h4>}
+          {
+            products.length === 0 && 
+            <>
+            {
+              filter.name ?
+              <h4 className='text-center py-5'>No products match your search</h4> :
+              <h4 className='text-center py-5'>This store has no products presently</h4>
+            }
+            </>
+          }
         </div> 
       }
       {

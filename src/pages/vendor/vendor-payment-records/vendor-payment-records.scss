@@ -70,5 +70,26 @@
                 }
             }
         }
+        .green-capsule{
+          background-color: #C5E7E7;
+          color: #2A5252;
+          border: none;
+          border-radius: 40px;
+          pointer-events: none;
+        }
+        .yellow-capsule{
+            background-color: #e7e2c5;
+            color: #4f522a;
+            border: none;
+            border-radius: 40px;
+            pointer-events: none;
+        }
+        .red-capsule{
+            background-color: #e7c5c5;
+            color: #522a2a;
+            border: none;
+            border-radius: 40px;
+            pointer-events: none;
+        }
     }
 }

@@ -1,4 +1,5 @@
 import { toast } from "react-toastify";
+import { routeConstants } from "../constants/route-constants";
 
 
   export const clipToLength = (item: string, length: number) => {
@@ -134,4 +135,25 @@ export function clearSpaces(event: any) {
     event.preventDefault()
     return false;
   }
+}
+
+
+export function numberUserMode(userRole: string) {
+
+  let userMode: number;
+  switch(userRole){
+    case routeConstants.userLevels.vendor:
+      userMode = 1;
+      break;
+    case routeConstants.userLevels.dispatcher:
+      userMode = 2;
+      break;
+    case routeConstants.userLevels.systemAdmin:
+      userMode = 3;
+      break;
+    default:
+      userMode = 0;
+      break;
+  }
+  return userMode;
 }

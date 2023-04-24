@@ -26,6 +26,7 @@ function RegisterVendorForm() {
     const [statutoryIdFile, setStatutoryIdFile] = useState<any>();
     // let statutoryIdFile: any;
     const [useNav, setUseNav] = useState(false);
+    const [accountDetailsVerified, setAccountDetailsVerified] = useState(false);
 
     const [states, setStates] = useState([]);
     const [banks, setBanks] = useState([]);
@@ -35,6 +36,7 @@ function RegisterVendorForm() {
 
     const validate = (values: FormikValues, change?: any) => {   
         const errors: any = {};
+        console.log({values});
         // if(change) {
         //     const file =change.target.files[0];
         //     console.log('hahahahaha');
@@ -48,12 +50,12 @@ function RegisterVendorForm() {
 
         //     }
         // }
-        const file = change?.target?.files[0];
-        const format = file ? file.name.substring(file.name.lastIndexOf('.') + 1) : '';
-        const fileSize = file ? file.size : '';
-        const invalidFormat = (format !== 'png' && format !== 'jpg' && format !== 'jpeg' && format !== 'pdf') ? true : false;
-        const invalid = invalidFormat && format ? true : false;
-        // console.log({format, invalidFormat, invalid, fileSize})
+        // const file = change?.target?.files[0];
+        // const format = file ? file.name.substring(file.name.lastIndexOf('.') + 1) : '';
+        // const fileSize = file ? file.size : '';
+        // const invalidFormat = (format !== 'png' && format !== 'jpg' && format !== 'jpeg' && format !== 'pdf') ? true : false;
+        // const invalid = invalidFormat && format ? true : false;
+        // // console.log({format, invalidFormat, invalid, fileSize})
     
         if (!values.storeName) {
             errors.storeName = 'Store name is required';
@@ -99,14 +101,15 @@ function RegisterVendorForm() {
         if (!values.statutoryID) {
             errors.statutoryID = 'Statutory ID is required';
         }
-        // if (invalidFormat) {
-        //     errors.statutoryID = 'Invalid format';
-        // } else {
-        //     errors.statutoryID = 'Valid format';
-        // }
-        setTimeout(() => {
-            // console.log({statutoryIdFile})
-        }, 100);
+        if(values.file){
+            console.log('there is a file');
+            const format = values.file.name?.substring(values.file.name.lastIndexOf('.') + 1);
+            if(format !== 'jpg' && format !== 'jpeg' && format !== 'png' && format !== 'gif' && format !== 'pdf'){
+                errors.statutoryID = 'Invalid format';
+            }else if(values.file.size > 2097152){
+                errors.statutoryID = 'Image must not be more than 2MB';
+            }
+        }
         return errors;
     
     }
@@ -115,7 +118,7 @@ function RegisterVendorForm() {
         sendRequest({
             url: 'banks',
         }, (res: any) => {
-            setBanks(res.data.data || []);
+            setBanks(res.data || []);
         }, (err: any) => {
         });
     }
@@ -132,45 +135,42 @@ function RegisterVendorForm() {
         }, (err: any) => {
         });
     }
+    
+    const verifyAccountDetails = (values: FormikValues) => {
+        const payload = {
+            account_no: values.bankAccount,
+            bank_code: values.bankName.split('|')[0],
+            bank_name: values.bankName.split('|')[1],
+        }
+        sendRequest({
+            url: 'verify-account',
+            method: 'POST',
+            body: payload
+        }, (res: any) => {
+            setAccountDetailsVerified(true);
+            toast.success('Account verified successfully');
+        }, (err: any) => {
+            toast.error(err.message);
+        });
+    }
 
     const submitRegistration = (values: any, controls: any) => {
-        // setTimeout(() => controls.setSubmitting(false), 2000);
-        // return
+        if(!accountDetailsVerified) {
+            toast.error('Account details have to be verified for you to proceed');
+            controls.setSubmitting(false);
+            return;
+        }
         sendRequest({
             url: 'auth/register',
             method: 'POST',
-            body: prepareVendorRegisterForm(values, statutoryIdFile)
+            body: prepareVendorRegisterForm(values)
         }, (res: any) => {
             controls.setSubmitting(false);
             toast.success(res.message);
-            // controls.resetForm();/
-            // sessionStorage.setItem('token', res.payload?.token?.accessToken);
             dispatch(login(res.data))
             navigate(`/${routeConstants.confirmEmail}`);
         }, (err: any) => {
             controls.setSubmitting(false);
-            setResponse(<p className='c-red mb-0 pt-2'>{err.error?.emailError || err.message || 'Unable to complete'}</p>);
-            toast.error(err.error?.emailError || err.message || 'Unable to complete');
-        });
-    }
-    const getUserData = (token: string, controls: any) => {
-        sendRequest({
-            url: 'auth/user',
-            method: 'GET',
-        }, (res: any) => {
-            controls.setSubmitting(false);
-            setResponse(<p className='c-dark-green mb-0 pt-2'>{res.message}</p>);
-            toast.success(res.message);
-            controls.resetForm();
-            const data = {
-                role:res.payload?.oauthRole?.name,
-                ...res.payload?.user,
-                token
-            }
-            dispatch(login(data))
-            // navigate(`/${routeConstants.systemAdmin}`);
-            setUseNav(true);
-        }, (err: any) => {
             setResponse(<p className='c-red mb-0 pt-2'>{err.error?.emailError || err.message || 'Unable to complete'}</p>);
             toast.error(err.error?.emailError || err.message || 'Unable to complete');
         });
@@ -241,6 +241,7 @@ function RegisterVendorForm() {
                             handleBlur,
                             handleChange,
                             handleSubmit,
+                            setFieldValue,
                         } = props;
                         return (
                             <form action="" onSubmit={handleSubmit}>
@@ -385,13 +386,13 @@ function RegisterVendorForm() {
                                             value={values.bankName}
                                             onBlur={handleBlur}
                                             onFocus={() => errors.bankName = ''}
-                                            onChange={handleChange}
+                                            onChange={(change) => {handleChange(change); setAccountDetailsVerified(false)}}
                                             className={(errors.bankName && touched.bankName) ? 'im-error' : ''}
                                         >
                                             <option value="" disabled>Select Bank Name</option>
                                             {
                                                 banks.map((item: any, index) => {
-                                                    return <option key={index} value={item.id + '|' + item.name}>{item.name}</option>
+                                                    return <option key={index} value={item.code + '|' + item.name}>{item.name}</option>
                                                 })
                                             }
                                         </select>
@@ -410,7 +411,7 @@ function RegisterVendorForm() {
                                             value={values.bankAccount}
                                             onBlur={handleBlur}
                                             onFocus={() => errors.bankAccount = ''}
-                                            onChange={handleChange}
+                                            onChange={(change) => {handleChange(change); setAccountDetailsVerified(false)}}
                                             onKeyUp={acceptOnlyNumbers}
                                             className={(errors.bankAccount && touched.bankAccount) ? 'im-error' : ''}
                                         />
@@ -420,6 +421,18 @@ function RegisterVendorForm() {
                                         }
                                     </div>
                                 </div>
+                                {
+                                    values.bankName && values.bankAccount.length === 10 && !accountDetailsVerified &&
+                                    <div className='solid-button rad-3-im mx-0 reduced-im my-2 text-center' onClick={() => verifyAccountDetails(values)}>
+                                        Verify Account
+                                    </div>
+                                }
+                                {
+                                    (!values.bankName || values.bankAccount.length !== 10) && !accountDetailsVerified &&
+                                    <p className='sreduced-im text-center reduced-im mt-1 text-danger'>
+                                        Account Details not verified
+                                    </p>
+                                }
                                 <div className='reg-card'>
                                     <label className='text-left'>Password</label>
                                     <input
@@ -478,7 +491,11 @@ function RegisterVendorForm() {
                                         onBlur={handleBlur}
                                         onFocus={() => errors.statutoryID = ''}
                                         // onChange={(change) => {handleChange(change); validate(values, change)}}
-                                        onChange={(change: any) => {handleChange(change); setStatutoryIdFile(change?.target?.files[0])}}
+                                        // onChange={(change: any) => {handleChange(change); setStatutoryIdFile(change?.target?.files[0])}}
+                                        onChange={(event: any) => {
+                                            handleChange(event);
+                                            setFieldValue("file", event.currentTarget.files[0]);
+                                        }}
                                         className={(errors.statutoryID && touched.statutoryID) ? 'im-error' : ''}
                                     />
                                     {

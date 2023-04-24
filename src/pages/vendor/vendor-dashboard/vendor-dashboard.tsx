@@ -29,6 +29,7 @@ function VendorDashboard(props: any) {
   const [pendingOrderCountLoaded, setPendingOrderCountLoaded] = useState(false);
   const [productCount, setProductCount] = useState<number>();
   const [productCountLoaded, setProductCountLoaded] = useState(false);
+  const navigate = useNavigate();
   let id: any;
 
   const tableColumns = [
@@ -74,7 +75,7 @@ function VendorDashboard(props: any) {
       variant: 'success',
       action: {
         // View: () => navigate(`/${routeConstants.systemAdmin}/${routeConstants.facilitatorList}/${id}`),
-        View: () => console.log(`/viewing`),
+        View: () => navigate(`/${routeConstants.vendor}/${routeConstants.orders}/`),
         ...actions
       }
     })
@@ -82,7 +83,7 @@ function VendorDashboard(props: any) {
 
   const getOrders = () => {
     const params = {
-      storeSlug: sessionData.slug,
+      // storeSlug: sessionData.slug,
       status: tabQueryConstants.pending.query,
       limit: 4,
     }

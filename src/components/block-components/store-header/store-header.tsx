@@ -5,7 +5,6 @@ import { Link, useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import { IstoreState } from "../../../services/constants/interfaces/data-schemas";
 import { routeConstants } from "../../../services/constants/route-constants";
-import { getLgas, getState } from "../../../services/utils/core-api-util";
 import './store-header.scss'
 
  const StoreHeader = (props: any) => {

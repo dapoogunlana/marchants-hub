@@ -29,15 +29,18 @@ function DropdownStyledButton(props: any) {
 
   return (
     props.data && <Dropdown>
-      <Dropdown.Toggle variant={props.data.variant || 'success'} style={props.style} id="dropdown-basic">
+      <Dropdown.Toggle variant={props.data.variant || 'success'} style={props.style} className={formatter().length === 0 ? ' unclickable' : ''} id="dropdown-basic">
         {props.data.name}
       </Dropdown.Toggle>
 
-      <Dropdown.Menu>
+      {
+        formatter().length > 0 &&
+        <Dropdown.Menu>
         {formatter().map((item, index) => (
           <Dropdown.Item key={index} onClick={props.data.action[item.name]}>{item.name}</Dropdown.Item>
         ))}
       </Dropdown.Menu>
+      }
     </Dropdown>
   );
 }

@@ -21,12 +21,16 @@ import { routeConstants } from '../../../services/constants/route-constants';
 import { formatDate, formatNumber, stringifyFilter } from '../../../services/utils/data-manipulation-utilits';
 import { IstoreState } from '../../../services/constants/interfaces/data-schemas';
 import { IsessionData } from '../../../services/constants/interfaces/session-schemas';
+import MiniLoader from '../../../components/block-components/mini-loader/mini-loader';
 
 function VendorPaymentRecords(props: any) {
   const sessionData: IsessionData = useSelector((state: IstoreState) => state.session);
   const [initiating, setinItiating] = useState<boolean>(false);
   const [viewInitiateWithdrawal, setViewInitiateWithdrawal] = useState(false);
+  const [listLoaded, setListLoaded] = useState(false);
   const [paymentRecords, setPaymentRecords] = useState<any[]>([]);
+  const [withdrawalRecords, setWithdrawalRecords] = useState<any[]>([]);
+  const [totalWithdrawn, setTotalWithdrawn] = useState<number>();
   const [walletBalance, setWalletBalance] = useState<number>();
   const [walletBalanceLoaded, setWalletBalanceLoaded] = useState(false);
   const user = useSelector((state:any) => state.session);
@@ -41,7 +45,9 @@ function VendorPaymentRecords(props: any) {
   const closeInitiateWithdrawalModal = (feedback?: any) => {
     setViewInitiateWithdrawal(false);
     if (feedback === 'refresh') {
-      getRecords();
+      getWalletBalance();
+      getPaymentRecords();
+      getWithdrawalRecords();
     }
   }
 
@@ -56,12 +62,12 @@ function VendorPaymentRecords(props: any) {
   ];
 
   const withdrawalTableColumns = [
-    { Header: 'Product', accessor: 'product', },
-    { Header: 'Amount', accessor: 'amount', },
+    { Header: 'Amount', accessor: 'transactionAmount', },
     { Header: 'Date', accessor: 'date', },
-    { Header: 'Customer Name', accessor: 'customerName', },
-    { Header: 'Customer Phone', accessor: 'customerPhoneNumber', },
-    { Header: 'Customer Address', accessor: 'customerAddress', },
+    { Header: 'Recipient account details', accessor: 'accountDetails', },
+    { Header: 'TransactionID', accessor: 'transactionReference', },
+    // { Header: 'Customer Phone', accessor: 'customerPhoneNumber', },
+    // { Header: 'Customer Address', accessor: 'customerAddress', },
     { Header: 'Status', accessor: 'status', },
   ];
 
@@ -100,12 +106,14 @@ function VendorPaymentRecords(props: any) {
         body: {}
     }, (res: any) => {
         setWalletBalance(res.data[0].balance);
+        setTotalWithdrawn(res.data[0].totalAmountWithdrawn);
         setWalletBalanceLoaded(true);
     }, (err: any) => {
     });
   }
 
-  const getRecords = () => {
+  const getPaymentRecords = () => {
+    setListLoaded(false);
     const params = {
       owner: sessionData._id,
       limit: 20,
@@ -129,21 +137,59 @@ function VendorPaymentRecords(props: any) {
           customerName: item.order?.customerName,
           customerPhoneNumber: item.order?.customerPhoneNumber,
           customerAddress: item.order?.customerAddress,
-          status: item.order?.isPaid ? <button className='btn btn-success dashboard-button rad-25 px-4'>Paid</button> :
-          <button className='btn btn-success dashboard-button rad-25 px-4'>Paid</button>
+          status: item.order?.isPaid ? <button className='green-capsule px-4 py-2'>Paid</button> :
+          <button className='yellow-capsule px-4 py-2'>Pending</button>
         }
         return payload;
       });
       setPaymentRecords(record);
       setWalletBalanceLoaded(true);
+      setListLoaded(true);
     }, (err: any) => {
+      setListLoaded(true);
+    });
+  }
+
+  const getWithdrawalRecords = () => {
+    setListLoaded(false);
+    const params = {
+      owner: sessionData._id,
+      limit: 20,
+      page: 1,
+    }
+    sendRequest({
+      url: 'get/withdrawal' + stringifyFilter(params),
+      method: 'POST',
+    }, (res: any) => {
+      const record = res.data.map((item: any) => {
+        const payload: any = {
+          ...item,
+          date: formatDate(item.createdAt),
+          accountDetails: item.destinationBankName + ' ' + item.creditAccount,
+        }
+        switch(item.status) {
+          case 'SUCCESS':
+            payload.status = <button className='green-capsule px-4 py-2 reduced'>SUCCESS</button>
+            break
+          case 'PENDING':
+            payload.status = <button className='yellow-capsule px-4 py-2 reduced'>PENDING</button>
+            break
+          case 'FAILED':
+            payload.status = <button className='red-capsule px-4 py-2 reduced'>FAILED</button>
+            break
+        }
+        return payload;
+      });
+      setWithdrawalRecords(record);
+      setListLoaded(true);
+    }, (err: any) => {
+      setListLoaded(true);
     });
   }
   const initiateWithdrawal = () => {
     setinItiating(true);
     sendRequest({
-      url: 'initiate-withdrawal',
-      method: 'POST',
+      url: 'withdrawals/transfer-otp',
       body: {},
     }, (res: any) => {
       toast.success(res.message);
@@ -152,16 +198,14 @@ function VendorPaymentRecords(props: any) {
     }, (err: any) => {
       setinItiating(false);
       toast.error(err.error?.emailError || err.message || 'Unable to complete');
-
-      // Temporary
-      setViewInitiateWithdrawal(true);
     });
   }
 
   useEffect(() => {
     window.scrollTo(0, 0);
     getWalletBalance();
-    getRecords();
+    getPaymentRecords();
+    getWithdrawalRecords();
   }, [props]);
   
   return (
@@ -198,7 +242,7 @@ function VendorPaymentRecords(props: any) {
                       <img src={TotalOrdersIcon} width={40} alt="" />
                     </div>
                     <p className='mb-0 reduced-x font-weight-bold'>Wallet balance</p>
-                    <h5 className='font-weight-bold mb-0'>N{walletBalanceLoaded ? (walletBalance ? formatNumber(walletBalance) : '') : '...'}</h5>
+                    <h5 className='font-weight-bold mb-0'>N{walletBalanceLoaded ? ((walletBalance || walletBalance === 0) ? formatNumber(walletBalance) : '') : '...'}</h5>
                   </div>
                 </div>
                 <div className='col-sm-4'>
@@ -208,7 +252,7 @@ function VendorPaymentRecords(props: any) {
                       <img src={ListedProductsIcon} width={40} alt="" />
                     </div>
                     <p className='mb-1 reduced-x font-weight-bold'>Total withdrawals</p>
-                    <h5 className='font-weight-bold mb-0'>N{walletBalanceLoaded ? (walletBalance ? formatNumber(350000) : '') : '...'}</h5>
+                    <h5 className='font-weight-bold mb-0'>N{walletBalanceLoaded ? ((totalWithdrawn || totalWithdrawn === 0) ? formatNumber(totalWithdrawn) : '') : '...'}</h5>
                   </div>
                 </div>
               </div>
@@ -225,12 +269,26 @@ function VendorPaymentRecords(props: any) {
               <Tabs defaultActiveKey={'Payment Records'} onSelect={changKey} >
                 <Tab eventKey={'Payment Records'} title={'Payment Records'}>
                   {
-                    (activeKey === 'Payment Records') && <DataTables uncontained data={paymentRecords} columns={paymentTableColumns}/>
+                    listLoaded ?
+                    <>
+                    {
+                      (activeKey === 'Payment Records') && <DataTables uncontained data={paymentRecords} columns={paymentTableColumns}/>
+                    }
+                    {paymentRecords.length === 0 && <h5 className='text-center my-4'>No data yet</h5>}
+                    </>  :
+                    <MiniLoader/>
                   }
                 </Tab>
                 <Tab eventKey={'Withdrawal Records'} title={'Withdrawal Records'}>
                   {
-                    (activeKey === 'Withdrawal Records') && <DataTables uncontained data={paymentRecords} columns={paymentTableColumns}/>
+                    listLoaded ?
+                    <>
+                    {
+                      (activeKey === 'Withdrawal Records') && <DataTables uncontained data={withdrawalRecords} columns={withdrawalTableColumns}/>
+                    }
+                    {withdrawalRecords.length === 0 && <h5 className='text-center my-4'>No data yet</h5>}
+                    </> :
+                    <MiniLoader/>
                   }
                 </Tab>
               </Tabs>

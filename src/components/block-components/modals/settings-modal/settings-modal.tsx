@@ -4,13 +4,22 @@ import { closeAppModal, openModal } from "../../../../services/utils/app-data-mo
 import Select from "react-select";
 import { sendRequest } from "../../../../services/utils/request";
 import { toast } from "react-toastify";
-import { prepareNewProductForm } from "../../../../services/utils/form-preparation-service";
-import { acceptOnlyNumbers } from "../../../../services/utils/data-manipulation-utilits";
+import { prepareNewProductForm, prepareProfileInfoUpdateForm } from "../../../../services/utils/form-preparation-service";
+import { acceptOnlyNumbers, numberUserMode } from "../../../../services/utils/data-manipulation-utilits";
+import { useDispatch } from "react-redux";
+import { login } from "../../../../services/actions/session-actions";
+import { useSelector } from "react-redux";
+import { IstoreState } from "../../../../services/constants/interfaces/data-schemas";
+import { routeConstants } from "../../../../services/constants/route-constants";
 
 const SettingsModal = (props: any) => {
+
+  const dispatch = useDispatch();
+  const sessionData = useSelector((state: IstoreState) => state.session);
+
   const [response, setResponse] = useState<any>();
-    const [banks, setBanks] = useState([]);
-  const id = props.product?._id;
+  const userMode = numberUserMode(sessionData.role);
+  const [banks, setBanks] = useState([]);
   const closeModal = (feedback: any) => {
     closeAppModal(()=> props.closeModal(feedback));
   };
@@ -19,7 +28,8 @@ const SettingsModal = (props: any) => {
       sendRequest({
           url: 'banks',
       }, (res: any) => {
-          setBanks(res.data.data || []);
+          setBanks(res.data || []);
+          console.log({datt: res.data});
       }, (err: any) => {
       });
   }
@@ -41,11 +51,11 @@ const SettingsModal = (props: any) => {
       if (!values.address) {
           errors.address = 'Business address is required';
       }
-      if (!values.slug) {
-          errors.slug = 'Business web Link is required';
-      }
+      // if (!values.slug) {
+      //     errors.slug = 'Business web Link is required';
+      // }
       if (!values.image) {
-        errors.image = 'Image is required';
+        // errors.image = 'Image is required';
       }
       if(values.file){
         const format = values.file.name?.substring(values.file.name.lastIndexOf('.') + 1);
@@ -59,16 +69,18 @@ const SettingsModal = (props: any) => {
       return errors;
   }
 
-  const saveProduct = (values: any, controls: any) => {
-    // return closeModal('refresh');
+  const updateData = (values: any, controls: any) => {
+    // controls.setSubmitting(false);
+    // return console.log({Nsoku: prepareProfileInfoUpdateForm(values, banks)});
     sendRequest({
-      url: 'undone/products',
-      method: 'POST',
-      body: prepareNewProductForm(values),
+      url: 'auth/profile',
+      method: 'PATCH',
+      body: prepareProfileInfoUpdateForm(values, banks),
     }, (res: any) => {
       toast.success(res.message);
       controls.setSubmitting(false);
       closeModal('refresh');
+      dispatch(login(res.data));
     }, (err: any) => {
         controls.setSubmitting(false);
         setResponse(<p className='c-red mb-0 pt-2'>{err.error?.emailError || err.message || 'Unable to complete'}</p>);
@@ -90,16 +102,16 @@ const SettingsModal = (props: any) => {
           {/* Any content goes in here */}
           <div>
              <Formik initialValues={{
-                accountNumber: props.product?.accountNumber || '',
-                bankName: props.product?.bankName || '',
-                storeName: props.product?.storeName || '',
-                address: props.product?.address || '',
-                slug: props.product?.slug || '',
+                accountNumber: sessionData?.bankAccount || '',
+                bankName: sessionData?.bankCode || '',
+                storeName: sessionData?.businessName || '',
+                address: sessionData?.address || '',
+                // slug: sessionData?.slug || '',
                 image: '',
                 // image: props.product?.images[0]?.photoId || '',
             }}
             validate={(value) => validate(value)}
-            onSubmit={(values, controls) => saveProduct(values, controls)}
+            onSubmit={(values, controls) => updateData(values, controls)}
             // onSubmit={(values, controls) => console.log('values, controls')}
             >
                 {
@@ -108,7 +120,7 @@ const SettingsModal = (props: any) => {
                       bankName: string,
                       storeName: string,
                       address: string,
-                      slug: string,
+                      // slug: string,
                       image: string,
                     }>) => {
                         const {
@@ -163,7 +175,7 @@ const SettingsModal = (props: any) => {
                                             <option value="" disabled></option>
                                             {
                                                 banks.map((item: any, index) => {
-                                                    return <option key={index} value={item.id + '|' + item.name}>{item.name}</option>
+                                                    return <option key={index} value={item.code} className="reduced">{item.name}</option>
                                                 })
                                             }
                                         </select>
@@ -175,10 +187,18 @@ const SettingsModal = (props: any) => {
                                   </div>
                                 </div>
                                 <div className="modal-space-sect py-4">
-                                  <p className="mb-0 reduced-soft">Store details</p>
+                                  {
+                                    userMode === 1 ?
+                                    <p className="mb-0 reduced-soft">Store details</p> :
+                                    <p className="mb-0 reduced-soft">Business details</p>
+                                  }
                                   <div className="info-grid">
                                     <div className='styled-form2'>
-                                        <label className="mt-3 mb-1 h-bold">Store name</label>
+                                        {
+                                          userMode === 1 ?
+                                          <label className="mt-3 mb-1 h-bold">Store name</label> :
+                                          <label className="mt-0 mb-1 h-bold">Business name</label>
+                                        }
                                         
                                         <Field
                                               type="text"
@@ -197,7 +217,13 @@ const SettingsModal = (props: any) => {
                                     </div>
                                     <span></span>
                                     <div className='styled-form2'>
-                                        <label className="mt-0 h-bold">Business address <span className="reduced">(will serve as pickup address for dispatchers)</span></label>
+                                        <label className="mt-0 h-bold">
+                                          Business address
+                                          {
+                                            userMode === 1 &&
+                                            <span className="reduced">(will serve as pickup address for dispatchers)</span>
+                                          }
+                                        </label>
                                         
                                         <Field
                                               type="text"
@@ -217,10 +243,10 @@ const SettingsModal = (props: any) => {
                                   </div>
                                 </div>
                                 <div className="modal-space-sect py-4">
-                                  <p className="mb-0 reduced-soft c-dark-mid">Add domain name</p>
+                                  {/* <p className="mb-0 reduced-soft c-grey-mid">Add domain name</p>
                                   <div className="info-grid">
                                     <div className='styled-form2'>
-                                        <label className="mt-2 h-bold c-dark-mid">Enter domain name</label>
+                                        <label className="mt-2 h-bold c-grey-mid">Enter domain name</label>
                                         
                                         <Field
                                               type="text"
@@ -259,7 +285,28 @@ const SettingsModal = (props: any) => {
                                           <p className='reduced error-popup pt-1 mb-0'>{errors.image}</p>
                                       }
                                     </div>
-                                  </div>
+                                  </div> */}
+                                    <div className='styled-form2 no-select-button'>
+                                      <label className="mt-2 h-bold">Image</label>
+                                      
+                                      <input
+                                            type="file"
+                                            id='image'
+                                            value={values.image}
+                                            onBlur={handleBlur}
+                                            onFocus={() => errors.image = ''}
+                                            // onChange={handleChange}
+                                            className={(errors.image && touched.image) ? 'im-error' : ''}
+                                            onChange={(event: any) => {
+                                              handleChange(event);
+                                              setFieldValue("file", event.currentTarget.files[0]);
+                                            }}
+                                        />
+                                      {
+                                          errors.image && touched.image &&
+                                          <p className='reduced error-popup pt-1 mb-0'>{errors.image}</p>
+                                      }
+                                    </div>
                                 </div>
                               <div className='text-center pt-3 pb-2 lighter-grey pb-3' style={{padding: '20px'}}>
                                   <button type='button' onClick={closeModal} className='solid-button-danger mx-0 px-3 rad-10 mr-3' disabled={isSubmitting}><i className="fa-solid fa-circle-xmark mr-2"></i>Cancel</button>

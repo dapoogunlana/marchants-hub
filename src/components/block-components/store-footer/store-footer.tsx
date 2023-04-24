@@ -1,6 +1,4 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
-import { getLgas, getState } from "../../../services/utils/core-api-util";
 import './store-footer.scss'
 
  const StoreFooter = (props: any) => {

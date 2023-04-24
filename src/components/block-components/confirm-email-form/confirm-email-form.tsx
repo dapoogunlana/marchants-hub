@@ -14,7 +14,8 @@ function AdminConfirmEmailForm() {
 
     const [response, setResponse] = useState<any>();
     const [useNav, setUseNav] = useState(false);
-    const userRole = useSelector((state: IstoreState) => state.session?.role);
+    const [resendingCode, setResendingCode] = useState(false);
+    const sessionData = useSelector((state: IstoreState) => state.session);
 
     const navigate = useNavigate();
 
@@ -29,6 +30,23 @@ function AdminConfirmEmailForm() {
         return errors;
     }
 
+    const resendCode = () => {
+        setResendingCode(true);
+        sendRequest({
+            url: 'auth/verify-code',
+            method: 'POST',
+            body: {
+                email: sessionData.email,
+            }
+        }, (res: any) => {
+            toast.success(res.message || 'Successfully sent');
+            setResendingCode(false);
+        }, (err: any) => {
+            toast.error(err.message || 'Unable to complete');
+            setResendingCode(false);
+        });
+    }
+
     const submitRegistration = (values: any, controls: any) => {
         sendRequest({
             url: 'auth/verify-code',
@@ -37,8 +55,8 @@ function AdminConfirmEmailForm() {
                 verificationCode: values.code,
             }
         }, (res: any) => {
-            toast.error(res.message);
-            switch(userRole) {
+            toast.success(res.message);
+            switch(sessionData.role) {
             // case routeConstants.userLevels.systemAdmin:
             //     navigate(`/${routeConstants.systemAdmin}`);
             //     break;
@@ -119,6 +137,14 @@ function AdminConfirmEmailForm() {
                                         {isSubmitting ? 'SUBMITTING..' : 'PROCEED'}
                                     </button>
                                 </div>
+                                {
+                                    resendingCode ?
+                                    <p className='pt-3 reduced italic'>Resending...</p> :
+                                    <p className='pt-3'>
+                                        <span className='c-faint-font reduced'>Didn't get a code? </span>
+                                        <span className='resend-link reduced ml-2' onClick={resendCode}>Resend Code</span>
+                                    </p>
+                                }
                             </form>
                         );
                     }

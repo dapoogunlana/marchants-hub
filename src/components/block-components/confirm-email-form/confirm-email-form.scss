@@ -58,6 +58,16 @@
             }
         }
     }
+    .resend-link{
+        color: $primary-green;
+        font-weight: 700;
+        cursor: pointer;
+        transition: 0.3s ease;
+        &:hover{
+            text-decoration: underline;
+            color: $primary-green-active;
+        }
+    }
     button{
         width: 100%;
     }

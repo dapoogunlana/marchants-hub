@@ -626,7 +626,7 @@
 .light-grey {
   background-color: $grey-light;
 }
-.c-dark-mid {
+.c-grey-mid {
   color: $grey-mid;
 }
 .c-dark-grey {
@@ -803,6 +803,11 @@
 }
 .solid-button-danger {
   @include solid-button($dull-red, $dull-red-hover, 20px, 9px, 0.8em);
+  border-radius: 6px;
+  transition: 0.3s ease;
+}
+.solid-button-success {
+  @include solid-button($primary-green, $primary-green-hover, 20px, 9px, 0.8em);
   border-radius: 6px;
   transition: 0.3s ease;
 }
@@ -1120,6 +1125,9 @@ input[type=number] {
     100% { max-height: 100px; overflow: hidden; }
 }
 
+.italic{
+  font-style: italic;
+}
 
 .dashboard-button{
   background-color: #C5E7E7;
@@ -1142,4 +1150,7 @@ input[type=number] {
 .modal-space-sect{
     padding: 10px 20px;
     border-top: 1px solid #ddd
+}
+.modal-space-clear{
+    padding: 10px 20px;
 }
