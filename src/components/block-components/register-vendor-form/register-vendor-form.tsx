@@ -15,7 +15,7 @@ import { login } from '../../../services/actions/session-actions';
 import UserNavigationComponent from '../../../services/utils/navigation-component';
 import { regexConstants } from '../../../services/constants/validation-regex';
 import { prepareVendorRegisterForm } from '../../../services/utils/form-preparation-service';
-import { acceptOnlyNumbers } from '../../../services/utils/data-manipulation-utilits';
+import { acceptOnlyNumbers, clearSpaces } from '../../../services/utils/data-manipulation-utilits';
 // import { login } from '../../../services/actions/session-actions';
 // import { regexConstants } from '../../../services/constants/validation-regex';
 
@@ -90,8 +90,8 @@ function RegisterVendorForm() {
             errors.bankAccount = 'Field Required';
         } if (!values.password) {
             errors.password = 'Password is required';
-        } else if (values.password.length < 3) {
-            errors.password = 'Password can not be lass than 3 characters';
+        } else if (values.password.length < 6) {
+            errors.password = 'Password can not be lass than 6 characters';
         }
         if (!values.confirmPassword) {
             errors.confirmPassword = 'Password confirmation is required';
@@ -450,6 +450,7 @@ function RegisterVendorForm() {
                                         onBlur={handleBlur}
                                         onFocus={() => errors.password = ''}
                                         onChange={handleChange}
+                                        onKeyUp={clearSpaces}
                                         className={(errors.password && touched.password) ? 'im-error' : ''}
                                     />
                                     <div className='password-shower'>
@@ -474,6 +475,7 @@ function RegisterVendorForm() {
                                         onBlur={handleBlur}
                                         onFocus={() => errors.confirmPassword = ''}
                                         onChange={handleChange}
+                                        onKeyUp={clearSpaces}
                                         className={(errors.confirmPassword && touched.confirmPassword) ? 'im-error' : ''}
                                     />
                                     <div className='password-shower'>

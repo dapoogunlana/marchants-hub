@@ -15,7 +15,7 @@ import { login } from '../../../services/actions/session-actions';
 import UserNavigationComponent from '../../../services/utils/navigation-component';
 import { regexConstants } from '../../../services/constants/validation-regex';
 import { prepareDispatcherRegisterForm } from '../../../services/utils/form-preparation-service';
-import { acceptOnlyNumbers } from '../../../services/utils/data-manipulation-utilits';
+import { acceptOnlyNumbers, clearSpaces } from '../../../services/utils/data-manipulation-utilits';
 import { getCities, getLgas, getStates } from '../../../services/utils/core-api-util';
 // import { login } from '../../../services/actions/session-actions';
 // import { regexConstants } from '../../../services/constants/validation-regex';
@@ -483,6 +483,7 @@ function RegisterDispatcherForm() {
                                             onBlur={handleBlur}
                                             onFocus={() => errors.password = ''}
                                             onChange={handleChange}
+                                            onKeyUp={clearSpaces}
                                             className={(errors.password && touched.password) ? 'im-error' : ''}
                                         />
                                         <div className='password-shower'>
@@ -508,6 +509,7 @@ function RegisterDispatcherForm() {
                                             onBlur={handleBlur}
                                             onFocus={() => errors.confirmPassword = ''}
                                             onChange={handleChange}
+                                            onKeyUp={clearSpaces}
                                             className={(errors.confirmPassword && touched.confirmPassword) ? 'im-error' : ''}
                                         />
                                         <div className='password-shower'>

@@ -24,12 +24,12 @@ const NewProductModal = (props: any) => {
           errors.description = 'Description is required';
       }
       if (!values.amount) {
-          errors.amount = 'Amount required';
+          errors.amount = 'Valid amount required';
       } else if (values.amount <= 0) {
         errors.amount = 'Invalin amount';
       }
       if (!values.availableQuantity) {
-          errors.availableQuantity = 'Number is required';
+          errors.availableQuantity = 'Valid number is required';
       } else if (values.availableQuantity <= 0) {
         errors.availableQuantity = 'Invalin number';
       }
