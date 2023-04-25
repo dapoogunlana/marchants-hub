@@ -258,6 +258,7 @@ function RegisterVendorForm() {
                                         onBlur={handleBlur}
                                         onFocus={() => errors.storeName = ''}
                                         onChange={handleChange}
+                                        onKeyUp={clearSpaces}
                                         className={(errors.storeName && touched.storeName) ? 'im-error' : ''}
                                     />
                                     {
@@ -310,6 +311,7 @@ function RegisterVendorForm() {
                                             onBlur={handleBlur}
                                             onFocus={() => errors.bizFirstName = ''}
                                             onChange={handleChange}
+                                            onKeyUp={clearSpaces}
                                             className={(errors.bizFirstName && touched.bizFirstName) ? 'im-error' : ''}
                                         />
                                         {
@@ -328,6 +330,7 @@ function RegisterVendorForm() {
                                             onBlur={handleBlur}
                                             onFocus={() => errors.bizLastName = ''}
                                             onChange={handleChange}
+                                            onKeyUp={clearSpaces}
                                             className={(errors.bizLastName && touched.bizLastName) ? 'im-error' : ''}
                                         />
                                         {
