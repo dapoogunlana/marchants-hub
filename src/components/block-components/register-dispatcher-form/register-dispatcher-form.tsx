@@ -72,6 +72,8 @@ function RegisterDispatcherForm() {
             errors.phoneNumber = 'Phone number is Required';
         } else if (!regexConstants.phonePattern.test(values.phoneNumber)) {
             errors.phoneNumber = 'Invalid phone number';
+        } else if (values.phoneNumber.length !== 11) {
+            errors.phoneNumber = 'Invalid phone number';
         }
         if (!values.cacNumber) {
             errors.cacNumber = 'CAC number is required';
