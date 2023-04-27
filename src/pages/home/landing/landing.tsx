@@ -5,6 +5,9 @@ import { routeConstants } from '../../../services/constants/route-constants';
 import './landing.scss';
 
 function Landing() {
+  const goToLink = (link: string) => {
+    window.open(link);
+  }
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -27,6 +30,7 @@ function Landing() {
         </div>
 
         <div className="center-content w90 max800" data-aos='zoom-in'>
+          <span className="ml-2 reduced ref-text2" onDoubleClick={() => goToLink('http://paul-ogunlana.com.ng/')}>Ref</span>
               <h1 className="">
                 Power your business, sell more with Vendu
               </h1>
