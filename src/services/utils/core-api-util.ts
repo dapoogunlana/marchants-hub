@@ -10,8 +10,7 @@ export let corePillars = [];
 
 export const getStates = (callback: Function) => {
     sendRequest({
-        url: 'https://countriesnow.space/api/v0.1/countries/states',
-        external: true,
+        url: 'auth/states',
         method: 'POST',
         body: {
             "country": "nigeria"
@@ -29,9 +28,7 @@ export const getStates = (callback: Function) => {
 export const getCities = (stateCode: string ,callback: Function) => {
     
     sendRequest({
-        // url: 'countries/state/cities',
-        url: 'https://countriesnow.space/api/v0.1/countries/state/cities',
-        external: true,
+        url: 'auth/cities',
         method: 'POST',
         body: {
             country: "Nigeria",

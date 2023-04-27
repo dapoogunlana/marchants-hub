@@ -179,8 +179,8 @@ function RegisterVendorForm() {
             navigate(`/${routeConstants.confirmEmail}`);
         }, (err: any) => {
             controls.setSubmitting(false);
-            setResponse(<p className='c-red mb-0 pt-2'>{err.error?.emailError || err.message || 'Unable to complete'}</p>);
-            toast.error(err.error?.emailError || err.message || 'Unable to complete');
+            setResponse(<p className='c-red mb-0 pt-2'>{err?.error?.emailError || err?.message || 'Unable to complete'}</p>);
+            toast.error(err?.error?.emailError || err?.message || 'Unable to complete');
         });
     }
     const toggleShowPassword = () => {

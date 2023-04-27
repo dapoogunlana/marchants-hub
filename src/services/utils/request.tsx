@@ -33,7 +33,7 @@ export const sendRequest = (params: IrequestFormat, success: Function, failure: 
             return
         }
         if(!errorStatus) {
-            toast.error('Network Error');
+            // toast.error('Network Error');
         }
         return failure(error.response?.data);
     });
