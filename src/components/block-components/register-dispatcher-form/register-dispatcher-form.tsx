@@ -434,7 +434,7 @@ function RegisterDispatcherForm() {
                                             <option value="" disabled>Select Bank Name</option>
                                             {
                                                 banks.map((item: any, index) => {
-                                                    return <option key={index} value={item.id + '|' + item.name}>{item.name}</option>
+                                                    return <option key={index} value={item.code + '|' + item.name}>{item.name}</option>
                                                 })
                                             }
                                         </select>

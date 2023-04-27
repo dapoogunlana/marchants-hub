@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { toast } from 'react-toastify';
 import { apiLinks } from '../../config/environment';
 import { IrequestFormat } from '../constants/interfaces/request-schema';
 import { persiststore } from '../store/store';
@@ -30,6 +31,9 @@ export const sendRequest = (params: IrequestFormat, success: Function, failure: 
         if(errorStatus === 401 || errorStatus === 403) {
             logoutUser();
             return
+        }
+        if(!errorStatus) {
+            toast.error('Network Error');
         }
         return failure(error.response?.data);
     });

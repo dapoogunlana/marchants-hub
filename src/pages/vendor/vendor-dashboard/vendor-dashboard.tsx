@@ -35,7 +35,7 @@ function VendorDashboard(props: any) {
   const tableColumns = [
     {
       Header: 'Product',
-      accessor: 'product',
+      accessor: 'productString',
     },
     {
       Header: 'Amount',
@@ -95,6 +95,13 @@ function VendorDashboard(props: any) {
         const orders = res.data.map((item: any) => {
           item.totalCost = formatNumber(item.totalCost);
           item.dateCreated = formatDate(item.createdAt);
+          const products: string[] = [];
+          item.products.map((product: any) => {
+            if(product?.product?.name) {
+              products.push(product?.product?.name);
+            }
+          })
+          item.productString = products.join(', ');
           return item
         })
         setOrderList(orders);

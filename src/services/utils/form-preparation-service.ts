@@ -18,6 +18,7 @@ export const prepareVendorRegisterForm = (values: any) => {
     return formdata;
 }
 export const prepareDispatcherRegisterForm = (values: any) => {
+    console.log({bankName: values.bankName})
     const formdata = new FormData();
     formdata.append('idCard', values.file);
     formdata.append('email', values.email);
