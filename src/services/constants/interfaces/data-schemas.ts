@@ -24,5 +24,8 @@ export interface IroutObjectData {
 export interface IstoreState{
     session: IsessionData,
     activeProduct: Iproduct,
-    cart: Iproduct[],
+    cart: {
+        storeSlug: string,
+        cartList: Iproduct[]
+    },
 }

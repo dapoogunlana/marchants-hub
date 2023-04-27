@@ -20,6 +20,9 @@ function VendorOnlineStore(props: any) {
   
   const [filter, setFilter] = useState<any>({ name: '' });
   const [products, setProducts] = useState<Iproduct[]>([]);
+  const [productCount, setProductCount] = useState<Iproduct[]>([]);
+  const [paginationInfo, setPaginationInfo] = useState({limit: 30, page: 1});
+  const [showPagination, setShowPagination] = useState(true);
   const [productsLoaded, setProductsLoaded] = useState(0);
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -31,37 +34,42 @@ function VendorOnlineStore(props: any) {
   const updateForm = (field: string, ev: any) => {
     const newFilter = {...filter};
     const value = ev.target.value;
-    console.log({ev, code: ev.keycode})
-    const keyCode = ev.keyCode;
     newFilter[field] = value;
     setFilter(newFilter);
-    console.log({filter})
   }
-
 
   const getProducts = () => {
     const params = {
       storeSlug: slug,
-      // store: sessionData._id,
-      limit: 10000,
+      limit: paginationInfo.limit,
+      page: paginationInfo.page
     }
-    console.log({filter2: filter})
     const payload: any = {};
     if(filter.name) {
       payload.search = filter;
     }
+    setProductsLoaded(0);
     sendRequest({
         url: `get/products` + stringifyFilter(params),
         method: 'POST',
         body: payload
     }, (res: any) => {
-        // navigate(routeConstants.login);
-        console.log({res})
         setProducts(res.data);
         setProductsLoaded(1);
     }, (err: any) => {
       setProductsLoaded(2);
     });
+  }
+  const getProductCount = () => {
+    const params = {
+      storeSlug: slug,
+    }
+    sendRequest({
+        url: `get/products/count` + stringifyFilter(params),
+        method: 'POST',
+    }, (res: any) => {
+        setProductCount(res.data);
+    }, (err: any) => {});
   }
 
   const viewProduct = (product: any) => {
@@ -73,17 +81,28 @@ function VendorOnlineStore(props: any) {
     dispatch(addCartItem(product));
   }
 
-  const changePage = (pageDetails: any) => {
-    console.log(pageDetails);
+  const searchProducts = () => {
+    setShowPagination(false);
+    setPaginationInfo({...paginationInfo, page: 1});
+  }
+
+  const changePage = (newPage: any) => {
+    console.log({newPage});
+    setPaginationInfo({...paginationInfo, page: newPage});
   }
 
   useEffect(() => {
-    console.log('need console')
     window.scrollTo(0, 0);
     getProducts();
+    getProductCount();
     dispatch(removeActiveProduct());
     setStoreName((slug?.replace(/-/g, ' ') || storeName).substring(0, 20).toLocaleLowerCase());
   }, []);
+
+  useEffect(() => {
+    getProducts();
+    setShowPagination(true);
+  }, [paginationInfo]);
   
   return (
     <>
@@ -99,7 +118,7 @@ function VendorOnlineStore(props: any) {
             <div className='input'>
               <input type="text" placeholder='Search by product name' value={filter.name} onChange={(e) => updateForm('name', e)}  />
             </div>
-            <div className='action' onClick={getProducts}>
+            <div className='action' onClick={searchProducts}>
               <i className="fa-solid fa-magnifying-glass"></i>
             </div>
           </div>
@@ -107,7 +126,7 @@ function VendorOnlineStore(props: any) {
       </div>
       {
         productsLoaded === 1 &&
-        <div className='main-store-sect py-5'>
+        <div className='main-store-sect pt-5'>
           <div className='w90 max1200 row'>
             {products.map((item, index) => (
               <div className='col-lg-4 col-md-6' key={index} data-aos="fade-up" data-aos-delay={(index * 100)}>
@@ -128,26 +147,33 @@ function VendorOnlineStore(props: any) {
                 </div>
               </div>
             ))}
-            {products.length > 0 && <div className='py-4 w96'>
-              <PaginatedItems itemsPerPage={1} changePage={changePage} />
-            </div>}
           </div>
           {
             products.length === 0 && 
-            <>
-            {
-              filter.name ?
-              <h4 className='text-center py-5'>No products match your search</h4> :
-              <h4 className='text-center py-5'>This store has no products presently</h4>
-            }
-            </>
+            <div className='py-5'>
+              <div className='pb-5'>
+                {
+                  filter.name ?
+                  <h4 className='text-center py-5'>No products match your search</h4> :
+                  <h4 className='text-center py-5'>This store has no products presently</h4>
+                }
+              </div>
+            </div>
           }
         </div> 
       }
       {
+        products.length > 0 && 
+        <div className={'pb-5' + (productsLoaded !== 1 && ' full-hidden')}>
+          <div className='py-4 w96'>
+            {showPagination && <PaginatedItems itemsPerPage={paginationInfo.limit} totalCount={productCount} changePage={changePage} />}
+          </div>
+        </div>
+      }
+      {
         productsLoaded === 0 &&
         <div className='main-store-sect py-5'>
-          <div className='w90 max1200'>
+          <div className='w90 max1200 py-5'>
             <h4 className='text-center py-5'>Loading . . .</h4>
           </div>
         </div>
@@ -155,7 +181,7 @@ function VendorOnlineStore(props: any) {
       {
         productsLoaded === 2 &&
         <div className='main-store-sect py-5'>
-          <div className='w90 max1200'>
+          <div className='w90 max1200 py-5'>
             <h4 className='text-center py-5'>Network Error</h4>
           </div>
         </div>

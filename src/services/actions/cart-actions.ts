@@ -1,7 +1,13 @@
-import { ADDCARTITEM, REMOVECARTITEM, CLEARCART, CHANGECARTITEMQUANTITY } from "../constants/action-constants"
+import { ADDCARTITEM, REMOVECARTITEM, CLEARCART, CHANGECARTITEMQUANTITY, INITIATECART } from "../constants/action-constants"
 import { Iproduct } from "../constants/interfaces/product-and-orders-schema"
 
 
+export const initiateCart = (payload: string) => {
+    return {
+        type: INITIATECART,
+        payload,
+    }
+}
 export const addCartItem = (payload: Iproduct) => {
     return {
         type: ADDCARTITEM,

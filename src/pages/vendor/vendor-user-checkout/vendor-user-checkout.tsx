@@ -23,7 +23,7 @@ function VendorUserCheckout() {
   const [buyerData, setBuyerData] = useState<any>({});
   // const
   const [processingPayment, setProcessingPayment] = useState(false);
-  const productList = useSelector((item: IstoreState) => item.activeProduct?.amount ? item.cart.concat(item.activeProduct) : item.cart);
+  const productList = useSelector((item: IstoreState) => item.activeProduct?.amount ? item.cart.cartList.concat(item.activeProduct) : item.cart.cartList);
   const dispatch = useDispatch();
 
   const params = useParams();

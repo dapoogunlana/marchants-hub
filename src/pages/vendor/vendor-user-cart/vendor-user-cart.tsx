@@ -24,7 +24,7 @@ function VendorUserCart(props: any) {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const slug = useParams().slug || '';
-  const cart = useSelector((item: IstoreState) => item.cart);
+  const cart = useSelector((item: IstoreState) => item.cart.cartList);
 
   const [storeName, setStoreName] = useState('STORE');
   const [costs, setCosts] = useState<any>({})

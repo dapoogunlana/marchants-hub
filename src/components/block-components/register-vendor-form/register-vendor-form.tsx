@@ -88,7 +88,10 @@ function RegisterVendorForm() {
         }
         if (!values.bankAccount) {
             errors.bankAccount = 'Field Required';
-        } if (!values.password) {
+        } else if (values.bankAccount.length !== 10) {
+            errors.bankAccount = 'Invalid account number';
+        }
+        if (!values.password) {
             errors.password = 'Password is required';
         } else if (values.password.length < 6) {
             errors.password = 'Password can not be lass than 6 characters';
@@ -258,7 +261,6 @@ function RegisterVendorForm() {
                                         onBlur={handleBlur}
                                         onFocus={() => errors.storeName = ''}
                                         onChange={handleChange}
-                                        onKeyUp={clearSpaces}
                                         className={(errors.storeName && touched.storeName) ? 'im-error' : ''}
                                     />
                                     {

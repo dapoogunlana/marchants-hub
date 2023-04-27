@@ -93,7 +93,10 @@ function RegisterDispatcherForm() {
         }
         if (!values.bankAccount) {
             errors.bankAccount = 'Field Required';
-        } if (!values.password) {
+        } else if (values.bankAccount.length !== 10) {
+            errors.bankAccount = 'Invalid account number';
+        }
+        if (!values.password) {
             errors.password = 'Password is required';
         } else if (values.password.length < 3) {
             errors.password = 'Password can not be lass than 3 characters';
@@ -133,7 +136,7 @@ function RegisterDispatcherForm() {
     }
 
     const stateChange = (change: any, setValues: Function, values: FormikValues) => { 
-        const stateCode = change.target.value;
+        const stateCode = change.target.value.replace(/Lagos State/g, 'Lagos');
         setValues({...values, stateOfOperation: stateCode, lgaOfOperation: ''})
         setLgaList([]);
         if (stateCode) {
@@ -268,7 +271,6 @@ function RegisterDispatcherForm() {
                                         onBlur={handleBlur}
                                         onFocus={() => errors.companyName = ''}
                                         onChange={handleChange}
-                                        onKeyUp={clearSpaces}
                                         className={(errors.companyName && touched.companyName) ? 'im-error' : ''}
                                     />
                                     {

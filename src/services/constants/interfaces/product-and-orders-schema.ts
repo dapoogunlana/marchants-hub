@@ -40,6 +40,11 @@ export const sampleProdut = {
     _id : '',
 }
 
+export interface Icart {
+    storeSlug: string,
+    cartList: Iproduct[]
+}
+
 export interface IorderSettings {
     deliveryFee: {
         min: number;

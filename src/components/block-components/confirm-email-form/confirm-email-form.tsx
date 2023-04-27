@@ -33,7 +33,7 @@ function AdminConfirmEmailForm() {
     const resendCode = () => {
         setResendingCode(true);
         sendRequest({
-            url: 'auth/verify-code',
+            url: 'auth/resend-code',
             method: 'POST',
             body: {
                 email: sessionData.email,
