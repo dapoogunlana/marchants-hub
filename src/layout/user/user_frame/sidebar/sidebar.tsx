@@ -7,14 +7,15 @@ import './sidebar.scss';
 import { generateAdminRoutes, generateVendorRoutes, generateDispatcherRoutes } from '../../../../services/session/sidebar-route-service';
 import { IroutObjectData, IstoreState } from '../../../../services/constants/interfaces/data-schemas';
 import { logoutUser, sortRoute } from '../../../../services/utils/navigation-utilities';
-import { logout } from '../../../../services/actions/session-actions';
 import SettingsModal from '../../../../components/block-components/modals/settings-modal/settings-modal';
 import { copyStoreLink, numberUserMode } from '../../../../services/utils/data-manipulation-utilits';
+import SettingsOtpModal from '../../../../components/block-components/modals/settings-otp-modal/settings-otp-modal';
 
 function Sidebar(props: any) {
 
   const sessionData = useSelector((state: IstoreState) => state.session);
   const [viewSettings, setViewSettings] = useState(false);
+  const [viewSettingsOtp, setViewSettingsOtp] = useState(false);
   const [routes, setRoutes] = useState<IroutObjectData[]>([]);
   const userRole = sessionData.role;
   const userMode = numberUserMode(sessionData.role);
@@ -25,11 +26,18 @@ function Sidebar(props: any) {
 
   const closeSettingsModal = (feedback?: any) => {
     setViewSettings(false);
+    if (feedback === 'refresh') {
+      setViewSettingsOtp(true);
+    }
+  }
+
+  const closeSettingsOtpModal = (feedback?: any) => {
+    setViewSettingsOtp(false);
   }
 
   useEffect(() => {
     if(!userRole) {
-      logout();
+      logoutUser();
     }
     switch(userRole) {
       // case rc.userLevels.vendor:
@@ -100,6 +108,7 @@ function Sidebar(props: any) {
         </div>
       </div>
       {viewSettings && <SettingsModal closeModal={closeSettingsModal} />}
+      {viewSettingsOtp && <SettingsOtpModal closeModal={closeSettingsOtpModal} />}
     </>
   );
 }

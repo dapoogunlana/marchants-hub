@@ -74,7 +74,7 @@ const SettingsModal = (props: any) => {
     // return console.log({Nsoku: prepareProfileInfoUpdateForm(values, banks)});
     sendRequest({
       url: 'auth/profile',
-      method: 'PATCH',
+      method: 'POST',
       body: prepareProfileInfoUpdateForm(values, banks),
     }, (res: any) => {
       toast.success(res.message);

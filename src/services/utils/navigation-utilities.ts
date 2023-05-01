@@ -26,6 +26,7 @@ export const goToSection = (section: string) => {
 
 export const logoutUser = () => {
     sessionStorage.clear();
+    localStorage.clear();
     setTimeout(() => {
         window.location.href = `/${routeConstants.login}`;
     }, 200);
