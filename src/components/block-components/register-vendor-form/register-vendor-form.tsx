@@ -96,7 +96,7 @@ function RegisterVendorForm() {
         if (!values.password) {
             errors.password = 'Password is required';
         } else if (values.password.length < 6) {
-            errors.password = 'Password can not be lass than 6 characters';
+            errors.password = 'Password can not be less than 6 characters';
         }
         if (!values.confirmPassword) {
             errors.confirmPassword = 'Password confirmation is required';

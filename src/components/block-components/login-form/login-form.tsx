@@ -38,7 +38,7 @@ function AdminLoginForm(props: any) {
         if (!values.password) {
             errors.password = 'Password is required';
         } else if (values.password.length < 3) {
-            errors.password = 'Password can not be lass than 3 characters';
+            errors.password = 'Password can not be less than 3 characters';
         }
         return errors;
     }
