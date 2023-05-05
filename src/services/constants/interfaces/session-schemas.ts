@@ -5,6 +5,8 @@ export interface IsessionData {
     bankCode : string,
     bankName : string,
     businessName : string,
+    businessPhotoId: string,
+    businessPhotoUrl: string,
     createdAt : string,
     email : string,
     isVerified : boolean,

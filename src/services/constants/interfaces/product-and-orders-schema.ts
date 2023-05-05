@@ -80,3 +80,11 @@ export const sampleOrderSettings = {
         percent: 0,
     }
 }
+
+export interface iDispatchActionData {
+    id: string,
+    type: string,
+    message: any,
+    title: any,
+    showActionModal: boolean,
+}

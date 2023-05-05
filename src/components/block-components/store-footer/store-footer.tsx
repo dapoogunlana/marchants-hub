@@ -11,6 +11,9 @@ import './store-footer.scss'
   
 
   const getStoreDetails = () => {
+    if(storeDetails.businessName) {
+      return;
+    }
     sendRequest({
       url: 'get/stores?slug=' + slug,
       method: 'POST',

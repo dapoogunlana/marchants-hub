@@ -61,17 +61,20 @@ export const prepareNewProductForm = (values: any) => {
     return formdata;
 }
 
+export let profileInfoUpdateForm: FormData;
+
 export const prepareProfileInfoUpdateForm = (values: any, banks: any[]) => {
     const bankName = banks.find((bank) => bank.code === values.bankName)?.name;
     const formdata = new FormData();
     if(values.file){
-        formdata.append('idCard', values.file);
+        formdata.append('businessPhoto', values.file);
     }
     formdata.append('bankCode', values.bankName);
     formdata.append('bankName', bankName);
     formdata.append('bankAccount', values.accountNumber);
     formdata.append('address', values.address);
     formdata.append('businessName', values.storeName);
-
+    
+    profileInfoUpdateForm = formdata;
     return formdata;
 }

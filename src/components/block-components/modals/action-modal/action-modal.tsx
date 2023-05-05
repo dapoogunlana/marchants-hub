@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { closeAppModal, openModal } from "../../../../services/utils/app-data-modal-service";
 
-const DeleteModal = (props: any) => {
+const ActionModal = (props: any) => {
 
   const product = props.product;
   const closeModal = (feedback: any) => {
@@ -21,7 +21,7 @@ const DeleteModal = (props: any) => {
           {/* Any content goes in here */}
           <div>
             <div style={{padding: '20px'}}>
-              <h6 className="increased-soft pt-3 pb-1" style={{paddingLeft: '20px'}}>{props.title || 'Delete'}</h6>
+              <h6 className="increased pt-3 pb-1">{props.title || 'Delete'}</h6>
               <p>{props.writeup}</p>
             </div>
             <div className='text-right pt-3 pb-2 lighter-grey pb-3' style={{padding: '20px'}}>
@@ -41,4 +41,4 @@ const DeleteModal = (props: any) => {
   );
 }
 
-export default DeleteModal;
+export default ActionModal;

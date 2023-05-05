@@ -129,6 +129,7 @@ function VendorPaymentRecords(props: any) {
         }]
       }
     }, (res: any) => {
+      const records: any[] = [];
       const record = res.data.map((item: any) => {
         const payload: any = {
           product: item.order?.products?.map((product: any) => product.product.name) || '--',
@@ -140,9 +141,12 @@ function VendorPaymentRecords(props: any) {
           status: item.order?.isPaid ? <button className='green-capsule px-4 py-2'>Paid</button> :
           <button className='yellow-capsule px-4 py-2'>Pending</button>
         }
+        if(item.order?.isPaid) {
+          records.push(payload);
+        }
         return payload;
       });
-      setPaymentRecords(record);
+      setPaymentRecords(records);
       setWalletBalanceLoaded(true);
       setListLoaded(true);
     }, (err: any) => {

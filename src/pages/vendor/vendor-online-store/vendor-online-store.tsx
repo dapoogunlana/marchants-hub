@@ -101,6 +101,7 @@ function VendorOnlineStore(props: any) {
 
   useEffect(() => {
     getProducts();
+    getProductCount();
     setShowPagination(true);
   }, [paginationInfo]);
   
@@ -129,7 +130,7 @@ function VendorOnlineStore(props: any) {
         <div className='main-store-sect pt-5'>
           <div className='w90 max1200 row'>
             {products.map((item, index) => (
-              <div className='col-lg-4 col-md-6' key={index} data-aos="fade-up" data-aos-delay={(index * 100)}>
+              <div className='col-lg-4 col-md-6' key={index} data-aos="fade-up" data-aos-delay={(((index % 3) * 200) + 200)}>
                 <div className='store-card'>
                   <div className='image-holder' style={{backgroundImage: `url(${item.images[0]?.photoUrl})`}}>
                     {/* <img src={item.images[0]?.photoUrl} alt="" /> */}

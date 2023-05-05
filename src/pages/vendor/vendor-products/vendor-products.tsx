@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { toast } from 'react-toastify';
-import DeleteModal from '../../../components/block-components/modals/delete-modal/delete-modal';
+import ActionModal from '../../../components/block-components/modals/action-modal/action-modal';
 import NewProductModal from '../../../components/block-components/modals/new-product-modal/new-product-modal';
 import { IstoreState } from '../../../services/constants/interfaces/data-schemas';
 import { Iproduct } from '../../../services/constants/interfaces/product-and-orders-schema';
@@ -198,7 +198,7 @@ function VendorProducts(props: any) {
       {viewNewProduct && <NewProductModal closeModal={closeNewProductModal} />}
       {viewEditProduct && <NewProductModal title={'Edit'} product={activeProduct} closeModal={closeEditProductModal} />}
       {viewRestockProduct && <NewProductModal title={'Restock'} product={activeProduct} closeModal={closeRestockProductModal} />}
-      {viewDeleteProduct && <DeleteModal title={'Delete2'} writeup={deleteProductMessage} product={activeProduct} closeModal={deleteProduct} />}
+      {viewDeleteProduct && <ActionModal title={'Delete'} writeup={deleteProductMessage} product={activeProduct} closeModal={deleteProduct} />}
     </>
   );
 }

@@ -4,10 +4,13 @@ import { closeAppModal, openModal } from "../../../../services/utils/app-data-mo
 import Select from "react-select";
 import { sendRequest } from "../../../../services/utils/request";
 import { toast } from "react-toastify";
-import { prepareNewProductForm } from "../../../../services/utils/form-preparation-service";
+import { profileInfoUpdateForm } from "../../../../services/utils/form-preparation-service";
+import { useDispatch } from "react-redux";
+import { login } from "../../../../services/actions/session-actions";
 
 const SettingsOtpModal = (props: any) => {
   const [response, setResponse] = useState<any>();
+  const dispatch = useDispatch();
   const [otpStatus, setOtpStatus] = useState<'REQUESTING' | 'READY' | 'WAITING'>('WAITING');
   const id = props.product?._id;
   const closeModal = (feedback: any) => {
@@ -37,6 +40,9 @@ const SettingsOtpModal = (props: any) => {
     }, (res: any) => {
       toast.success(res.message);
       controls.setSubmitting(false);
+      if(res.data.ownerFirstName && res.data.bankAccount) {
+        dispatch(login(res.data));
+      }
       closeModal('refresh');
     }, (err: any) => {
         controls.setSubmitting(false);
@@ -48,12 +54,13 @@ const SettingsOtpModal = (props: any) => {
   const resendOTP = () => {
     setOtpStatus('REQUESTING');
     sendRequest({
-      url: '-',
-      method: 'GET',
+      url: 'auth/profile',
+      method: 'POST',
+      body: profileInfoUpdateForm,
     }, (res?: any) => {
       toast.success('OTP successfully requested');
       setOtpStatus('WAITING');
-      setTimeout(() => setOtpStatus('READY'), 180000);
+      setTimeout(() => setOtpStatus('READY'), 120000);
     }, (err: any) => {
         setOtpStatus('READY');
         toast.error(err?.error?.emailError || err?.message || 'Unable to complete');
@@ -62,8 +69,7 @@ const SettingsOtpModal = (props: any) => {
 
   useEffect(() => {
     openModal();
-    setTimeout(() => setOtpStatus('READY'), 180000);
-    console.log({props});
+    setTimeout(() => setOtpStatus('READY'), 120000);
   }, []);
 
   return (
@@ -122,7 +128,7 @@ const SettingsOtpModal = (props: any) => {
                                   </div>
                                   <p className="mt-4">
                                     {otpStatus === 'READY' && <span className="underlined-link" onClick={resendOTP}>Resend OTP</span>}
-                                    {otpStatus === 'WAITING' && <span className="reduced-soft">You can resend OTP after 3mins</span>}
+                                    {otpStatus === 'WAITING' && <span className="reduced-soft">You can resend OTP after 2 mins</span>}
                                     {otpStatus === 'REQUESTING' && <span className="reduced-soft">Requesting....</span>}
                                   </p>
                                   <p className="my-3 reduced">

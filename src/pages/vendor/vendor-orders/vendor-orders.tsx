@@ -15,14 +15,20 @@ import MiniLoader from '../../../components/block-components/mini-loader/mini-lo
 import { toast } from 'react-toastify';
 import RequestDispatcherModal from '../../../components/block-components/modals/request-dispatcher-modal/request-dispatcher-modal';
 import DatePicker from '../../../components/base-components/date-picker/date-picker';
+import ActionModal from '../../../components/block-components/modals/action-modal/action-modal';
+import { iDispatchActionData } from '../../../services/constants/interfaces/product-and-orders-schema';
 
 function VendorOrders(props: any) {
   const sessionData: IsessionData = useSelector((state: IstoreState) => state.session);
   const [orderList, setOrderList] = useState<any[]>([]);
+  const [cta, setCta] = useState('');
   const [dateFilter, setDateFilter] = useState<any>({});
   const [orderListLoaded, setOrderListLoaded] = useState(false);
   const [requestDispatchModal, setRequestDispatchModal] = useState(false);
   const [activeOrderId, setActiveOrderId] = useState<number>();
+  const [dispatchData, setDispatchData] = useState<iDispatchActionData>({id: '', type: '', message: '', title: '', showActionModal: false});
+  const [completeDispatchData, setCompleteDispatchData] = useState<iDispatchActionData>({id: '', type: '', message: '', title: '', showActionModal: false});
+
   let id: any;
   const query = props.query;
 
@@ -51,9 +57,13 @@ function VendorOrders(props: any) {
       Header: 'Customer Address',
       accessor: 'customerAddress',
     },
+    {
+      Header: 'Payment Status',
+      accessor: 'paymentStatus',
+    },
     
     {
-      Header: ' ',
+      Header: cta,
       accessor: 'id',
       Cell: (data: any) => ( AddButtonToCell(data))
     },
@@ -75,23 +85,23 @@ function VendorOrders(props: any) {
         }
         {
             sessionData.role === routeConstants.userLevels.dispatcher &&
-            AddCaplulesToDispatcherCell(id)
+            AddCaplulesToDispatcherCell(id, cell.row.original)
         }
       </>
     )
   }
 
-  const AddCaplulesToDispatcherCell = (id:any) =>{
+  const AddCaplulesToDispatcherCell = (id:any, cell: any) =>{
     switch(query) {
       case tabQueryConstants.pending.query:
         return(
           <div className='info-grid'>
-            <div className="status-pill-green" onClick={() => dispatchAction(id, 'accept')}>
+            <div className="status-pill-green" onClick={() => openDispatchActionDialogue(id, 'accept', cell)}>
               <i className="fa-solid fa-circle-check"></i>
               <span>Accept</span>
             </div>
             <span></span>
-            <div className="status-pill-red" onClick={() => dispatchAction(id, 'reject')}>
+            <div className="status-pill-red" onClick={() => openDispatchActionDialogue(id, 'reject', cell)}>
               <i className="fa-solid fa-circle-xmark"></i>
               <span>Reject</span>
             </div>
@@ -100,12 +110,12 @@ function VendorOrders(props: any) {
       case tabQueryConstants.in_progress.query:
         return(
           <div className='info-grid'>
-            <div className="status-pill-green" onClick={() => markOrderAsFulfiled(id)}>
+            <div className="status-pill-green" onClick={() => openCompleteDispatchDialogue(id, 'complete')}>
               <i className="fa-solid fa-circle-check"></i>
               <span>Complete</span>
             </div>
             <span></span>
-            <div className="status-pill-red" onClick={() => cancelOrderDelivery(id)}>
+            <div className="status-pill-red" onClick={() => openCompleteDispatchDialogue(id, 'cancel')}>
               <i className="fa-solid fa-circle-xmark"></i>
               <span>Cancel</span>
             </div>
@@ -170,10 +180,8 @@ function VendorOrders(props: any) {
   }
 
   const getOrders = () => {
-    console.log({query});
     setOrderListLoaded(false);
     const params = {
-      // storeSlug: sessionData.slug,
       status: query,
       limit: 4,
       ...dateFilter,
@@ -193,6 +201,8 @@ function VendorOrders(props: any) {
           }
         })
         item.productString = products.join(', ');
+        item.paymentStatus = item.isPaid ? <button className='green-capsule px-4 py-1'> Paid &nbsp;</button> :
+        <button className='yellow-capsule px-3 py-1'>Pending</button>
         return item
       })
       setOrderList(orders);
@@ -201,25 +211,78 @@ function VendorOrders(props: any) {
       setOrderListLoaded(true);
     });
   }
-  const dispatchAction = (id: string, type: 'accept' | 'reject') => {
-    setOrderListLoaded(false);
-    sendRequest({
-        url: `/orders/${id}/dispatch-action`,
-        method: 'PATCH',
-        body: 
-        {
-          action: type
-        }
-    }, (res: any) => {
-      toast.success(`Order successfully ${type}ed`);
-      getOrders();
-    }, (err: any) => {
-      setOrderListLoaded(true);
-      toast.error(`Failed to ${type}ed`);
+
+  const openDispatchActionDialogue = (id: string, type: 'accept' | 'reject', cell?: any) => {
+    setDispatchData({
+      id,
+      type,
+      message: type === 'accept' ? <>
+        You are about to accept an order request to deliver {cell?.customerAddress ? `to ${cell?.customerAddress}` : 'this item'}. Kindly confirm you have called the 
+        sender and have confirmed the pickup location before accepting this order. 
+        <br/><br/>
+        Accepted orders not delivered will reduce your ratings on this platform and might lead to red listing of dispatcher 
+        from the platform.
+      </> :
+      `
+        You are about to reject an order request to deliver ${cell?.customerAddress ? `to ${cell?.customerAddress}` : 'this item'}. Please be sure you have a good
+        reason to do so because this action can not be undone
+      `,
+      title: <span className='text-danger'>Notice</span>,
+      showActionModal: true,
     });
   }
 
-  const markOrderAsFulfiled = (id: number) => {
+  const dispatchAction = (item: any, feedback: boolean) => {
+    setDispatchData({...dispatchData, showActionModal: false});
+    if (feedback) {
+      setOrderListLoaded(false);
+      sendRequest({
+          url: `/orders/${dispatchData.id}/dispatch-action`,
+          method: 'PATCH',
+          body: 
+          {
+            action: dispatchData.type
+          }
+      }, (res: any) => {
+        toast.success(`Order successfully ${dispatchData.type}ed`);
+        getOrders();
+      }, (err: any) => {
+        setOrderListLoaded(true);
+        toast.error(err?.message || `Failed to ${dispatchData.type}ed`);
+      });
+    }
+  }
+
+  const openCompleteDispatchDialogue = (id: string, type: 'complete' | 'cancel') => {
+    setCompleteDispatchData({
+      id,
+      type,
+      message: type === 'complete' ? <>
+        You are about to mark this order as complete, that means the item has been delivered to the recipient. 
+        <br/><br/>
+        Orders marked as completed that were not delivered will result in red listing of dispatcher from this platform
+      </> :
+      `
+        You are about to cancel the delivery of this item. Please be sure you have a good
+        reason to do so because this action can affect your dispatch rating
+      `,
+      title: <span className='text-danger'>Notice</span>,
+      showActionModal: true,
+    });
+  }
+
+  const completeDispatchAction = (item: any, feedback: boolean) => {
+    setCompleteDispatchData({...completeDispatchData, showActionModal: false});
+    if (feedback) {
+      if(completeDispatchData.type === 'complete') {
+        markOrderAsFulfiled(completeDispatchData.id)
+      } else  {
+        cancelOrderDelivery(completeDispatchData.id)
+      }
+    }
+  }
+
+  const markOrderAsFulfiled = (id: any) => {
     setOrderListLoaded(false);
     sendRequest({
         url: `/orders/${id}/mark-as-fulfilled`,
@@ -229,11 +292,11 @@ function VendorOrders(props: any) {
       getOrders();
     }, (err: any) => {
       setOrderListLoaded(true);
-      toast.error('Failed to fulfill');
+      toast.error(err?.message || 'Failed to fulfill');
     });
   }
 
-  const cancelOrderDelivery = (id: number) => {
+  const cancelOrderDelivery = (id: any) => {
     setOrderListLoaded(false);
     sendRequest({
         url: `/orders/${id}/cancel`,
@@ -242,7 +305,7 @@ function VendorOrders(props: any) {
       toast.success('Order canceled successfully');
       getOrders();
     }, (err: any) => {
-      toast.error('Failed to cancel');
+      toast.error(err?.message || 'Failed to cancel');
       setOrderListLoaded(true);
     });
   }
@@ -261,6 +324,17 @@ function VendorOrders(props: any) {
   useEffect(() => {
     window.scrollTo(0, 0);
     getOrders();
+    switch(query) {
+      case tabQueryConstants.pending.query:
+        setCta('Actions');
+        break;
+      case tabQueryConstants.in_progress.query:
+        setCta('Actions');
+        break;
+      case tabQueryConstants.fufilled.query:
+       setCta('Order Status');
+        break;
+    }
   }, [props]);
 
   useEffect(() => {
@@ -298,6 +372,8 @@ function VendorOrders(props: any) {
         </div>
       </div>
       {requestDispatchModal && <RequestDispatcherModal orderId={activeOrderId} closeModal={closeDispatcherRequest} />}
+      {dispatchData.showActionModal && <ActionModal title={dispatchData.title} writeup={dispatchData.message} closeModal={dispatchAction} />}
+      {completeDispatchData.showActionModal && <ActionModal title={completeDispatchData.title} writeup={completeDispatchData.message} closeModal={completeDispatchAction} />}
     </>
   );
 }

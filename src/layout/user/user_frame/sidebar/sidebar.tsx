@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { NavLink  } from 'react-router-dom';
-import { Logo, StoreImg } from '../../../../assets/images';
+import { StoreImg } from '../../../../assets/images';
 import { routeConstants as rc } from '../../../../services/constants/route-constants';
 import { useSelector } from 'react-redux';
 import './sidebar.scss';
-import { generateAdminRoutes, generateVendorRoutes, generateDispatcherRoutes } from '../../../../services/session/sidebar-route-service';
+import { generateVendorRoutes, generateDispatcherRoutes } from '../../../../services/session/sidebar-route-service';
 import { IroutObjectData, IstoreState } from '../../../../services/constants/interfaces/data-schemas';
 import { logoutUser, sortRoute } from '../../../../services/utils/navigation-utilities';
 import SettingsModal from '../../../../components/block-components/modals/settings-modal/settings-modal';
@@ -58,11 +58,11 @@ function Sidebar(props: any) {
       <div className='bar'>
         <div className='profile'>
           <div className='store-image'>
-            <img src={StoreImg} className={sessionData.photoUrl && 'hidden'} alt="" />
+            <img src={StoreImg} className={sessionData.businessPhotoUrl && 'hidden'} alt="" />
             {
-              sessionData.photoUrl &&
+              sessionData.businessPhotoUrl &&
               <div className='overlay-dynamic-image'>
-                <img src={sessionData.photoUrl} alt="" />
+                <img src={sessionData.businessPhotoUrl} alt="" />
               </div>
             }
           </div>
