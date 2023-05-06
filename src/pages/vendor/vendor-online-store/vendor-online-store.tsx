@@ -55,6 +55,7 @@ function VendorOnlineStore(props: any) {
         body: payload
     }, (res: any) => {
         setProducts(res.data);
+        setProductCount(res.count);
         setProductsLoaded(1);
     }, (err: any) => {
       setProductsLoaded(2);
@@ -94,14 +95,14 @@ function VendorOnlineStore(props: any) {
   useEffect(() => {
     window.scrollTo(0, 0);
     getProducts();
-    getProductCount();
+    // getProductCount();
     dispatch(removeActiveProduct());
     setStoreName((slug?.replace(/-/g, ' ') || storeName).substring(0, 20).toLocaleLowerCase());
   }, []);
 
   useEffect(() => {
     getProducts();
-    getProductCount();
+    // getProductCount();
     setShowPagination(true);
   }, [paginationInfo]);
   
