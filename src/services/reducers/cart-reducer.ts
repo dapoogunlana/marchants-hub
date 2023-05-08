@@ -31,7 +31,10 @@ export const cartReducer = (state: Icart = {storeSlug: '', cartList: [] }, actio
             // newState.splice(newState.indexOf(item), 1);
             const newState = [...state.cartList];
             const filteredState = newState.filter((item: Iproduct) => item._id !== action.payload._id);
-            return filteredState;
+            return {
+                storeSlug: state.storeSlug,
+                cartList: filteredState
+            };
         case CHANGECARTITEMQUANTITY:
             const newState2 = [...state.cartList];
             const filteredState2 = newState2.map((item: Iproduct, index) => {

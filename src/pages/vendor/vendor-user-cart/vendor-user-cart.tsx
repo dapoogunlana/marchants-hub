@@ -89,34 +89,47 @@ function VendorUserCart(props: any) {
             <button className='hollow-button-black px-4 reduced-soft' onClick={previousPage}>Back</button>
             <span className='py-3 px-4'>Cart</span>
           </div>
+          <div className='col-lg-12'>
+            {
+              cart.length === 0 &&
+              <div className='empty-cart-holder'>
+                <div className='py-5'>
+                  <h1 className='text-center'>Cart is Empty</h1>
+                </div>
+              </div>
+            }
+          </div>
           <div className='col-lg-5 py-3'>
-            <div className=''>
-              <div className='py-3 px-3 spread-info summary-green-space'>
-                <div className=''>
-                  <p className='reduced-x mb-0'>Total Items</p>
-                  <h2 className='h-black mb-0'>{cart.length}</h2>
+            {
+              cart.length > 0 &&
+              <div className=''>
+                <div className='py-3 px-3 spread-info summary-green-space'>
+                  <div className=''>
+                    <p className='reduced-x mb-0'>Total Items</p>
+                    <h2 className='h-black mb-0'>{cart.length}</h2>
+                  </div>
+                  <div className=''>
+                    <p className='reduced-x mb-0'>Delivery fee</p>
+                    <h2 className='h-black mb-0'>N{formatNumber(costs.deliveryCost)}</h2>
+                  </div>
+                  <div className=''>
+                    <p className='reduced-x mb-0'>Charges</p>
+                    <h2 className='h-black mb-0'>N{formatNumber(costs.charges)}</h2>
+                  </div>
                 </div>
-                <div className=''>
-                  <p className='reduced-x mb-0'>Delivery fee</p>
-                  <h2 className='h-black mb-0'>N{formatNumber(costs.deliveryCost)}</h2>
+                <div className='py-3 px-3 summary-green-space'>
+                  <div className=''>
+                    <p className='reduced-x mb-0'>Total Amount</p>
+                    <h2 className='h-black mb-0'>N{formatNumber(costs.totalCost)}</h2>
+                  </div>
                 </div>
-                <div className=''>
-                  <p className='reduced-x mb-0'>Charges</p>
-                  <h2 className='h-black mb-0'>N{formatNumber(costs.charges)}</h2>
+                <div className='p-1 text-center summary-green-button'>
+                  <div className=''>
+                    <p className='mb-0 h-bold reduced-soft' onClick={proceedToCheckout}>Proceed to Checkout</p>
+                  </div>
                 </div>
               </div>
-              <div className='py-3 px-3 summary-green-space'>
-                <div className=''>
-                  <p className='reduced-x mb-0'>Total Amount</p>
-                  <h2 className='h-black mb-0'>N{formatNumber(costs.totalCost)}</h2>
-                </div>
-              </div>
-              <div className='p-1 text-center summary-green-button'>
-                <div className=''>
-                  <p className='mb-0 h-bold reduced-soft' onClick={proceedToCheckout}>Proceed to Checkout</p>
-                </div>
-              </div>
-            </div>
+            }
           </div>
           <div className='col-lg-7 py-3'>
             <div className=''>
@@ -136,7 +149,7 @@ function VendorUserCart(props: any) {
                             <i className="fa-solid increased fa-chevron-up"></i>
                           </div>
                         }
-                        <p className='mb-0'>Quantiny: {cartItem.quantity}</p>
+                        <p className='mb-0'>Quantity: {cartItem.quantity}</p>
                         {
                           cartItem.quantity > 1 &&
                           <div className='decrease' onClick={() => dispatch(changeCartItemQuantity(index, false))}>
