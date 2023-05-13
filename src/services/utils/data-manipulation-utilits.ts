@@ -31,7 +31,8 @@ import { routeConstants } from "../constants/route-constants";
 
   export const copyStoreLink = (link: string) => {
     const textarea = document.createElement('textarea');
-    textarea.value = `https://vendu.netlify.app/store/${link}`;
+    // console.log(window.location.origin, window.location.protocol, window.location.host);
+    textarea.value = `${window.location.origin}/store/${link}`;
     textarea.id = 'textId';
     textarea.style.opacity = '0';
     document.body.appendChild(textarea);

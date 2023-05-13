@@ -53,8 +53,8 @@ import './store-footer.scss'
       </div>
       <div className="store-footer py-4 px-5">
         <p className="m-0 reduced-im">
-          <Link to={`/`}>&copy; {new Date().getFullYear()} Vendu</Link> All rights reserved
-          <span className="ml-2 ref-text" onDoubleClick={() => goToLink('http://paul-ogunlana.com.ng/')}>Ref</span>
+          Powered by <Link to={`/`}> Vendu</Link>
+          <span className="ml-5 ref-text" onDoubleClick={() => goToLink('http://paul-ogunlana.com.ng/')}>Ref</span>
         </p>
       </div>
     </>
