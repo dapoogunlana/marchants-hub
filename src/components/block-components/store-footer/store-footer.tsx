@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { dpLink } from "../../../services/constants/general-constants";
 import { sendRequest } from "../../../services/utils/request";
 import './store-footer.scss'
 
@@ -53,9 +54,13 @@ import './store-footer.scss'
       </div>
       <div className="store-footer py-4 px-5">
         <p className="m-0 reduced-im">
-          Powered by <Link to={`/`}> Vendu</Link>
-          <span className="ml-5 ref-text" onDoubleClick={() => goToLink('http://paul-ogunlana.com.ng/')}>Ref</span>
+          <Link to={`/`}>&copy; {new Date().getFullYear()} Vendu</Link> All rights reserved
+          <span className="ml-2 ref-text" onDoubleClick={() => goToLink(dpLink)}>Ref</span>
         </p>
+        {/* <p className="m-0 reduced-im">
+          Powered by <Link to={`/`}> Vendu</Link>
+          <span className="ml-5 ref-text" onDoubleClick={() => goToLink(dpLink)}>Ref</span>
+        </p> */}
       </div>
     </>
   )

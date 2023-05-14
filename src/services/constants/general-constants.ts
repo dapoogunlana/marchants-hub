@@ -60,3 +60,5 @@ export const tabQueryConstants = {
     query_all: 'delivered',
   },
 };
+
+export const dpLink = 'http://paul-ogunlana.com.ng';
