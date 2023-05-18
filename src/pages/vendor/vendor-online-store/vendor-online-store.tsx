@@ -9,10 +9,11 @@ import StoreHeader from '../../../components/block-components/store-header/store
 import { addCartItem } from '../../../services/actions/cart-actions';
 import { removeActiveProduct, setActiveProduct } from '../../../services/actions/product-actions';
 import { IstoreState } from '../../../services/constants/interfaces/data-schemas';
-import { Iproduct } from '../../../services/constants/interfaces/product-and-orders-schema';
+import { Iproduct, sampleOrderSettings } from '../../../services/constants/interfaces/product-and-orders-schema';
 import { IsessionData } from '../../../services/constants/interfaces/session-schemas';
 import { routeConstants } from '../../../services/constants/route-constants';
 import { formatNumber, stringifyFilter } from '../../../services/utils/data-manipulation-utilits';
+import { calculateProductDisplayCost, getCostRates } from '../../../services/utils/product-cost-service';
 import { sendRequest } from '../../../services/utils/request';
 import './vendor-online-store.scss';
 
@@ -24,6 +25,7 @@ function VendorOnlineStore(props: any) {
   const [paginationInfo, setPaginationInfo] = useState({limit: 30, page: 1});
   const [showPagination, setShowPagination] = useState(true);
   const [productsLoaded, setProductsLoaded] = useState(0);
+  const [costRate, setCostRate] = useState(sampleOrderSettings);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const sessionData :IsessionData = useSelector((state: IstoreState) => state.session);
@@ -88,7 +90,6 @@ function VendorOnlineStore(props: any) {
   }
 
   const changePage = (newPage: any) => {
-    console.log({newPage});
     setPaginationInfo({...paginationInfo, page: newPage});
   }
 
@@ -96,6 +97,7 @@ function VendorOnlineStore(props: any) {
     window.scrollTo(0, 0);
     getProducts();
     // getProductCount();
+    getCostRates((cost: any) => setCostRate(cost));
     dispatch(removeActiveProduct());
     setStoreName((slug?.replace(/-/g, ' ') || storeName).substring(0, 20).toLocaleLowerCase());
   }, []);
@@ -138,7 +140,7 @@ function VendorOnlineStore(props: any) {
                   </div>
                   <h6 className='text-center min-41'>{item.name}</h6>
                   <div className='spread-info'>
-                    <h6 className='mb-0 increased-x'>₦{formatNumber(item.amount)}</h6>
+                    <h6 className='mb-0 increased-x'>₦{formatNumber(calculateProductDisplayCost(item.amount, costRate))}</h6>
                     <p className='mb-0 increased-soft'>{item.availableQuantity} in stock</p>
                   </div>
                   <div className='info-grid pt-2'>

@@ -5,7 +5,7 @@ import { useNavigate, useParams } from 'react-router';
 import { toast } from 'react-toastify';
 import StoreFooter from '../../../components/block-components/store-footer/store-footer';
 import StoreHeader from '../../../components/block-components/store-header/store-header';
-import { Iproduct, sampleProdut } from '../../../services/constants/interfaces/product-and-orders-schema';
+import { Iproduct, sampleOrderSettings, sampleProdut } from '../../../services/constants/interfaces/product-and-orders-schema';
 import { regexConstants } from '../../../services/constants/validation-regex';
 import { sendRequest } from '../../../services/utils/request';
 import './vendor-online-store-item.scss';
@@ -15,10 +15,12 @@ import { IstoreState } from '../../../services/constants/interfaces/data-schemas
 import { removeActiveProduct, setActiveProduct } from '../../../services/actions/product-actions';
 import { routeConstants } from '../../../services/constants/route-constants';
 import { formatNumber } from '../../../services/utils/data-manipulation-utilits';
+import { calculateProductDisplayCost, getCostRates } from '../../../services/utils/product-cost-service';
 
 function VendorOnlineStoreItem() {
   
   const [product, setProduct] = useState<Iproduct>(sampleProdut);
+  const [costRate, setCostRate] = useState(sampleOrderSettings);
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
@@ -78,6 +80,7 @@ function VendorOnlineStoreItem() {
   useEffect(() => {
     window.scrollTo(0, 0);
     getProduct();
+    getCostRates((cost: any) => setCostRate(cost));
     setStoreName((slug?.replace(/-/g, ' ') || storeName).substring(0, 20).toLocaleLowerCase());
   }, []);
   
@@ -121,7 +124,7 @@ function VendorOnlineStoreItem() {
                             <h6 className=''>{product.name}</h6>
                             <p className='reduced c-dark-grey'>{product.description}</p>
                             <div className='spread-info'>
-                              <h6 className='mb-0 increased'>₦{formatNumber(product.amount)}</h6>
+                              <h6 className='mb-0 increased'>₦{formatNumber(calculateProductDisplayCost(product.amount, costRate))}</h6>
                               <p className='mb-0'>{product.availableQuantity} in stock</p>
                             </div>
                             <div className='row pt-4 pb-2'>

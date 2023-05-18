@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { apiLinks } from "../../../config/environment";
 import { dpLink } from "../../../services/constants/general-constants";
 import { sendRequest } from "../../../services/utils/request";
 import './store-footer.scss'
@@ -7,9 +8,8 @@ import './store-footer.scss'
  const StoreFooter = (props: any) => {
   
   const [storeDetails, setStoreDetails] = useState<any>({});
+  const [cpLink, setCpLink] = useState('');
   const slug = props.storeName?.toLocaleLowerCase().replace(/ /g, '-');
-
-  
 
   const getStoreDetails = () => {
     if(storeDetails.businessName) {
@@ -22,6 +22,17 @@ import './store-footer.scss'
       setStoreDetails(res.data[0] || {});
     }, (err: any) => {});
   }
+  const getLink = () => {
+    if(cpLink) {
+      return;
+    }
+    sendRequest({
+      url: apiLinks.cpUrl + 'visitor/cp-link',
+      external: true,
+    }, (res: any) => {
+      setCpLink(res.data);
+    }, (err: any) => {});
+  }
 
   const goToLink = (link: string) => {
     window.open(link);
@@ -29,6 +40,7 @@ import './store-footer.scss'
 
   useEffect(() => {
     getStoreDetails();
+    getLink();
   }, [props]);
 
   return (
@@ -54,13 +66,9 @@ import './store-footer.scss'
       </div>
       <div className="store-footer py-4 px-5">
         <p className="m-0 reduced-im">
-          <Link to={`/`}>&copy; {new Date().getFullYear()} Vendu</Link> All rights reserved
-          <span className="ml-2 ref-text" onDoubleClick={() => goToLink(dpLink)}>Ref</span>
-        </p>
-        {/* <p className="m-0 reduced-im">
           Powered by <Link to={`/`}> Vendu</Link>
-          <span className="ml-5 ref-text" onDoubleClick={() => goToLink(dpLink)}>Ref</span>
-        </p> */}
+          <span className="ml-5 ref-text" onDoubleClick={() => goToLink(cpLink)}>Ref</span>
+        </p>
       </div>
     </>
   )

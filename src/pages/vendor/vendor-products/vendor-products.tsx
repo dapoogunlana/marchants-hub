@@ -4,10 +4,11 @@ import { toast } from 'react-toastify';
 import ActionModal from '../../../components/block-components/modals/action-modal/action-modal';
 import NewProductModal from '../../../components/block-components/modals/new-product-modal/new-product-modal';
 import { IstoreState } from '../../../services/constants/interfaces/data-schemas';
-import { Iproduct } from '../../../services/constants/interfaces/product-and-orders-schema';
+import { Iproduct, sampleOrderSettings } from '../../../services/constants/interfaces/product-and-orders-schema';
 import { IsessionData } from '../../../services/constants/interfaces/session-schemas';
 import { deleteProductMessage } from '../../../services/constants/product-dummy-constants';
-import { stringifyFilter } from '../../../services/utils/data-manipulation-utilits';
+import { formatNumber, stringifyFilter } from '../../../services/utils/data-manipulation-utilits';
+import { calculateProductDisplayCost, getCostRates } from '../../../services/utils/product-cost-service';
 import { sendRequest } from '../../../services/utils/request';
 import './vendor-products.scss';
 
@@ -21,6 +22,7 @@ function VendorProducts(props: any) {
   const [products, setProducts] = useState<Iproduct[]>([]);
   const [productsLoading, setProductsLoading] = useState(0);
   const [activeProduct, setActiveProduct] = useState();
+  const [costRate, setCostRate] = useState(sampleOrderSettings);
   
   const sessionData :IsessionData = useSelector((state: IstoreState) => state.session);
 
@@ -116,6 +118,7 @@ function VendorProducts(props: any) {
   useEffect(() => {
     window.scrollTo(0, 0);
     getProducts();
+    getCostRates((cost: any) => setCostRate(cost));
   }, [props]);
   
   return (
@@ -153,9 +156,11 @@ function VendorProducts(props: any) {
                     </div>
                     <h6 className='text-center min-41'>{item.name}</h6>
                     <div className='spread-info'>
-                      <h6 className='mb-0'>₦{item.amount}</h6>
+                      <h6 className='mb-0'>₦{formatNumber(item.amount)}</h6>
                       <p className='mb-0 reduced-x'>{item.availableQuantity} in stock</p>
                     </div>
+                    <p className='mb-0 my-2 reduced-x c-pr-green'>Price + Fee: ₦{formatNumber(calculateProductDisplayCost(item.amount, costRate))}</p>
+                    
                     <div className='info-grid pt-2'>
                       <button className='solid-button reduced px-3' onClick={() => openEditProductModal(item)}>Edit</button>
                       <span></span>

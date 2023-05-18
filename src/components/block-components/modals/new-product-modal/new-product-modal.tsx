@@ -5,6 +5,9 @@ import Select from "react-select";
 import { sendRequest } from "../../../../services/utils/request";
 import { toast } from "react-toastify";
 import { prepareNewProductForm } from "../../../../services/utils/form-preparation-service";
+import { formatNumber } from "../../../../services/utils/data-manipulation-utilits";
+import { calculateProductDisplayCost, getCostRates } from "../../../../services/utils/product-cost-service";
+import { sampleOrderSettings } from "../../../../services/constants/interfaces/product-and-orders-schema";
 
 const NewProductModal = (props: any) => {
   const [response, setResponse] = useState<any>();
@@ -13,8 +16,10 @@ const NewProductModal = (props: any) => {
   const closeModal = (feedback: any) => {
     closeAppModal(()=> props.closeModal(feedback));
   };
+  const [costRate, setCostRate] = useState(sampleOrderSettings);
 
   const validate = (values: FormikValues) => {   
+    console.log('validating')
       const errors: any = {};
   
       if (!values.name) {
@@ -66,6 +71,13 @@ const NewProductModal = (props: any) => {
       return errors;
   }
 
+  const autoBlure = (id: string) => {
+    setTimeout(() => {
+      console.log('changed');
+      document.getElementById(id)?.blur();
+    }, 500)
+  }
+
   const saveProduct = (values: any, controls: any) => {
     // return closeModal('refresh');
     sendRequest({
@@ -85,7 +97,7 @@ const NewProductModal = (props: any) => {
 
   useEffect(() => {
     openModal();
-    console.log({props});
+    getCostRates((cost: any) => setCostRate(cost));
   }, []);
 
   return (
@@ -196,6 +208,7 @@ const NewProductModal = (props: any) => {
                                           errors.amount && touched.amount &&
                                           <p className='reduced error-popup pt-1 mb-0'>{errors.amount}</p>
                                       }
+                                      <p className='mb-0 my-2 reduced c-pr-green'>Price + Fee: ₦{formatNumber(calculateProductDisplayCost(values.amount, costRate))}</p>
                                     </div>
                                     <span></span>
                                     <div className='styled-form2'>
@@ -233,6 +246,8 @@ const NewProductModal = (props: any) => {
                                             onChange={(event: any) => {
                                               handleChange(event);
                                               setFieldValue("file1", event.currentTarget.files[0]);
+                                              autoBlure('image1');
+                                              
                                             }}
                                         />
                                       {
@@ -255,6 +270,7 @@ const NewProductModal = (props: any) => {
                                             onChange={(event: any) => {
                                               handleChange(event);
                                               setFieldValue("file2", event.currentTarget.files[0]);
+                                              autoBlure('image2');
                                             }}
                                         />
                                       {
@@ -277,6 +293,7 @@ const NewProductModal = (props: any) => {
                                             onChange={(event: any) => {
                                               handleChange(event);
                                               setFieldValue("file3", event.currentTarget.files[0]);
+                                              autoBlure('image3');
                                             }}
                                         />
                                       {
