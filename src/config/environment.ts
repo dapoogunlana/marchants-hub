@@ -6,7 +6,7 @@ function sortBaseUrl() {
         case 'vendu.netlify.app':
             return 'https://secret-savannah-70891.herokuapp.com/api/v1/';
         default:
-            return 'https://.herokuapp.com/api/v1/';
+            return 'https://secret-savannah-70891.herokuapp.com/api/v1/';
     }
 }
 export const apiLinks = {
