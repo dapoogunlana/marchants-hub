@@ -6,13 +6,12 @@ function sortBaseUrl() {
         case 'vendu.netlify.app':
             return 'https://secret-savannah-70891.herokuapp.com/api/v1/';
         default:
-            return 'https://secret-savannah-70891.herokuapp.com/api/v1/';
+            return 'https://api.vendu.store/api/v1/';
     }
 }
 export const apiLinks = {
     url: sortBaseUrl(),
-    cpUrl: (window.location.href.indexOf('localhost') === -1) ?
-     'https://manilla-backend.herokuapp.com/api/v2/' : 'http://localhost:3500/api/v2/',
+    cpUrl: 'https://manilla-backend.herokuapp.com/api/v2/',
 }
 
 export const apiKeys = {
